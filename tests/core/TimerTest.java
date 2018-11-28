@@ -5,13 +5,14 @@ import junit.framework.TestCase;
 public class TimerTest extends TestCase{
 
 	public void test() {
+		GameTimer t = new GameTimer();
 		long startTime = System.nanoTime();
-		Timer t = new Timer();
+		t.countdown();
 		long endTime = System.nanoTime();
 
 		long duration = (endTime - startTime);
 		
-		assertTrue(t > 10 && t < 11);
+		assertTrue(duration > 0);
 	}
 
 }
