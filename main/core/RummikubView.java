@@ -15,12 +15,15 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 
 public class RummikubView {
 	
 	private RummikubController controller;
 	private RummikubModel model;
 	private Pane view;
+	private ComboBox <String> numPlayers;
 
 	
 
@@ -28,6 +31,7 @@ public class RummikubView {
 		// TODO Auto-generated constructor stub
 		this.controller = controller;
 		this.model = model;
+
 		initView();
 		
 	}
@@ -43,16 +47,20 @@ public class RummikubView {
 		
 		ImageView image = new ImageView(new Image("/Tiles/b1.jpg"));
 		
+		Button startButton = new Button("START");
+		startButton.setLayoutX(5);
+		ComboBox numPlayers = new ComboBox<String>();
+		numPlayers.getSelectionModel().selectFirst();
+		numPlayers.getItems().addAll("1", "2", "3", "4");
+		numPlayers.setPromptText("Select Number of players:");
+		numPlayers.setLayoutX(75);
 		
-		Button button = new Button("TEST");
-		//loadDeck();
+		numPlayers.setOnAction(e -> this.controller.getNumBots(numPlayers.getValue()));
 		
 		
-		view.getChildren().addAll(button);
+		view.getChildren().addAll(startButton, numPlayers);
 
-		
 	}
-
 
 	
 }
