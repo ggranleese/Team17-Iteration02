@@ -141,7 +141,7 @@ public class ViewClass {
 			for(int j=0; j<this.model.getTable().getMelds()[i]; j++) {
 				
 				try {
-					displayTile(this.model.getTable().getMelds()[i][j]);
+					displayTile(this.model.getTable().getMelds()[i][j].toString());
 				}catch(FileNotFoundException e) {
 					e.printStackTrace();
 				}
