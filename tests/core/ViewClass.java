@@ -97,10 +97,28 @@ public class ViewClass {
 		stage.setTitle("Rummikub");
 		stage.show();
 		
+<<<<<<< HEAD
+=======
+		
+		int numBots;
+		if(numPlayer.getValue() == "1") {
+			numBots = 1;
+		}else if(numPlayer.getValue() == "2") {
+			numBots = 2;
+		}else{
+			System.out.println(numPlayer.getValue());
+			numBots = 3;
+		}
+		
+>>>>>>> 43bbd0ec6895f0f6e50a813ff46ae86ce87fbf63
 		button1.setOnAction(e-> {
 			controller.updatePlayers((int) (numPlayer.getValue()));
 			handleOptionsButtonAction(stage);});
 		//playerType.setOnAction(e-> handlePlayerTypeAction(e));
+<<<<<<< HEAD
+=======
+		button1.setOnAction(e-> handleOptionsButtonAction(stage, numBots));
+>>>>>>> 43bbd0ec6895f0f6e50a813ff46ae86ce87fbf63
 
 	}
 	
@@ -136,6 +154,7 @@ public class ViewClass {
 	}
 
 
+<<<<<<< HEAD
 //	private void GameView(Stage stage) {
 //		// TODO Auto-generated method stub
 //
@@ -153,6 +172,25 @@ public class ViewClass {
 //		}
 //		
 //	}
+=======
+	private void GameView(Stage stage) {
+		// TODO Auto-generated method stub
+
+		for(int i = 0; i<this.model.getTable().getMelds(); i++) {
+			for(int j=0; j<this.model.getTable().getMelds().get(i); j++) {
+				
+				try {
+					displayTile(this.model.getTable().getMelds()get(i)get(j).toString());
+				}catch(FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+		}
+		
+	}
+>>>>>>> 43bbd0ec6895f0f6e50a813ff46ae86ce87fbf63
 	
 	private ImageView displayTile(String tile) {
 		
