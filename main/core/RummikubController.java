@@ -39,7 +39,6 @@ public class RummikubController {
 			players.add(new Player());
 		}
 		model.setPlayers(players);
-		System.out.println(model.getPlayers().size());
 	}
 
 	
