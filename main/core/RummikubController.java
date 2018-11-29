@@ -8,8 +8,8 @@ public class RummikubController {
 	private final RummikubModel model;
 	private int numBots;
 	
-	public RummikubController(RummikubModel model) {
-		this.model = model;
+	public RummikubController(RummikubModel m) {
+		model = m;
 		
 	}
 	
@@ -31,6 +31,15 @@ public class RummikubController {
 			System.out.println(numBots);
 		}
 
+	}
+
+	public void updatePlayers(int i) {
+		ArrayList<Player> players = new ArrayList<Player>();
+		for(int x = 0; x < i; x++) {
+			players.add(new Player());
+		}
+		model.setPlayers(players);
+		System.out.println(model.getPlayers().size());
 	}
 
 	
