@@ -14,6 +14,7 @@ public class RummikubApp extends Application{
 		RummikubView view = new RummikubView(controller, model);
 		
 		Scene scene = new Scene(view.getView(), 1000,1000);
+		stage.setTitle("Rummikub");
 		stage.setScene(scene);
 		stage.show();
 	}
