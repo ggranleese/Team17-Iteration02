@@ -111,15 +111,12 @@ public class ViewClass {
 			numBots = 3;
 		}
 		
-<<<<<<< HEAD
 		button1.setOnAction(e-> {
 			controller.updatePlayers(4);
 			handleOptionsButtonAction(stage);});
 		//playerType.setOnAction(e-> handlePlayerTypeAction(e));
-=======
 		button1.setOnAction(e-> handleOptionsButtonAction(stage, numBots));
 
->>>>>>> 3ccd1f9e9a9ad6e236458c77d117b186e5c3f2ea
 	}
 	
 
@@ -157,10 +154,10 @@ public class ViewClass {
 		// TODO Auto-generated method stub
 
 		for(int i = 0; i<this.model.getTable().getMelds(); i++) {
-			for(int j=0; j<this.model.getTable().getMelds()[i]; j++) {
+			for(int j=0; j<this.model.getTable().getMelds().get(i); j++) {
 				
 				try {
-					displayTile(this.model.getTable().getMelds()[i][j].toString());
+					displayTile(this.model.getTable().getMelds()get(i)get(j).toString());
 				}catch(FileNotFoundException e) {
 					e.printStackTrace();
 				}
