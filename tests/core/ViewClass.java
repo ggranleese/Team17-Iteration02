@@ -136,6 +136,12 @@ public class ViewClass {
 
 	private void GameView(Stage stage) {
 		// TODO Auto-generated method stub
+		
+		Pane gameBoard = new Pane();
+		gameBoard.setStyle("-fx-background-color: green");
+		Scene board = new Scene(gameBoard);
+		stage.setScene(board);
+		stage.show();
 
 		for(int i = 0; i<this.model.getTable().getMelds(); i++) {
 			for(int j=0; j<this.model.getTable().getMelds()[i]; j++) {

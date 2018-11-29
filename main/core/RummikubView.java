@@ -70,6 +70,7 @@ public class RummikubView {
 		view.getChildren().addAll(startButton, optionsButton ,numPlayers);
 		
 	}
+	
 	public void optionsMenu() {
 		view = new Pane();
 		view.setStyle("-fx-background-color: orange");
@@ -94,6 +95,11 @@ public class RummikubView {
 		
 		view.getChildren().addAll(optionsButton ,numPlayers);
 
+	}
+	
+	public void gameBoard() {
+		view = new Pane();
+		view.
 	}
 
 	
