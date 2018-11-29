@@ -14,6 +14,7 @@ public class RummikubView {
 		// TODO Auto-generated constructor stub
 		this.controller = controller;
 		this.model = model;
+		initView();
 		
 	}
 	
@@ -21,7 +22,7 @@ public class RummikubView {
 		return view;
 	}
 	
-	public void initview() {
+	public void initView() {
 		view = new Pane();
 		view.setStyle("-fx-background-color: green");
 		
