@@ -3,6 +3,9 @@ package core;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+
+import java.io.FileNotFoundException;
+
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -78,6 +81,7 @@ public class ViewClass {
 		stage.setTitle("Rummikub");
 		stage.show();
 		
+		
 		int numBots;
 		if(numPlayer.getValue() == "1") {
 			numBots = 1;
@@ -89,6 +93,7 @@ public class ViewClass {
 		}
 		
 		button1.setOnAction(e-> handleOptionsButtonAction(stage, numBots));
+
 	}
 	
 
@@ -131,7 +136,30 @@ public class ViewClass {
 
 	private void GameView(Stage stage) {
 		// TODO Auto-generated method stub
+
+		for(int i = 0; i<this.model.getTable().getMelds(); i++) {
+			for(int j=0; j<this.model.getTable().getMelds()[i]; j++) {
+				
+				try {
+					displayTile(this.model.getTable().getMelds()[i][j]);
+				}catch(FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+		}
 		
+	}
+	
+	private ImageView displayTile(String tile) {
+		
+		ImageView image = new ImageView(new Image("/Tiles/" + tile.toLowerCase() + ".jpg"));
+		image.setFitHeight(50);
+		image.setFitWidth(50);
+		image.setPreserveRatio(true);
+		
+		return image;
 	}
 
 	
