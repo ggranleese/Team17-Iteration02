@@ -54,13 +54,12 @@ public class ViewClass {
 		Pane root = new Pane();
 		HBox box1 = new HBox(10);
 		
-		ComboBox numPlayer = new ComboBox<String>();
-		//numPlayer.getSelectionModel().selectFirst();
-		numPlayer.getItems().addAll("2", "3", "4");
+		ComboBox numPlayer = new ComboBox<Integer>();
+		numPlayer.getItems().addAll(2, 3, 4);
 		numPlayer.setPromptText("Select Number of players:");
 		numPlayer.setLayoutX(150);
-		numPlayer.setValue(1);
-		System.out.println(numPlayer.getValue());
+		
+		System.out.println(numPlayer.getEditor().getText());
 		
 		Button button1 = new Button("Select");
 		
@@ -69,8 +68,6 @@ public class ViewClass {
 		
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
-		
-		System.out.println(model.getPlayers().size());
 		
 		for (int x = 0; x < model.getPlayers().size(); x++) {
 			
@@ -100,6 +97,8 @@ public class ViewClass {
 		stage.setTitle("Rummikub");
 		stage.show();
 		
+<<<<<<< HEAD
+=======
 		
 		int numBots;
 		if(numPlayer.getValue() == "1") {
@@ -111,11 +110,15 @@ public class ViewClass {
 			numBots = 3;
 		}
 		
+>>>>>>> 43bbd0ec6895f0f6e50a813ff46ae86ce87fbf63
 		button1.setOnAction(e-> {
-			controller.updatePlayers(4);
+			controller.updatePlayers((int) (numPlayer.getValue()));
 			handleOptionsButtonAction(stage);});
 		//playerType.setOnAction(e-> handlePlayerTypeAction(e));
+<<<<<<< HEAD
+=======
 		button1.setOnAction(e-> handleOptionsButtonAction(stage, numBots));
+>>>>>>> 43bbd0ec6895f0f6e50a813ff46ae86ce87fbf63
 
 	}
 	
@@ -123,9 +126,9 @@ public class ViewClass {
 	private void promptNumPlayers(Stage stage) {
 		HBox box = new HBox(10);
 		
-		ComboBox numPlayers = new ComboBox<String>();
+		ComboBox numPlayers = new ComboBox<Integer>();
 		numPlayers.getSelectionModel().selectFirst();
-		numPlayers.getItems().addAll("2", "3", "4");
+		numPlayers.getItems().addAll(2, 3, 4);
 		numPlayers.setPromptText("Select Number of players:");
 		numPlayers.setLayoutX(150);
 		
@@ -138,18 +141,38 @@ public class ViewClass {
 		stage.setScene(scene);
 		stage.setTitle("Rummikub");
 		stage.show();
-
+		
+		
 		button1.setOnAction(e-> {
-			controller.updatePlayers(4);
+			controller.updatePlayers((int) (numPlayers.getValue()));
 			handleOptionsButtonAction(stage);});
 	}
 
 
 	private void handleStartButton(Stage stage) {
-		GameView(stage);
+		//GameView(stage);
 	}
 
 
+<<<<<<< HEAD
+//	private void GameView(Stage stage) {
+//		// TODO Auto-generated method stub
+//
+//		for(int i = 0; i<this.model.getTable().getMelds(); i++) {
+//			for(int j=0; j<this.model.getTable().getMelds()[i]; j++) {
+//				
+//				try {
+//					displayTile(this.model.getTable().getMelds()[i][j].toString());
+//				}catch(FileNotFoundException e) {
+//					e.printStackTrace();
+//				}
+//				
+//			}
+//			
+//		}
+//		
+//	}
+=======
 	private void GameView(Stage stage) {
 		// TODO Auto-generated method stub
 
@@ -167,6 +190,7 @@ public class ViewClass {
 		}
 		
 	}
+>>>>>>> 43bbd0ec6895f0f6e50a813ff46ae86ce87fbf63
 	
 	private ImageView displayTile(String tile) {
 		
