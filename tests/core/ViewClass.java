@@ -22,14 +22,22 @@ import javafx.scene.layout.FlowPane;
 
 public class ViewClass {
 	private Pane view;
+	private RummikubController controller;
+	private RummikubModel model;
+	
+	public ViewClass() {
+		model = new RummikubModel();
+		controller = new RummikubController(model);
+	}
 	
 	public void buildAndShowGui(final Stage stage) {
 		Button button1 = new Button("Play");
 		Button button2 = new Button("Options");
 		
 		button1.setOnAction(e-> handleStartButton(stage));
-		button2.setOnAction(e-> promptNumPlayers(stage));
-		
+		if(model.getPlayers() == null) {
+			button2.setOnAction(e-> promptNumPlayers(stage));
+		}
 		VBox box = new VBox(button1, button2);
 		Scene scene = new Scene(box, 1000, 1000);
 		
@@ -41,16 +49,18 @@ public class ViewClass {
 	}
 	
 
-	private void handleOptionsButtonAction(Stage stage, int numPlayers) {
+	private void handleOptionsButtonAction(Stage stage) {
 		
 		Pane root = new Pane();
 		HBox box1 = new HBox(10);
 		
 		ComboBox numPlayer = new ComboBox<String>();
-		numPlayer.getSelectionModel().selectFirst();
+		//numPlayer.getSelectionModel().selectFirst();
 		numPlayer.getItems().addAll("2", "3", "4");
 		numPlayer.setPromptText("Select Number of players:");
 		numPlayer.setLayoutX(150);
+		numPlayer.setValue(1);
+		System.out.println(numPlayer.getValue());
 		
 		Button button1 = new Button("Select");
 		
@@ -60,17 +70,26 @@ public class ViewClass {
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
 		
-		for (int x = 0; x < numPlayers; x++) {
-	        ComboBox<String> combo = new ComboBox<String>();
-	        combo.getSelectionModel().selectFirst();
-	        combo.setPromptText("Strategy");
-	        combo.getItems().addAll("Strategy 1", "Strategy 2", "Strategy 3", "Strategy 4");
-	        combo.setLayoutX(150);
+		System.out.println(model.getPlayers().size());
+		
+		for (int x = 0; x < model.getPlayers().size(); x++) {
+			
+			Label label = new Label("Player " + (x + 1));
+	        ComboBox<String> stratChoice = new ComboBox<String>();
+	        stratChoice.getSelectionModel().selectFirst();
+	        stratChoice.setPromptText("Strategy");
+	        stratChoice.getItems().addAll("Strategy 1", "Strategy 2", "Strategy 3", "Strategy 4");
+	        stratChoice.setLayoutX(150);
 	
-	        Label label = new Label("Player " + (x + 1));
+	        ComboBox<String> playerType = new ComboBox<String>();
+	        playerType.getSelectionModel().selectFirst();
+	        playerType.setPromptText("Type");
+	        playerType.getItems().addAll("Human", "AI");
+	        playerType.setLayoutX(150);
 	
 	        box2.getChildren().add(label);
-	        box2.getChildren().add(combo);
+	        box2.getChildren().add(playerType);
+	        box2.getChildren().add(stratChoice);
 		}
 		
 		root.getChildren().addAll(box1);
@@ -92,8 +111,15 @@ public class ViewClass {
 			numBots = 3;
 		}
 		
+<<<<<<< HEAD
+		button1.setOnAction(e-> {
+			controller.updatePlayers(4);
+			handleOptionsButtonAction(stage);});
+		//playerType.setOnAction(e-> handlePlayerTypeAction(e));
+=======
 		button1.setOnAction(e-> handleOptionsButtonAction(stage, numBots));
 
+>>>>>>> 3ccd1f9e9a9ad6e236458c77d117b186e5c3f2ea
 	}
 	
 
@@ -115,17 +141,10 @@ public class ViewClass {
 		stage.setScene(scene);
 		stage.setTitle("Rummikub");
 		stage.show();
-		
-		int numBots;
-		if(numPlayers.getValue() == "1") {
-			numBots = 1;
-		}else if(numPlayers.getValue() == "2") {
-			numBots = 2;
-		}else{
-			numBots = 3;
-		}
 
-		button1.setOnAction(e-> handleOptionsButtonAction(stage, numBots));
+		button1.setOnAction(e-> {
+			controller.updatePlayers(4);
+			handleOptionsButtonAction(stage);});
 	}
 
 
