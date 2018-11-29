@@ -10,7 +10,7 @@ public class RummikubApp extends Application{
 	@Override
 	public void start(Stage stage) {
 		RummikubModel model = new RummikubModel();
-		RummikubController controller = new RummikubController();
+		RummikubController controller = new RummikubController(model);
 		RummikubView view = new RummikubView(controller, model);
 		
 		Scene scene = new Scene(view.getView(), 1000,1000);
