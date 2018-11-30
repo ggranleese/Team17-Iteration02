@@ -1,16 +1,13 @@
 package core;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 public class RummikubController {
 	
 	private final RummikubModel model;
-	private int numBots;
 	
 	public RummikubController(RummikubModel m) {
 		model = m;
-		
 	}
 	
 	public void updateGameInfo(ArrayList<Player> players, Table table) {
@@ -18,23 +15,9 @@ public class RummikubController {
 		model.setPlayers(players);
 	}
 
-	public void getNumBots(Object object) {
-		
-		if(object == "1") {
-			numBots = 1;
-			System.out.println(numBots);
-		}else if(object == "2") {
-			numBots = 2;
-			System.out.println(numBots);
-		}else{
-			numBots = 3;
-			System.out.println(numBots);
-		}
-
-	}
-
 	public void updatePlayers(int i) {
 		ArrayList<Player> players = new ArrayList<Player>();
+		players.add(new Player());
 		for(int x = 0; x < i; x++) {
 			players.add(new Player());
 		}
@@ -74,6 +57,33 @@ public class RummikubController {
 			//((AI) players.get(x)).setStrategy(new StrategyFour());
 			((AI) players.get(x)).stratNum = 4;
 		}
+		
+	}
+
+	public void updateTimer() {
+		if (model.getTimer()) {
+			model.setTimer(false);
+		}
+		else {
+			model.setTimer(true);
+		}
+	}
+
+	public void namePlayers() {
+		for (int i = 0; i < model.getPlayers().size(); i++) {
+			model.getPlayers().get(i).PlayerNum = i +1; 
+		}
+		
+	}
+
+	public void setDefaultGame() {
+		ArrayList<Player> p = new ArrayList<Player>();
+		p.add(new Player());
+		p.add(new AI(1));
+		p.add(new AI(2));
+		p.add(new AI(3));
+		
+		model.setPlayers(p);
 		
 	}
 

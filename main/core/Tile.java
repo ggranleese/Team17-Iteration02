@@ -16,6 +16,32 @@ public class Tile {
 		this.value = v;
 		this.joker = j;
 	}
+	public String toString() {
+		String printVal = "";
+		int colour = this.colour;
+		switch(colour) {
+			case 1:
+				printVal += "R";
+				printVal += Integer.toString(this.value);
+				break;
+			case 2: 
+				printVal += "B";
+				printVal += Integer.toString(this.value);
+				break;
+			case 3:
+				printVal += "G";
+				printVal += Integer.toString(this.value);
+				break;
+			case 4:
+				printVal += "O";
+				printVal += Integer.toString(this.value);
+				break;
+			default:
+				System.out.println("Invalid tile found.");
+				break;
+		}
+		return printVal;
+	}
 	public int getValue() {
 		return this.value;
 	}

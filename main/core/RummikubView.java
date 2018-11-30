@@ -22,10 +22,13 @@ import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
-	private Pane view;
+
 	private RummikubController controller;
 	private RummikubModel model;
 	
@@ -66,7 +69,6 @@ public class RummikubView{
 		numPlayer.setPromptText("Select Number of players:");
 		numPlayer.setLayoutX(150);
 		
-		
 		Button button1 = new Button("Select");
 		
 		Button timer = new Button("Timer");
@@ -78,14 +80,14 @@ public class RummikubView{
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
 		
-		for (int x = 0; x < model.getPlayers().size(); x++) {
+		for (int x = 2; x < model.getPlayers().size(); x++) {
 			Label label;
 			ArrayList<Player> players = model.getPlayers();
 			Player player = players.get(x);
 			int position = x;
 			
 			if (!player.isBot()) {
-				label = new Label("Player " + (x+1));
+				label = new Label("Player " + (x));
 								
 		        ComboBox<String> playerType = new ComboBox<String>();
 		        playerType.getSelectionModel().selectFirst();
@@ -106,7 +108,7 @@ public class RummikubView{
 
 			}
 			if(player.isBot()) {
-				label = new Label("Player " + (x+1) + " (BOT)");
+				label = new Label("Player " + (x) + " (BOT)");
 				
 				ComboBox<String> stratChoice = new ComboBox<String>();
 		        stratChoice.getSelectionModel().selectFirst();
@@ -194,6 +196,15 @@ public class RummikubView{
 	}
 
 
+	private void handleStartButton(Stage stage) {
+		//drawStartView(stage);
+		if(model.getPlayers() == null) {
+			controller.setDefaultGame();
+		}
+		controller.namePlayers();
+		GameView(stage);
+	}
+
 	
 	private void drawStartView(Stage stage) {
 		
@@ -232,13 +243,29 @@ public class RummikubView{
 	
 
 	private void GameView(Stage stage) {
-		// TODO Auto-generated method stub
+
+		GridPane screen = new GridPane();
+		screen.setStyle("-fx-background-color: black");
+		screen.setHgap(100);
+		screen.setVgap(100);
+		screen.setPadding(new Insets(100,100,100,100));
 		
-		Pane board = new Pane();
+		GridPane board = new GridPane();
 		board.setStyle("-fx-background-color: green");
-		Scene gameBoard = new Scene(board);
-		stage.setScene(gameBoard);
+		board.setPrefWidth(900);
+		board.setPrefHeight(500);
+		
+		Button endTurn = new Button("End Turn");
+		board.setAlignment(Pos.BOTTOM_RIGHT);
+		
+		screen.getChildren().add(board);
+		screen.getChildren().add(endTurn);
+		
+		
+		Scene display = new Scene(screen,1000,750);
+		stage.setScene(display);
 		stage.show();
+
 
 //		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
 //			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
@@ -248,7 +275,17 @@ public class RummikubView{
 //			}
 //			
 //		}
+
 		
+//		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
+//			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
+//				
+//				displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
+//				
+//			}
+//			
+//		}
+//		
 	}
 	
 //	private ImageView displayTile(String tile) {
