@@ -26,6 +26,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.control.RadioButton;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -78,7 +79,10 @@ public class RummikubView{
 		
 		Button button1 = new Button("Select");
 		
-		Button timer = new Button("Timer");
+		RadioButton timer = new RadioButton("Timer");
+		if(model.getTimer()) {
+			timer.setSelected(true);
+		}
 		
 		box1.getChildren().add(numPlayer);
 		box1.getChildren().add(button1);
@@ -173,6 +177,8 @@ public class RummikubView{
 			controller.updatePlayers((int) (numPlayer.getValue()));
 			handleOptionsButtonAction(stage);});
 		confirmButton.setOnAction(e -> buildAndShowGui(stage));
+		
+		timer.setOnAction(e -> controller.updateTimer());
 
 	}
 	
