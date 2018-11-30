@@ -23,7 +23,7 @@ import javafx.scene.layout.FlowPane;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
-	private Pane view;
+
 	private RummikubController controller;
 	private RummikubModel model;
 	
@@ -77,7 +77,7 @@ public class RummikubView{
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
 		
-		for (int x = 0; x < model.getPlayers().size(); x++) {
+		for (int x = 1; x < model.getPlayers().size(); x++) {
 			Label label;
 			ArrayList<Player> players = model.getPlayers();
 			Player player = players.get(x);
@@ -203,23 +203,22 @@ public class RummikubView{
 	}
 
 	private void GameView(Stage stage) {
-		// TODO Auto-generated method stub
-		
+
 		Pane board = new Pane();
 		board.setStyle("-fx-background-color: green");
 		Scene gameBoard = new Scene(board);
 		stage.setScene(gameBoard);
 		stage.show();
-
-		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
-			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
-				
-				displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
-				
-			}
-			
-		}
 		
+//		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
+//			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
+//				
+//				displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
+//				
+//			}
+//			
+//		}
+//		
 	}
 	
 	private ImageView displayTile(String tile) {
