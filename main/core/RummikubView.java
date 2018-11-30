@@ -51,10 +51,7 @@ public class RummikubView{
 		optionsButton.setLayoutX(400);
 		optionsButton.setLayoutY(500);
 		mainPane.setBackground(new Background(createBackground()));
-		
-
-		startButton.setOnAction(e-> handleStartButton(stage));
-
+	
 		startButton.setOnAction(e-> drawStartView(stage));
 
 		if(model.getPlayers() == null) {
@@ -217,9 +214,6 @@ public class RummikubView{
 
 	private void handleStartButton(Stage stage) {
 		//drawStartView(stage);
-		if(model.getPlayers() == null) {
-			controller.setDefaultGame();
-		}
 		controller.namePlayers();
 		GameView(stage);
 	}
@@ -232,6 +226,9 @@ public class RummikubView{
 		Button nextButton = new Button("Next");
 		Label label;
 		
+		if(model.getPlayers() == null) {
+			controller.setDefaultGame();
+		}
 		
 		start.setStyle("-fx-background-color: green");
 		box.getChildren().add(nextButton);
@@ -240,13 +237,21 @@ public class RummikubView{
 		
 		ArrayList<Player> players = model.getPlayers();
 		
+		controller.findTurnOrder();
+		
+		HBox cardBox = new HBox();
+		cardBox.setSpacing(50);
 		for(Player p : players) {
-			ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/" + p.turnOrderCard.toString().toLowerCase() + ".jpg")));
-			start.getChildren().add(image);
+			String filename =  "file:main/Tiles/"+ p.turnOrderCard.toString().toLowerCase() +".jpg";
+			ImageView image = new ImageView(new Image(filename));
+			image.setFitHeight(100);
+			image.setFitWidth(100);
+			cardBox.getChildren().add(image);
 		}
 		
 		Player firstPlayer =  Collections.max(players, Comparator.comparing(p->p.turnOrderCard.getValue()));
 		label = new Label("Player:" + firstPlayer.playerNum + "goes first!");
+		start.getChildren().add(cardBox);
 		start.getChildren().add(label);
 		
 		
