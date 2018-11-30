@@ -77,5 +77,14 @@ public class RummikubController {
 		
 	}
 
+	public void updateTimer() {
+		if (model.getTimer()) {
+			model.setTimer(false);
+		}
+		else {
+			model.setTimer(true);
+		}
+	}
+
 	
 }

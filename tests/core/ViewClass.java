@@ -20,10 +20,10 @@ import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.control.RadioButton;
 
 @SuppressWarnings("restriction")
 public class ViewClass {
-	private Pane view;
 	private RummikubController controller;
 	private RummikubModel model;
 	
@@ -68,7 +68,10 @@ public class ViewClass {
 		
 		Button button1 = new Button("Select");
 		
-		Button timer = new Button("Timer");
+		RadioButton timer = new RadioButton("Timer");
+		if (model.getTimer()) {
+			timer.setSelected(true);
+		}
 		
 		box1.getChildren().add(numPlayer);
 		box1.getChildren().add(button1);
@@ -163,6 +166,10 @@ public class ViewClass {
 			controller.updatePlayers((int) (numPlayer.getValue()));
 			handleOptionsButtonAction(stage);});
 		confirmButton.setOnAction(e -> buildAndShowGui(stage));
+		
+		timer.setOnAction(e -> {
+			controller.updateTimer();
+		});
 
 	}
 	
