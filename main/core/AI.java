@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class AI extends Player{
 	//MEMBERS
 private IStrategy strategy;
-private int stratNum;
+public int stratNum;
 
 	//CONSTRUCTORS
 	public AI(int strat) {
@@ -46,5 +46,12 @@ private int stratNum;
 		
 	}
 	//GETTERS
+	@Override
+	public boolean isBot() {
+		return true;
+	}
 	
+	public void setStrategy(IStrategy s) {
+		this.strategy = s;
+	}
 }

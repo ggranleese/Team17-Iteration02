@@ -41,5 +41,41 @@ public class RummikubController {
 		model.setPlayers(players);
 	}
 
+
+	public void updatePlayerTypeBot(ArrayList<Player> players, int x) {
+		if (!players.get(x).isBot()) {
+			players.set(x, new AI(1));
+		}
+		
+	}
+
+	public void updatePlayerTypeHuman(ArrayList<Player> players, int x) {
+		if (players.get(x).isBot()) {
+			players.set(x, new Player());
+		}
+		
+	}
+
+	public void updatePlayerStrat(ArrayList<Player> players, int x, String value) {
+
+		if (value == "Strategy 1") {
+			((AI) players.get(x)).setStrategy(new StrategyOne());
+			((AI) players.get(x)).stratNum = 1;
+		}
+		if (value == "Strategy 2") {
+			((AI) players.get(x)).setStrategy(new StrategyTwo());
+			((AI) players.get(x)).stratNum = 2;
+		}
+		if (value == "Strategy 3") {
+			((AI) players.get(x)).setStrategy(new StrategyThree());
+			((AI) players.get(x)).stratNum = 3;
+		}
+		if (value == "Strategy 4") {
+			//((AI) players.get(x)).setStrategy(new StrategyFour());
+			((AI) players.get(x)).stratNum = 4;
+		}
+		
+	}
+
 	
 }
