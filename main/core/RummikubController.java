@@ -88,5 +88,10 @@ public class RummikubController {
 		
 	}
 
+	public void findTurnOrder() {
+		model.findTurnOrder();
+		
+	}
+
 	
 }
