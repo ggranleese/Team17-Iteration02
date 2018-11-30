@@ -11,6 +11,7 @@ public class Player implements Observer{
 	private Boolean status;
 	private int pointCounter;
 	public ArrayList<Tile> hand;
+	public Tile turnOrderCard;
 	Scanner input = new Scanner(System.in);
 	//These are observed from Table
 	public Table tableSnapshot;
@@ -32,8 +33,14 @@ public class Player implements Observer{
 		}
 		sortHand();
 		
-		
-		
+	}
+	
+	//this draws a tile used ONLY for determining who goes first
+	//it draws from a special tile
+	public void drawInitialTile(Pile tmpPile) {
+		tmpPile.shuffle();
+		this.turnOrderCard = tmpPile.getTile(0);
+		tmpPile.removeTile();
 	}
 	
 	public void removeTile(int c, int v) {
@@ -178,17 +185,6 @@ public class Player implements Observer{
 		return invalidMelds;
 	}
 	
-
-
-	
-
-
-	
-
-	
-
-
-	
 	//OBSERVER METHODS
 	public void update(Table table) {
 		//this.Melds = (ArrayList<Meld>) table.getMelds().clone();
@@ -242,4 +238,5 @@ public class Player implements Observer{
 	public boolean isBot() {
 		return false;
 	}
+
 }

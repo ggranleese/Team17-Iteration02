@@ -23,7 +23,7 @@ import javafx.scene.layout.FlowPane;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
-	private Pane view;
+
 	private RummikubController controller;
 	private RummikubModel model;
 	
@@ -64,8 +64,6 @@ public class RummikubView{
 		numPlayer.setPromptText("Select Number of players:");
 		numPlayer.setLayoutX(150);
 		
-		System.out.println(numPlayer.getEditor().getText());
-		
 		Button button1 = new Button("Select");
 		
 		Button timer = new Button("Timer");
@@ -77,14 +75,14 @@ public class RummikubView{
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
 		
-		for (int x = 0; x < model.getPlayers().size(); x++) {
+		for (int x = 2; x < model.getPlayers().size(); x++) {
 			Label label;
 			ArrayList<Player> players = model.getPlayers();
 			Player player = players.get(x);
 			int position = x;
 			
 			if (!player.isBot()) {
-				label = new Label("Player " + (x+1));
+				label = new Label("Player " + (x));
 								
 		        ComboBox<String> playerType = new ComboBox<String>();
 		        playerType.getSelectionModel().selectFirst();
@@ -105,7 +103,7 @@ public class RummikubView{
 
 			}
 			if(player.isBot()) {
-				label = new Label("Player " + (x+1) + " (BOT)");
+				label = new Label("Player " + (x) + " (BOT)");
 				
 				ComboBox<String> stratChoice = new ComboBox<String>();
 		        stratChoice.getSelectionModel().selectFirst();
@@ -203,23 +201,22 @@ public class RummikubView{
 	}
 
 	private void GameView(Stage stage) {
-		// TODO Auto-generated method stub
-		
+
 		Pane board = new Pane();
 		board.setStyle("-fx-background-color: green");
 		Scene gameBoard = new Scene(board);
 		stage.setScene(gameBoard);
 		stage.show();
-
-		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
-			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
-				
-				displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
-				
-			}
-			
-		}
 		
+//		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
+//			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
+//				
+//				displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
+//				
+//			}
+//			
+//		}
+//		
 	}
 	
 	private ImageView displayTile(String tile) {
