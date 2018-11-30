@@ -8,7 +8,7 @@ public class RummikubController {
 	
 	public RummikubController(RummikubModel m) {
 		model = m;
-	}
+	} 
 	
 	public void updateGameInfo(ArrayList<Player> players, Table table) {
 		model.setTable(table);
@@ -67,6 +67,7 @@ public class RummikubController {
 		else {
 			model.setTimer(true);
 		}
+		System.out.println(model.getTimer());
 	}
 
 	public void namePlayers() {

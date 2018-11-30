@@ -28,6 +28,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.control.RadioButton;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -54,7 +55,7 @@ public class RummikubView{
 
 		startButton.setOnAction(e-> handleStartButton(stage));
 
-		button1.setOnAction(e-> drawStartView(stage));
+		startButton.setOnAction(e-> drawStartView(stage));
 
 		if(model.getPlayers() == null) {
 			optionsButton.setOnAction(e-> promptNumPlayers(stage));
@@ -84,7 +85,10 @@ public class RummikubView{
 		
 		Button button1 = new Button("Select");
 		
-		Button timer = new Button("Timer");
+		RadioButton timer = new RadioButton("Timer");
+		if(model.getTimer()) {
+			timer.setSelected(true);
+		}
 		
 		box1.getChildren().add(numPlayer);
 		box1.getChildren().add(button1);
@@ -179,6 +183,8 @@ public class RummikubView{
 			controller.updatePlayers((int) (numPlayer.getValue()));
 			handleOptionsButtonAction(stage);});
 		confirmButton.setOnAction(e -> buildAndShowGui(stage));
+		
+		timer.setOnAction(e -> controller.updateTimer());
 
 	}
 	
@@ -235,7 +241,7 @@ public class RummikubView{
 		ArrayList<Player> players = model.getPlayers();
 		
 		for(Player p : players) {
-			ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/" + p.turnOrderCard.toString().toLowerCase + ".jpg")));
+			ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/" + p.turnOrderCard.toString().toLowerCase() + ".jpg")));
 			start.getChildren().add(image);
 		}
 		
