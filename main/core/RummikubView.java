@@ -4,6 +4,8 @@ package core;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import javafx.scene.layout.Background;
@@ -20,6 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -225,37 +228,62 @@ public class RummikubView{
 	private void drawStartView(Stage stage) {
 		
 		Pane start = new Pane();
-		HBox box = new HBox(10);
-		Button nextButton = new Button("Next");
+		//HBox box = new HBox(10);
+		RummikubButton nextButton = new RummikubButton("Next");
 		Label label;
+		
+		nextButton.setLayoutX(400);
+		nextButton.setLayoutY(500);
 		
 		if(model.getPlayers() == null) {
 			controller.setDefaultGame();
 		}
 		
 		start.setStyle("-fx-background-color: green");
-		box.getChildren().add(nextButton);
-		start.getChildren().add(box);
+		//box.getChildren().add(nextButton);
+		start.getChildren().add(nextButton);
 		nextButton.setOnAction(e-> GameView(stage));
 		
 		ArrayList<Player> players = model.getPlayers();
+		ArrayList<Player> sortedPlayers = new ArrayList<>();
 		
 		controller.findTurnOrder();
+		controller.namePlayers();
 		
 		HBox cardBox = new HBox();
 		cardBox.setSpacing(50);
 		for(Player p : players) {
 			String filename =  "file:main/Tiles/"+ p.turnOrderCard.toString().toLowerCase() +".jpg";
 			ImageView image = new ImageView(new Image(filename));
-			image.setFitHeight(100);
+			image.setFitHeight(150);
 			image.setFitWidth(100);
 			cardBox.getChildren().add(image);
 		}
 		
-		Player firstPlayer =  Collections.max(players, Comparator.comparing(p->p.turnOrderCard.getValue()));
-		label = new Label("Player:" + firstPlayer.playerNum + "goes first!");
+		cardBox.setLayoutX(225);
+		cardBox.setLayoutY(300);
+		
+		Collections.sort(players, new Comparator<Player>() {
+			public int compare(Player s2, Player s1) {
+				return Integer.compare(s1.turnOrderCard.getValue(), s2.turnOrderCard.getValue());
+			}
+		});
+		
+		sortedPlayers.addAll(players);
+		
+		label = new Label("Player: " + sortedPlayers.get(0).playerNum + " goes first!");
+		
+		label.setLayoutX(400);
+		label.setLayoutY(250);
+		try {
+			label.setFont(Font.loadFont(new FileInputStream("main/resources/kenvector_future.ttf"),23));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		start.getChildren().add(cardBox);
 		start.getChildren().add(label);
+		
 		
 		
 		//ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/b10.jpg")));
@@ -289,7 +317,7 @@ public class RummikubView{
 		screen.getChildren().add(endTurn);
 		
 		
-		Scene display = new Scene(screen,1000,750);
+		Scene display = new Scene(screen,1000,1000);
 		stage.setScene(display);
 		stage.show();
 
