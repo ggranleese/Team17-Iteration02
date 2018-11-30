@@ -158,35 +158,12 @@ public class ViewClass {
 		stage.setScene(scene);
 		stage.setTitle("Rummikub");
 		stage.show();
-<<<<<<< HEAD
-		
-		
-		int numBots;
-		if(numPlayer.getValue() == "1") {
-			numBots = 1;
-		}else if(numPlayer.getValue() == "2") {
-			numBots = 2;
-		}else{
-			System.out.println(numPlayer.getValue());
-			numBots = 3;
-		}
-		
-=======
->>>>>>> 4a47ac3fea66b6b9f1b4fb886cce46511b813030
 
 		button1.setOnAction(e-> {
 			controller.updatePlayers((int) (numPlayer.getValue()));
 			handleOptionsButtonAction(stage);});
-<<<<<<< HEAD
-		//playerType.setOnAction(e-> handlePlayerTypeAction(e));
-
-		button1.setOnAction(e-> handleOptionsButtonAction(stage, numBots));
-
-
-=======
 		confirmButton.setOnAction(e -> buildAndShowGui(stage));
 
->>>>>>> 4a47ac3fea66b6b9f1b4fb886cce46511b813030
 	}
 	
 
@@ -217,53 +194,33 @@ public class ViewClass {
 
 
 	private void handleStartButton(Stage stage) {
-		//GameView(stage);
+		drawStartView(stage);
+		GameView(stage);
 	}
-
-<<<<<<< HEAD
+	
+	private void drawStartView(Stage stage) {
+		// Stuff
+	}
 
 	private void GameView(Stage stage) {
 		// TODO Auto-generated method stub
 		
-		Pane gameBoard = new Pane();
-		gameBoard.setStyle("-fx-background-color: green");
-		Scene board = new Scene(gameBoard);
-		stage.setScene(board);
+		Pane board = new Pane();
+		board.setStyle("-fx-background-color: green");
+		Scene gameBoard = new Scene(board);
+		stage.setScene(gameBoard);
 		stage.show();
 
 		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
 			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
 				
-				try {
-					displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
-				}catch(FileNotFoundException e) {
-					e.printStackTrace();
-				}
+				displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
 				
 			}
 			
 		}
 		
 	}
-=======
-//	private void GameView(Stage stage) {
-//		// TODO Auto-generated method stub
-//
-//		for(int i = 0; i<this.model.getTable().getMelds(); i++) {
-//			for(int j=0; j<this.model.getTable().getMelds().get(i); j++) {
-//				
-//				try {
-//					displayTile(this.model.getTable().getMelds()get(i)get(j).toString());
-//				}catch(FileNotFoundException e) {
-//					e.printStackTrace();
-//				}
-//				
-//			}
-//			
-//		}
-//		
-//	}
->>>>>>> 4a47ac3fea66b6b9f1b4fb886cce46511b813030
 	
 	private ImageView displayTile(String tile) {
 		
