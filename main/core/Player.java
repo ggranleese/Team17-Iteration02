@@ -12,7 +12,7 @@ public class Player implements Observer{
 	private int pointCounter;
 	public ArrayList<Tile> hand;
 	public Tile turnOrderCard;
-	public int PlayerNum;
+	public int playerNum;
 	//These are observed from Table
 	public Table tableSnapshot;
 	//private	ArrayList<Meld> Melds;
