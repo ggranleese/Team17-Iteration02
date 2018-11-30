@@ -20,6 +20,9 @@ import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -192,7 +195,11 @@ public class RummikubView{
 
 
 	private void handleStartButton(Stage stage) {
-		drawStartView(stage);
+		//drawStartView(stage);
+		if(model.getPlayers() == null) {
+			controller.setDefaultGame();
+		}
+		controller.namePlayers();
 		GameView(stage);
 	}
 	
@@ -202,10 +209,26 @@ public class RummikubView{
 
 	private void GameView(Stage stage) {
 
-		Pane board = new Pane();
+		GridPane screen = new GridPane();
+		screen.setStyle("-fx-background-color: black");
+		screen.setHgap(100);
+		screen.setVgap(100);
+		screen.setPadding(new Insets(100,100,100,100));
+		
+		GridPane board = new GridPane();
 		board.setStyle("-fx-background-color: green");
-		Scene gameBoard = new Scene(board);
-		stage.setScene(gameBoard);
+		board.setPrefWidth(900);
+		board.setPrefHeight(500);
+		
+		Button endTurn = new Button("End Turn");
+		board.setAlignment(Pos.BOTTOM_RIGHT);
+		
+		screen.getChildren().add(board);
+		screen.getChildren().add(endTurn);
+		
+		
+		Scene display = new Scene(screen,1000,750);
+		stage.setScene(display);
 		stage.show();
 		
 //		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {

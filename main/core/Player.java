@@ -12,7 +12,7 @@ public class Player implements Observer{
 	private int pointCounter;
 	public ArrayList<Tile> hand;
 	public Tile turnOrderCard;
-	Scanner input = new Scanner(System.in);
+	public int PlayerNum;
 	//These are observed from Table
 	public Table tableSnapshot;
 	//private	ArrayList<Meld> Melds;

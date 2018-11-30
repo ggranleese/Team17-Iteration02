@@ -69,5 +69,23 @@ public class RummikubController {
 		}
 	}
 
+	public void namePlayers() {
+		for (int i = 0; i < model.getPlayers().size(); i++) {
+			model.getPlayers().get(i).PlayerNum = i +1; 
+		}
+		
+	}
+
+	public void setDefaultGame() {
+		ArrayList<Player> p = new ArrayList<Player>();
+		p.add(new Player());
+		p.add(new AI(1));
+		p.add(new AI(2));
+		p.add(new AI(3));
+		
+		model.setPlayers(p);
+		
+	}
+
 	
 }
