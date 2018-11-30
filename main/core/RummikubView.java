@@ -6,6 +6,8 @@ import javafx.scene.control.TextField;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -39,7 +41,7 @@ public class RummikubView{
 		Button button1 = new Button("Play");
 		Button button2 = new Button("Options");
 		
-		button1.setOnAction(e-> handleStartButton(stage));
+		button1.setOnAction(e-> drawStartView(stage));
 		if(model.getPlayers() == null) {
 			button2.setOnAction(e-> promptNumPlayers(stage));
 		}
@@ -202,10 +204,43 @@ public class RummikubView{
 		controller.namePlayers();
 		GameView(stage);
 	}
+
 	
 	private void drawStartView(Stage stage) {
-		// Stuff
+		
+		Pane start = new Pane();
+		HBox box = new HBox(10);
+		Button nextButton = new Button("Next");
+		Label label;
+		
+		
+		start.setStyle("-fx-background-color: green");
+		box.getChildren().add(nextButton);
+		start.getChildren().add(box);
+		nextButton.setOnAction(e-> GameView(stage));
+		
+		ArrayList<Player> players = model.getPlayers();
+		
+		for(Player p : players) {
+			ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/" + p.turnOrderCard.toString().toLowerCase + ".jpg")));
+			start.getChildren().add(image);
+		}
+		
+		Player firstPlayer =  Collections.max(players, Comparator.comparing(p->p.turnOrderCard.getValue()));
+		label = new Label("Player:" + firstPlayer.playerNum + "goes first!");
+		start.getChildren().add(label);
+		
+		
+		//ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/b10.jpg")));
+		//start.getChildren().add(image);
+		
+		Scene drawTurnBoard = new Scene(start,1000,1000);
+		stage.setScene(drawTurnBoard);
+		stage.show();
+			
 	}
+	
+	
 
 	private void GameView(Stage stage) {
 
@@ -230,6 +265,17 @@ public class RummikubView{
 		Scene display = new Scene(screen,1000,750);
 		stage.setScene(display);
 		stage.show();
+
+
+//		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
+//			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
+//				
+//				displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
+//				
+//			}
+//			
+//		}
+
 		
 //		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
 //			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
@@ -242,15 +288,16 @@ public class RummikubView{
 //		
 	}
 	
-	private ImageView displayTile(String tile) {
-		
-		ImageView image = new ImageView(new Image("/Tiles/" + tile.toLowerCase() + ".jpg"));
-		image.setFitHeight(50);
-		image.setFitWidth(50);
-		image.setPreserveRatio(true);
-		
-		return image;
-	}
+//	private ImageView displayTile(String tile) {
+//		
+//		//ImageView image = new ImageView(new Image("/Tiles/" + tile.toLowerCase() + ".jpg"));
+//		ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/" + tile.toLowerCase() + ".jpg")));
+//		image.setFitHeight(50);
+//		image.setFitWidth(50);
+//		image.setPreserveRatio(true);
+//		
+//		return image;
+//	}
 
 	
 
