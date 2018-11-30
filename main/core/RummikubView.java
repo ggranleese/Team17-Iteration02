@@ -64,8 +64,6 @@ public class RummikubView{
 		numPlayer.setPromptText("Select Number of players:");
 		numPlayer.setLayoutX(150);
 		
-		System.out.println(numPlayer.getEditor().getText());
-		
 		Button button1 = new Button("Select");
 		
 		Button timer = new Button("Timer");
@@ -77,14 +75,14 @@ public class RummikubView{
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
 		
-		for (int x = 1; x < model.getPlayers().size(); x++) {
+		for (int x = 2; x < model.getPlayers().size(); x++) {
 			Label label;
 			ArrayList<Player> players = model.getPlayers();
 			Player player = players.get(x);
 			int position = x;
 			
 			if (!player.isBot()) {
-				label = new Label("Player " + (x+1));
+				label = new Label("Player " + (x));
 								
 		        ComboBox<String> playerType = new ComboBox<String>();
 		        playerType.getSelectionModel().selectFirst();
@@ -105,7 +103,7 @@ public class RummikubView{
 
 			}
 			if(player.isBot()) {
-				label = new Label("Player " + (x+1) + " (BOT)");
+				label = new Label("Player " + (x) + " (BOT)");
 				
 				ComboBox<String> stratChoice = new ComboBox<String>();
 		        stratChoice.getSelectionModel().selectFirst();

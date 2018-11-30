@@ -44,7 +44,20 @@ public class RummikubModel {
 		this.timer = b;
 		
 	}
-	
-	
+
+
+	public void findTurnOrder() {
+		
+		Pile tmpPile = new Pile();
+		for(int i=1; i<5; i++) {
+			for(int j=1; j<=13; j++) {
+				tmpPile.addTile(new Tile(i,j,false));
+			}
+		}
+		
+		for(Player p : players) {
+			p.drawInitialTile(tmpPile);
+		}
+	}
 	
 }

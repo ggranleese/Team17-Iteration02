@@ -15,7 +15,10 @@ public class PlayerOrderTest extends TestCase{
 		players.add(new Player());
 		model.setPlayers(players);
 		
-		model.initialDraw();
+		model.findTurnOrder();
+		for(Player p : model.getPlayers()) {
+			System.out.println(p.turnOrderCard.toString());
+		}
 		
 		assertTrue(model.getPlayers().size() == 4);
 	}
