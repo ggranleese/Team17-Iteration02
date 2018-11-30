@@ -3,10 +3,10 @@ package core;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-
+import javafx.scene.layout.AnchorPane;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
+import javafx.scene.layout.Background;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -23,6 +23,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundPosition;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -36,20 +39,26 @@ public class RummikubView{
 	}
 	
 	public void buildAndShowGui(final Stage stage) {
-		Button button1 = new Button("Play");
-		Button button2 = new Button("Options");
+		AnchorPane mainPane = new AnchorPane();
+		RummikubButton startButton = new RummikubButton("Play");
+		RummikubButton optionsButton = new RummikubButton("Options");
+		startButton.setLayoutX(400);
+		startButton.setLayoutY(400);
 		
-		button1.setOnAction(e-> handleStartButton(stage));
+		optionsButton.setLayoutX(400);
+		optionsButton.setLayoutY(500);
+		mainPane.setBackground(new Background(createBackground()));
+		
+		startButton.setOnAction(e-> handleStartButton(stage));
 		if(model.getPlayers() == null) {
-			button2.setOnAction(e-> promptNumPlayers(stage));
+			optionsButton.setOnAction(e-> promptNumPlayers(stage));
 		}
 		else {
-			button2.setOnAction(e -> handleOptionsButtonAction(stage));
+			optionsButton.setOnAction(e -> handleOptionsButtonAction(stage));
 		}
-		VBox box = new VBox(button1, button2);
-		Scene scene = new Scene(box, 1000, 1000);
+		mainPane.getChildren().addAll(startButton, optionsButton);
+		Scene scene = new Scene(mainPane, 1000, 1000);
 		
-		box.setSpacing(10);
 		
 		stage.setScene(scene);
 		stage.setTitle("Rummikub");
@@ -211,8 +220,8 @@ public class RummikubView{
 
 		GridPane screen = new GridPane();
 		screen.setStyle("-fx-background-color: black");
-		screen.setHgap(100);
-		screen.setVgap(100);
+		//screen.setHgap(100);
+		//screen.setVgap(100);
 		screen.setPadding(new Insets(100,100,100,100));
 		
 		GridPane board = new GridPane();
@@ -250,8 +259,12 @@ public class RummikubView{
 		image.setPreserveRatio(true);
 		
 		return image;
-	}
-
+	}	
 	
+	private BackgroundImage createBackground() {
+		Image backgroundImage = new Image("file:main/resources/what.png",957,768,false,true);
+		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null );
+		return background;
+	}
 
 }

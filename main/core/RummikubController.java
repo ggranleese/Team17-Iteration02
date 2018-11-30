@@ -71,7 +71,7 @@ public class RummikubController {
 
 	public void namePlayers() {
 		for (int i = 0; i < model.getPlayers().size(); i++) {
-			model.getPlayers().get(i).PlayerNum = i +1; 
+			model.getPlayers().get(i).playerNum = i +1; 
 		}
 		
 	}
