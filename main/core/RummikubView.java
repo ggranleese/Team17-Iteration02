@@ -29,12 +29,15 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.control.RadioButton;
+import javafx.scene.layout.BackgroundSize;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
 
 	private RummikubController controller;
 	private RummikubModel model;
+	private double WIDTH;
+	private double HEIGHT;
 	
 	public RummikubView() {
 		model = new RummikubModel();
@@ -50,8 +53,7 @@ public class RummikubView{
 		
 		optionsButton.setLayoutX(400);
 		optionsButton.setLayoutY(500);
-		mainPane.setBackground(new Background(createBackground()));
-	
+		 
 		startButton.setOnAction(e-> drawStartView(stage));
 
 		if(model.getPlayers() == null) {
@@ -61,9 +63,10 @@ public class RummikubView{
 			optionsButton.setOnAction(e -> handleOptionsButtonAction(stage));
 		}
 		mainPane.getChildren().addAll(startButton, optionsButton);
-		Scene scene = new Scene(mainPane, 1000, 1000);
+		Scene scene = new Scene(mainPane,1800,900);
 		
 		
+		mainPane.setBackground(new Background(createBackground(stage)));
 		stage.setScene(scene);
 		stage.setTitle("Rummikub");
 		stage.show();
@@ -321,22 +324,10 @@ public class RummikubView{
 		
 		return image;
 	}	
-
-//	private ImageView displayTile(String tile) {
-//		
-//		//ImageView image = new ImageView(new Image("/Tiles/" + tile.toLowerCase() + ".jpg"));
-//		ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/" + tile.toLowerCase() + ".jpg")));
-//		image.setFitHeight(50);
-//		image.setFitWidth(50);
-//		image.setPreserveRatio(true);
-//		
-//		return image;
-//	}
-
 	
-	private BackgroundImage createBackground() {
-		Image backgroundImage = new Image("file:main/resources/what.png",957,768,false,true);
-		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null );
+	private BackgroundImage createBackground(Stage stage) {
+		Image backgroundImage = new Image("file:main/resources/startPage.jpg",1800,900,true, true);
+		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null );
 		return background;
 	}
 
