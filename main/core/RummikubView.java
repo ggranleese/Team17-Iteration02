@@ -55,7 +55,7 @@ public class RummikubView{
 
 		startButton.setOnAction(e-> handleStartButton(stage));
 
-		button1.setOnAction(e-> drawStartView(stage));
+		startButton.setOnAction(e-> drawStartView(stage));
 
 		if(model.getPlayers() == null) {
 			optionsButton.setOnAction(e-> promptNumPlayers(stage));
@@ -241,7 +241,7 @@ public class RummikubView{
 		ArrayList<Player> players = model.getPlayers();
 		
 		for(Player p : players) {
-			ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/" + p.turnOrderCard.toString().toLowerCase + ".jpg")));
+			ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/" + p.turnOrderCard.toString().toLowerCase() + ".jpg")));
 			start.getChildren().add(image);
 		}
 		
