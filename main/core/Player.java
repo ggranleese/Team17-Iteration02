@@ -238,4 +238,8 @@ public class Player implements Observer{
 	public void setGameOver(boolean b) {
 		this.gameOver = b;
 	}
+
+	public boolean isBot() {
+		return false;
+	}
 }

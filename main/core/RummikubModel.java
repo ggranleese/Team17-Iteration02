@@ -15,9 +15,6 @@ public class RummikubModel {
 	
 	
 	//GETTERS and SETTERS
-	public ArrayList<Player> getPlayer(){
-		return this.getPlayers();
-	}
 	
 	public Table getTable() {
 		return this.table;
