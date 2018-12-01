@@ -48,8 +48,8 @@ import javafx.scene.layout.ColumnConstraints;
 public class RummikubView{
 
 	private RummikubController controller;
-	private RummikubModel model;
-	private Player currentPlayer;
+	public RummikubModel model;
+	public Player currentPlayer;
 	
 	public RummikubView() {
 		model = new RummikubModel();
@@ -324,11 +324,11 @@ public class RummikubView{
 			playerHand.getChildren().add(displayTile(t.toString()));
 		}
 		
-		stand.getChildren().add(playerHand);
 		stand.setPadding(new Insets(0,0,100,100));
 		playerHand.setSpacing(10);
 		playerHand.setPadding(new Insets(50,50,50,50));
 		
+		stand.getChildren().add(playerHand);
 		screen.setBottom(stand);
 		screen.setRight(endTurn);
 		screen.setTop(timer);
