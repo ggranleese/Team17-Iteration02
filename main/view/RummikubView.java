@@ -34,6 +34,7 @@ import javafx.scene.text.Font;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.BorderPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BackgroundImage;
@@ -41,6 +42,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.ColumnConstraints;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -305,10 +307,14 @@ public class RummikubView{
 
 	private void GameView(Stage stage) {
 
-		GridPane screen = new GridPane();
+		BorderPane screen = new BorderPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
-	
+		Pane stand = new Pane();
+		//these are the image height/width
+		stand.setMaxHeight(178);
+		stand.setMaxWidth(689);
+		stand.setStyle("-fx-background-color: transparent; -fx-background-image: url('/resources/playerStand.png');");
 //		for(Meld m : model.getMelds()) {
 //			
 //		}
@@ -318,15 +324,17 @@ public class RummikubView{
 			playerHand.getChildren().add(displayTile(t.toString()));
 		}
 		
+		stand.getChildren().add(playerHand);
+		stand.setPadding(new Insets(0,0,100,100));
 		playerHand.setSpacing(10);
-		playerHand.setPadding(new Insets(100));
+		playerHand.setPadding(new Insets(50,50,50,50));
 		
-		screen.getChildren().add(playerHand);
-		screen.getChildren().add(endTurn);
-		screen.getChildren().add(timer);
+		screen.setBottom(stand);
+		screen.setRight(endTurn);
+		screen.setTop(timer);
 		screen.setBackground(new Background(createBackground()));
 		
-		Scene display = new Scene(screen,1000,1000);
+		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
 		stage.show();
 
