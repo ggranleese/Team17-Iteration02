@@ -334,6 +334,11 @@ public class RummikubView{
 		screen.setTop(timer);
 		screen.setBackground(new Background(createBackground()));
 		
+		endTurn.setOnAction(e  -> {
+			nextPlayerTurn();
+			GameView(stage);
+		});
+		
 		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
 		stage.show();
@@ -363,5 +368,15 @@ public class RummikubView{
 		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null );
 		return background;
 	}
+	
+	private void nextPlayerTurn() {
+		int i = model.getPlayers().indexOf(currentPlayer);
+		try {
+			currentPlayer = model.getPlayers().get(i+1);
+		}catch (IndexOutOfBoundsException e) {
+			currentPlayer = model.getPlayers().get(0);
+		}
+	}
+
 
 }
