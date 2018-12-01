@@ -1,4 +1,4 @@
-package core;
+package model;
 
 public class Tile {
 	
@@ -18,6 +18,11 @@ public class Tile {
 	}
 	public String toString() {
 		String printVal = "";
+		
+		if(this.joker){
+			printVal = "00";
+		}
+		else {
 		int colour = this.colour;
 		switch(colour) {
 			case 1:
@@ -39,6 +44,7 @@ public class Tile {
 			default:
 				System.out.println("Invalid tile found.");
 				break;
+		}
 		}
 		return printVal;
 	}

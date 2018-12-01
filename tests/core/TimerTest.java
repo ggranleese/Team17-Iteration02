@@ -1,6 +1,7 @@
 package core;
 
 import junit.framework.TestCase;
+import model.GameTimer;
 
 public class TimerTest extends TestCase{
 
