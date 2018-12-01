@@ -2,6 +2,14 @@ package core;
 
 import java.util.ArrayList;
 
+import model.AI;
+import model.Player;
+import model.RummikubModel;
+import model.StrategyOne;
+import model.StrategyThree;
+import model.StrategyTwo;
+import model.Table;
+
 public class RummikubController {
 	
 	private final RummikubModel model;
@@ -18,7 +26,7 @@ public class RummikubController {
 	public void updatePlayers(int i) {
 		ArrayList<Player> players = new ArrayList<Player>();
 		players.add(new Player());
-		for(int x = 0; x < i; x++) {
+		for(int x = 1; x < i; x++) {
 			players.add(new Player());
 		}
 		model.setPlayers(players);
@@ -72,7 +80,7 @@ public class RummikubController {
 
 	public void namePlayers() {
 		for (int i = 0; i < model.getPlayers().size(); i++) {
-			model.getPlayers().get(i).playerNum = i +1; 
+			model.getPlayers().get(i).playerNum = i+1; 
 		}
 		
 	}
@@ -88,9 +96,15 @@ public class RummikubController {
 		
 	}
 
+	//finds turn order and also deals hands
 	public void findTurnOrder() {
 		model.findTurnOrder();
+		dealHands();
 		
+	}
+	
+	public void dealHands() {
+		model.dealPlayerHands();
 	}
 
 	
