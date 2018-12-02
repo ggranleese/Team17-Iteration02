@@ -56,8 +56,8 @@ import jfxtras.labs.util.event.MouseControlUtil;;
 public class RummikubView{
 
 	private RummikubController controller;
-	private RummikubModel model;
-	private Player currentPlayer;
+	public RummikubModel model;
+	public Player currentPlayer;
 	
 	public RummikubView() {
 		model = new RummikubModel();
@@ -351,18 +351,24 @@ public class RummikubView{
 			//WRITE CODE FOR NEXT TURN
 		}
 		
-		stand.getChildren().add(playerHand);
 		stand.setPadding(new Insets(0,0,100,100));
 		playerHand.setSpacing(10);
 		playerHand.setPadding(new Insets(50,50,50,50));
 
 		MouseControlUtil.makeDraggable(stand);
 		
+		stand.getChildren().add(playerHand);
 		screen.setLeft(tileInput);
+
 		screen.setBottom(stand);
 		screen.setRight(endTurn);
 		screen.setTop(timer);
 		screen.setBackground(new Background(createBackground()));
+		
+		endTurn.setOnAction(e  -> {
+			nextPlayerTurn();
+			GameView(stage);
+		});
 		
 		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
@@ -420,5 +426,15 @@ public class RummikubView{
 		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null );
 		return background;
 	}
+	
+	public void nextPlayerTurn() {
+		int i = model.getPlayers().indexOf(currentPlayer);
+		try {
+			currentPlayer = model.getPlayers().get(i+1);
+		}catch (IndexOutOfBoundsException e) {
+			currentPlayer = model.getPlayers().get(0);
+		}
+	}
+
 
 }
