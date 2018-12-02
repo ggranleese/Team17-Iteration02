@@ -314,7 +314,7 @@ public class RummikubView{
 
 	private void GameView(Stage stage) {
 
-		GridPane screen = new GridPane();
+		BorderPane screen = new BorderPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
 
@@ -326,18 +326,17 @@ public class RummikubView{
 		stand.setMaxWidth(700);
 		
 		
-		board.setMaxHeight(700);
-		board.setMaxWidth(700);
+		//board.setMinHeight(500);
+		//board.setMinWidth(500);
 		board.setAlignment(Pos.CENTER);
 		
 		for(int i = 0; i<14; i ++) {
-			for(int j = 0 ; j < 28; j++) {
+			for(int j = 0 ; j < 11; j++) {
 				HBox hbox = new HBox();
+				hbox.setMinSize(33, 50);
 				board.add(hbox,i,j);
 			}
 		}
-		
-		
 
 		stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
 //		for(Meld m : model.getMelds()) {
@@ -392,26 +391,37 @@ public class RummikubView{
 		        }
 		    });
 			
-			screen.setOnDragOver(new EventHandler<DragEvent>() {
+//			 Stand.setOnDragDropped(new EventHandler<DragEvent>() {
+//			        public void handle(DragEvent event) {
+//			        	
+//			            Dragboard db = event.getDragboard();
+//			            ImageView workpls = new ImageView(db.getImage());
+//			            workpls.setVisible(true);
+//			            event.consume();
+//			        }
+//			    });
+//			
+			board.setOnDragOver(new EventHandler<DragEvent>() {
 	 			public void handle(DragEvent event) {
-	            if(event.getGestureSource() != screen && event.getDragboard().hasImage()){
+	            if(event.getGestureSource() != board && event.getDragboard().hasImage()){
 	                event.acceptTransferModes(TransferMode.MOVE);
 	            }
 	            event.consume();
 	        }
 	 		});
 	 		
-			screen.setOnDragEntered(new EventHandler<DragEvent>() {
+			board.setOnDragEntered(new EventHandler<DragEvent>() {
 		        public void handle(DragEvent event) {
-		            if(event.getGestureSource() != screen && event.getDragboard().hasImage()){
+		            if(event.getGestureSource() != board && event.getDragboard().hasImage()){
 		                System.out.println("Drag entered");
 		            }
 		            event.consume();
 		        }
 		    });
-			 screen.setOnDragExited(new EventHandler<DragEvent>() {
+			 board.setOnDragExited(new EventHandler<DragEvent>() {
 			        public void handle(DragEvent event) {
 			            //mouse moved away, remove graphical cues
+			        	System.out.println("Drag exited");
 			        	tileImage.setVisible(true);
 			            screen.setOpacity(1);
 
@@ -419,20 +429,21 @@ public class RummikubView{
 			        }
 			    });
 			 
-			 screen.setOnDragDropped(new EventHandler<DragEvent>() {
+			 board.setOnDragDropped(new EventHandler<DragEvent>() {
 			        public void handle(DragEvent event) {
 			        	
 			            Node source = (Node)event.getSource();
-			            Integer colIndex = GridPane.getColumnIndex(screen);
-			            Integer rowIndex = GridPane.getRowIndex(screen);
+			            System.out.println(source);
+			            Integer colIndex = GridPane.getColumnIndex(source);
+			            Integer rowIndex = GridPane.getRowIndex(source);
 			            System.out.println("Mouse entered cell: " + colIndex + "," + rowIndex);
-			            
+		            
 			            Dragboard db = event.getDragboard();
 			            boolean success = false;
 			            int x, y;
 			            if(db.hasImage()){
 			        		//need to find out which cell they dropped it onto and add here
-			        		screen.getChildren().add(new ImageView(db.getImage()));
+			            	board.add(new ImageView(db.getImage()),0,0);
 			                success = true;
 			            }
 			            //let the source know whether the image was successfully transferred and used
@@ -458,22 +469,13 @@ public class RummikubView{
 		
 		screen.setPadding(new Insets(10,10,10,10));
 		
-//		screen.getChildren().add(tileInput);
-//		screen.getChildren().add(Stand);
-//		screen.getChildren().add(endTurn);
-//		screen.getChildren().add(timer);
-
-		screen.getChildren().add(tileInput);
-		screen.getChildren().add(Stand);
-		screen.getChildren().add(endTurn);
-		screen.getChildren().add(timer);
-		screen.getChildren().add(board);
-
-
-		screen.add(tileInput,1,1);
-		screen.add(Stand,1,5);
-		screen.add(endTurn,3,3);
-		screen.add(timer,5,1);
+		screen.setTop(timer);
+		//screen.add(tileInput,1,1);
+		
+		screen.setCenter(board);
+		screen.setRight(endTurn);
+		
+		screen.setBottom(Stand);
 		GridPane.setColumnSpan(Stand, GridPane.REMAINING);
 		GridPane.setRowSpan(Stand, GridPane.REMAINING);
 		
