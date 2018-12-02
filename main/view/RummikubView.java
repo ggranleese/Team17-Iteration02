@@ -5,6 +5,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -45,6 +47,8 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.ColumnConstraints;
+import jfxtras.labs.util.event.MouseControlUtil;
+
 
 import jfxtras.labs.util.event.MouseControlUtil;;
 
@@ -71,7 +75,10 @@ public class RummikubView{
 		optionsButton.setLayoutY(500);
 		 
 		startButton.setOnAction(e-> drawStartView(stage));
-
+		
+		
+		
+		
 		if(model.getPlayers() == null) {
 			optionsButton.setOnAction(e-> promptNumPlayers(stage));
 		}
@@ -84,6 +91,8 @@ public class RummikubView{
 		
 		mainPane.setBackground(new Background(createStartBackground(stage)));
 		stage.setScene(scene);
+		stage.setMaximized(true);
+		stage.setResizable(true);
 		stage.setTitle("Rummikub");
 		stage.show();
 	}
@@ -283,7 +292,7 @@ public class RummikubView{
 	
 		sortedPlayers.addAll(players);
 		
-		label = new Label("Player: " + sortedPlayers.get(0).playerNum + " goes first!");
+		label = new Label("Player " + sortedPlayers.get(0).playerNum + " goes first!");
 		
 		label.setLayoutX(400);
 		label.setLayoutY(250);
@@ -304,6 +313,8 @@ public class RummikubView{
 		start.setBackground(new Background(createBackground()));
 		Scene drawTurnBoard = new Scene(start,1000,1000);
 		stage.setScene(drawTurnBoard);
+		stage.setResizable(true);
+		stage.setMaximized(true);
 		stage.show();
 			
 	}
@@ -334,6 +345,12 @@ public class RummikubView{
 			System.out.println(t.toString());
 		}
 		
+		if(currentPlayer.hand.size() == 0) {
+			endTurn.setOnAction(e-> WinView(stage, currentPlayer));
+		}else {
+			//WRITE CODE FOR NEXT TURN
+		}
+		
 		stand.getChildren().add(playerHand);
 		stand.setPadding(new Insets(0,0,100,100));
 		playerHand.setSpacing(10);
@@ -349,9 +366,36 @@ public class RummikubView{
 		
 		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
+		stage.setMaximized(true);
 		stage.show();
 
 //		
+	}
+	
+	private void WinView(Stage stage, Player winner) {
+		
+		BorderPane screen = new BorderPane();
+		screen.setBackground(new Background(createBackground()));
+		
+		Scene display = new Scene(screen,1000,900);
+		
+		Label label = new Label("Player " + winner.playerNum + " wins!");
+		//label.setLayoutX(400);
+		//label.setLayoutY(250);
+		screen.setCenter(label);
+		try {
+			label.setFont(Font.loadFont(new FileInputStream("main/resources/kenvector_future.ttf"),23));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		//screen.getChildren().add(label);
+		
+		stage.setScene(display);
+		stage.setMaximized(true);
+		stage.show();
+		
 	}
 
 	private BackgroundImage createBackground() {
