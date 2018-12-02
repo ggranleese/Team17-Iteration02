@@ -1,48 +1,41 @@
 package view;
 
 
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-
 import java.util.Collections;
 import java.util.Comparator;
 
 import core.RummikubController;
-import javafx.event.ActionEvent;
-import javafx.scene.Node;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.SelectionModel;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import jfxtras.labs.util.event.MouseControlUtil;
 import model.AI;
 import model.Player;
 import model.RummikubModel;
 import model.Tile;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.layout.HBox;
+import javafx.scene.Group;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.BorderPane;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.control.RadioButton;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.ColumnConstraints;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -67,7 +60,7 @@ public class RummikubView{
 		optionsButton.setLayoutY(500);
 		 
 		startButton.setOnAction(e-> drawStartView(stage));
-
+		
 		if(model.getPlayers() == null) {
 			optionsButton.setOnAction(e-> promptNumPlayers(stage));
 		}
@@ -80,6 +73,8 @@ public class RummikubView{
 		
 		mainPane.setBackground(new Background(createStartBackground(stage)));
 		stage.setScene(scene);
+		stage.setMaximized(true);
+		stage.setResizable(true);
 		stage.setTitle("Rummikub");
 		stage.show();
 	}
@@ -264,6 +259,7 @@ public class RummikubView{
 			ImageView image = new ImageView(new Image(filename));
 			image.setFitHeight(150);
 			image.setFitWidth(100);
+			image.setPreserveRatio(true);
 			cardBox.getChildren().add(image);
 		}
 		
@@ -278,7 +274,7 @@ public class RummikubView{
 	
 		sortedPlayers.addAll(players);
 		
-		label = new Label("Player: " + sortedPlayers.get(0).playerNum + " goes first!");
+		label = new Label("Player " + sortedPlayers.get(0).playerNum + " goes first!");
 		
 		label.setLayoutX(400);
 		label.setLayoutY(250);
@@ -299,6 +295,8 @@ public class RummikubView{
 		start.setBackground(new Background(createBackground()));
 		Scene drawTurnBoard = new Scene(start,1000,1000);
 		stage.setScene(drawTurnBoard);
+		stage.setResizable(true);
+		stage.setMaximized(true);
 		stage.show();
 			
 	}
@@ -313,41 +311,84 @@ public class RummikubView{
 		Pane stand = new Pane();
 		//these are the image height/width
 		stand.setMaxHeight(178);
-		stand.setMaxWidth(689);
-		stand.setStyle("-fx-background-color: transparent; -fx-background-image: url('/resources/playerStand.png');");
+		stand.setMaxWidth(700);
+
+		stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
 //		for(Meld m : model.getMelds()) {
 //			
 //		}
 		
-		HBox playerHand = new HBox();
+		TextField tileInput = new TextField();
+		double i = 65;
+		Pane g = new Pane();
 		for(Tile t : currentPlayer.getHand()) {
-			playerHand.getChildren().add(displayTile(t.toString()));
+			ImageView tileImage = displayTile(t.toString());
+			HBox tile = new HBox();
+			tile.getChildren().add(tileImage);
+			tile.setLayoutX(i);
+			tile.setLayoutY(tile.getLayoutY()+60);
+			i += 40;
+			g.getChildren().add(tile);
+			MouseControlUtil.makeDraggable(tile);
 		}
 		
 		stand.setPadding(new Insets(0,0,100,100));
-		playerHand.setSpacing(10);
-		playerHand.setPadding(new Insets(50,50,50,50));
-		
-		stand.getChildren().add(playerHand);
+		g.setPadding(new Insets(10,10,10,10));
+		//stand.getChildren().add(g);
+		stand.getChildren().add(g);
+		screen.setLeft(tileInput);
+
 		screen.setBottom(stand);
 		screen.setRight(endTurn);
 		screen.setTop(timer);
 		screen.setBackground(new Background(createBackground()));
 		
 		endTurn.setOnAction(e  -> {
-			nextPlayerTurn();
-			GameView(stage);
+			if(currentPlayer.hand.size() == 0) {
+				WinView(stage, currentPlayer);
+			}else {
+				nextPlayerTurn();
+				GameView(stage);
+				e.consume();
+			}
 		});
 		
 		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
+		stage.setMaximized(true);
 		stage.show();
 
 //		
 	}
+	
+	private void WinView(Stage stage, Player winner) {
+		
+		BorderPane screen = new BorderPane();
+		screen.setBackground(new Background(createBackground()));
+		
+		Scene display = new Scene(screen,1000,900);
+		
+		Label label = new Label("Player " + winner.playerNum + " wins!");
+		//label.setLayoutX(400);
+		//label.setLayoutY(250);
+		screen.setCenter(label);
+		try {
+			label.setFont(Font.loadFont(new FileInputStream("main/resources/kenvector_future.ttf"),23));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		//screen.getChildren().add(label);
+		
+		stage.setScene(display);
+		stage.setMaximized(true);
+		stage.show();
+		
+	}
 
 	private BackgroundImage createBackground() {
-		Image backgroundImage = new Image("file:main/resources/tableTexture.jpg",1800,900,true, true);
+		Image backgroundImage = new Image("file:main/resources/tableTexture.jpg",1800,1500,true, true);
 		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null );
 		return background;
 	}
@@ -356,8 +397,8 @@ public class RummikubView{
 		//jokers are a thing
 		String filename =  "file:main/Tiles/"+ tile +".jpg";
 		ImageView image = new ImageView(new Image(filename));
-		image.setFitHeight(50);
-		image.setFitWidth(50);
+		image.setFitHeight(51);
+		image.setFitWidth(51);
 		image.setPreserveRatio(true);
 		
 		return image;
