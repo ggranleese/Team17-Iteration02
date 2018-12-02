@@ -42,6 +42,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.input.DragEvent;
+import javafx.scene.Node;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -311,10 +312,10 @@ public class RummikubView{
 
 	private void GameView(Stage stage) {
 
-		BorderPane screen = new BorderPane();
+		FlowPane screen = new FlowPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
-		Pane stand = new Pane();
+		GridPane stand = new GridPane();
 		//these are the image height/width
 		stand.setMaxHeight(178);
 		stand.setMaxWidth(700);
@@ -327,15 +328,116 @@ public class RummikubView{
 		TextField tileInput = new TextField();
 		double i = 65;
 		Pane g = new Pane();
-		for(Tile t : currentPlayer.getHand()) {
+//		for(Tile t : currentPlayer.getHand()) {
+//			ImageView tileImage = displayTile(t.toString());
+//			HBox tile = new HBox();
+//			tile.getChildren().add(tileImage);
+//			tile.setLayoutX(i);
+//			tile.setLayoutY(tile.getLayoutY()+60);
+//			i += 40;
+//			g.getChildren().add(tile);
+//			MouseControlUtil.makeDraggable(tile);
+//		}
+		
+		GridPane Stand = new GridPane();
+		//these are the image height/width
+		Stand.setMaxHeight(178);
+		Stand.setMaxWidth(700);
+
+		Stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
+		ArrayList<ImageView> tiles = new ArrayList<ImageView>();
+		int num = 0;
+		for(Tile t : currentPlayer.getHand()){
 			ImageView tileImage = displayTile(t.toString());
-			HBox tile = new HBox();
-			tile.getChildren().add(tileImage);
-			tile.setLayoutX(i);
-			tile.setLayoutY(tile.getLayoutY()+60);
-			i += 40;
-			g.getChildren().add(tile);
-			MouseControlUtil.makeDraggable(tile);
+            tiles.add(tileImage);
+            tiles.get(num).setPreserveRatio(true);
+            tiles.get(num).setFitHeight(49);
+            tiles.get(num).setFitWidth(49);
+            Stand.add(tiles.get(num), num, 0);
+            num++;
+			}
+
+		for (ImageView tileImage: tiles) {
+			tileImage.setOnDragDetected(new EventHandler<MouseEvent>() {
+		        public void handle(MouseEvent event) {
+		            Dragboard db = tileImage.startDragAndDrop(TransferMode.ANY);
+
+		            ClipboardContent cbContent = new ClipboardContent();
+		            cbContent.putImage(tileImage.getImage());
+		            Node source = (Node)event.getSource();
+		            Integer colIndex = GridPane.getColumnIndex(source);
+		            Integer rowIndex = GridPane.getRowIndex(source);
+		            System.out.println("Mouse entered cell: " + colIndex + "," + rowIndex);
+		            db.setDragView(tileImage.getImage());
+		            db.setContent(cbContent);
+		            tileImage.setVisible(false);
+		            event.consume();
+		        }
+		    });
+			screen.setOnDragOver(new EventHandler<DragEvent>() {
+	 			public void handle(DragEvent event) {
+	            if(event.getGestureSource() != screen && event.getDragboard().hasImage()){
+	                event.acceptTransferModes(TransferMode.MOVE);
+	            }
+	            Node source = (Node)event.getSource();
+	            Integer colIndex = GridPane.getColumnIndex(screen);
+	            Integer rowIndex = GridPane.getRowIndex(screen);
+	            System.out.println("Mouse entered cell: " + colIndex + "," + rowIndex);
+	            event.consume();
+	        }
+	 		});
+	 		
+			screen.setOnDragEntered(new EventHandler<DragEvent>() {
+		        public void handle(DragEvent event) {
+		            if(event.getGestureSource() != screen && event.getDragboard().hasImage()){
+		                System.out.println("Drag entered");
+		            }
+		            event.consume();
+		        }
+		    });
+			 screen.setOnDragExited(new EventHandler<DragEvent>() {
+			        public void handle(DragEvent event) {
+			            //mouse moved away, remove graphical cues
+			        	tileImage.setVisible(true);
+			            screen.setOpacity(1);
+
+			            event.consume();
+			        }
+			    });
+			 
+			 screen.setOnDragDropped(new EventHandler<DragEvent>() {
+			        public void handle(DragEvent event) {
+
+			            Dragboard db = event.getDragboard();
+			            boolean success = false;
+			            int x, y;
+			            if(db.hasImage()){
+			            	String filename =  "file:main/Tiles/testy.jpg";
+			        		ImageView image = new ImageView(new Image(filename));
+			        	
+			        		//need to find out which cell they dropped it onto and add here
+			        		screen.getChildren().add(image);
+			                success = true;
+			            }
+			            //let the source know whether the image was successfully transferred and used
+			            event.setDropCompleted(success);
+
+			            event.consume();
+			        }
+			    });
+			 
+			 tileImage.setOnDragDone(new EventHandler<DragEvent>() {
+			        public void handle(DragEvent event) {
+			            //the drag ended
+			            //if the data was successfully moved, clear it
+			            if(event.getTransferMode() == TransferMode.MOVE){
+			                tileImage.setVisible(false);
+			            }
+			            event.consume();
+			        }
+			    });
+        
+ 		
 		}
 		
 		stand.setPadding(new Insets(0,0,100,100));
@@ -343,11 +445,12 @@ public class RummikubView{
 		g.setPadding(new Insets(10,10,10,10));
 		stand.getChildren().add(g);
 		
-		screen.setLeft(tileInput);
-
-		screen.setBottom(stand);
-		screen.setRight(endTurn);
-		screen.setTop(timer);
+		screen.setPadding(new Insets(10,10,10,10));
+		screen.getChildren().add(tileInput);
+		screen.getChildren().add(Stand);
+		screen.getChildren().add(endTurn);
+		screen.getChildren().add(timer);
+		
 		screen.setBackground(new Background(createBackground()));
 		
 		endTurn.setOnAction(e  -> {
