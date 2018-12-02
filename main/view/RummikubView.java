@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import javafx.geometry.Pos;
 import core.RummikubController;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -316,6 +317,32 @@ public class RummikubView{
 		GridPane screen = new GridPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
+
+		GridPane stand = new GridPane();
+		GridPane board = new GridPane();
+		
+		//these are the image height/width
+		stand.setMaxHeight(178);
+		stand.setMaxWidth(700);
+		
+		
+		board.setMaxHeight(700);
+		board.setMaxWidth(700);
+		board.setAlignment(Pos.CENTER);
+		
+		for(int i = 0; i<14; i ++) {
+			for(int j = 0 ; j < 28; j++) {
+				HBox hbox = new HBox();
+				board.add(hbox,i,j);
+			}
+		}
+		
+		
+
+		stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
+//		for(Meld m : model.getMelds()) {
+//			
+//		}
 		
 		TextField tileInput = new TextField();
 		
@@ -435,6 +462,13 @@ public class RummikubView{
 //		screen.getChildren().add(Stand);
 //		screen.getChildren().add(endTurn);
 //		screen.getChildren().add(timer);
+
+		screen.getChildren().add(tileInput);
+		screen.getChildren().add(Stand);
+		screen.getChildren().add(endTurn);
+		screen.getChildren().add(timer);
+		screen.getChildren().add(board);
+
 
 		screen.add(tileInput,1,1);
 		screen.add(Stand,1,5);
