@@ -36,6 +36,12 @@ import model.RummikubModel;
 import model.Tile;
 import javafx.scene.Group;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.input.DragEvent;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -335,7 +341,6 @@ public class RummikubView{
 		stand.setPadding(new Insets(0,0,100,100));
 
 		g.setPadding(new Insets(10,10,10,10));
-		//stand.getChildren().add(g);
 		stand.getChildren().add(g);
 		
 		screen.setLeft(tileInput);
