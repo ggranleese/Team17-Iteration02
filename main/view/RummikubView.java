@@ -369,7 +369,7 @@ public class RummikubView{
 		return background;
 	}
 	
-	private void nextPlayerTurn() {
+	public void nextPlayerTurn() {
 		int i = model.getPlayers().indexOf(currentPlayer);
 		try {
 			currentPlayer = model.getPlayers().get(i+1);

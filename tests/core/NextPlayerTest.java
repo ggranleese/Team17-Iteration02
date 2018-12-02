@@ -15,7 +15,7 @@ public class NextPlayerTest extends TestCase{
 		view.currentPlayer = view.model.getPlayers().get(0);
 		ArrayList<Player> modelplayers = view.model.getPlayers();
 		modelplayers = players;
-		nextPlayerTurn();
+		view.nextPlayerTurn();
 		
 		assertTrue(view.currentPlayer == modelplayers.get(1));
 		
