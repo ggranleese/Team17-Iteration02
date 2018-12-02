@@ -4,6 +4,7 @@ import javafx.scene.SubScene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
@@ -28,10 +29,11 @@ public class RummikubTimer extends SubScene{
 	private Label lb;
 	private final String FONT_PATH= "main/resources/kenvector_future.ttf";
 	private final static String BACKGROUND_IMAGE = "main/resources/blue_button00.png";
+	@SuppressWarnings("restriction")
 	public RummikubTimer() {
-		super(new AnchorPane(), 50, 50);
-		prefWidth(50);
-		prefHeight(50);
+		super(new AnchorPane(), 100, 100);
+		prefWidth(100);
+		prefHeight(100);
 		lb = new Label();
 		try {
 			lb.setFont(Font.loadFont(new FileInputStream(FONT_PATH),23));
@@ -43,12 +45,25 @@ public class RummikubTimer extends SubScene{
 		HBox layout= new HBox(5);
 	    layout.getChildren().add(lb);
 	    AnchorPane root2 = (AnchorPane) this.getRoot();
+	    
+	    layout.setLayoutX(30);
+	    layout.setLayoutY(38);
+	    
+	    root2.setBackground(new Background(createBackground()));
 	    root2.getChildren().add(layout);
+	}
+	private BackgroundImage createBackground() {
+		@SuppressWarnings("restriction")
+		Image backgroundImage = new Image("file:main/resources/timer.png",100,100,true, true);
+		@SuppressWarnings("restriction")
+		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null );
+		return background;
 	}
 	private void doTime() {
 		Timeline time= new Timeline();
 		  
-		  KeyFrame frame= new KeyFrame(Duration.seconds(1.0), new EventHandler<ActionEvent>(){
+		  @SuppressWarnings("restriction")
+		KeyFrame frame= new KeyFrame(Duration.seconds(1.0), new EventHandler<ActionEvent>(){
 
 		   public void handle(ActionEvent event) {
 		    seconds--;
