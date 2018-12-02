@@ -68,6 +68,8 @@ public class RummikubView{
 		
 		
 		stage.setScene(scene);
+		stage.setMaximized(true);
+		stage.setResizable(true);
 		stage.setTitle("Rummikub");
 		stage.show();
 	}
@@ -288,6 +290,8 @@ public class RummikubView{
 		
 		Scene drawTurnBoard = new Scene(start,1000,1000);
 		stage.setScene(drawTurnBoard);
+		stage.setResizable(true);
+		stage.setMaximized(true);
 		stage.show();
 			
 	}
@@ -316,6 +320,7 @@ public class RummikubView{
 		
 		Scene display = new Scene(screen,1000,1000);
 		stage.setScene(display);
+		stage.setMaximized(true);
 		stage.show();
 
 
