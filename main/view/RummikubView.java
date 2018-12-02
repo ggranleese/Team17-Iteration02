@@ -29,7 +29,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import jfxtras.labs.util.event.MouseControlUtil;
 import model.AI;
 import model.Player;
 import model.RummikubModel;
@@ -317,6 +316,37 @@ public class RummikubView{
 		RummikubButton endTurn = new RummikubButton("End Turn");
 		
 		TextField tileInput = new TextField();
+
+		
+		HBox playerHand = new HBox();
+		for(Tile t : currentPlayer.getHand()) {
+			ImageView tile = displayTile(t.toString());
+			playerHand.getChildren().add(tile);
+		}
+	
+		
+//		MouseControlUtil.makeDraggable(playerHand);
+//		
+		
+
+		if(currentPlayer.hand.size() == 0) {
+			endTurn.setOnAction(e-> WinView(stage, currentPlayer));
+		}else {
+			//WRITE CODE FOR NEXT TURN
+
+		double i = 65;
+		Pane g = new Pane();
+//		for(Tile t : currentPlayer.getHand()) {
+//			ImageView tileImage = displayTile(t.toString());
+//			HBox tile = new HBox();
+//			tile.getChildren().add(tileImage);
+//			tile.setLayoutX(i);
+//			tile.setLayoutY(tile.getLayoutY()+60);
+//			i += 40;
+//			g.getChildren().add(tile);
+//			MouseControlUtil.makeDraggable(tile);
+//		}
+
 		
 		GridPane Stand = new GridPane();
 		//these are the image height/width
@@ -417,14 +447,19 @@ public class RummikubView{
 			        }
 			    });
         
- 		
+
 		}
+
+		//MouseControlUtil.makeDraggable(stand);
+
+		g.setPadding(new Insets(10,10,10,10));
 		
 		screen.setPadding(new Insets(10,10,10,10));
 		screen.getChildren().add(tileInput);
 		screen.getChildren().add(Stand);
 		screen.getChildren().add(endTurn);
 		screen.getChildren().add(timer);
+
 		
 		screen.setBackground(new Background(createBackground()));
 		
@@ -442,7 +477,8 @@ public class RummikubView{
 		stage.setScene(display);
 		stage.setMaximized(true);
 		stage.show();
-
+		
+		}
 //		
 	}
 	

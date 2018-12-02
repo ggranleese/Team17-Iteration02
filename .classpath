@@ -14,6 +14,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="lib" path="jfxtra/jfxtras-labs-samples-8.0-r6-SNAPSHOT-all.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
