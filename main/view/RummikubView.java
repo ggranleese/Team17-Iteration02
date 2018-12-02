@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import core.RummikubController;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -47,6 +49,8 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.ColumnConstraints;
 import jfxtras.labs.util.event.MouseControlUtil;
 
+
+import jfxtras.labs.util.event.MouseControlUtil;;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -325,15 +329,20 @@ public class RummikubView{
 		Pane stand = new Pane();
 		//these are the image height/width
 		stand.setMaxHeight(178);
-		stand.setMaxWidth(689);
-		stand.setStyle("-fx-background-color: transparent; -fx-background-image: url('/resources/playerStand.png');");
+		stand.setMaxWidth(700);
+
+		stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
 //		for(Meld m : model.getMelds()) {
 //			
 //		}
 		
+		TextField tileInput = new TextField();
+
+		
 		HBox playerHand = new HBox();
 		for(Tile t : currentPlayer.getHand()) {
 			playerHand.getChildren().add(displayTile(t.toString()));
+			System.out.println(t.toString());
 		}
 		
 		if(currentPlayer.hand.size() == 0) {
@@ -346,7 +355,10 @@ public class RummikubView{
 		stand.setPadding(new Insets(0,0,100,100));
 		playerHand.setSpacing(10);
 		playerHand.setPadding(new Insets(50,50,50,50));
+
+		MouseControlUtil.makeDraggable(stand);
 		
+		screen.setLeft(tileInput);
 		screen.setBottom(stand);
 		screen.setRight(endTurn);
 		screen.setTop(timer);
@@ -387,7 +399,7 @@ public class RummikubView{
 	}
 
 	private BackgroundImage createBackground() {
-		Image backgroundImage = new Image("file:main/resources/tableTexture.jpg",1800,900,true, true);
+		Image backgroundImage = new Image("file:main/resources/tableTexture.jpg",1800,1500,true, true);
 		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null );
 		return background;
 	}
@@ -396,8 +408,8 @@ public class RummikubView{
 		//jokers are a thing
 		String filename =  "file:main/Tiles/"+ tile +".jpg";
 		ImageView image = new ImageView(new Image(filename));
-		image.setFitHeight(50);
-		image.setFitWidth(50);
+		image.setFitHeight(51);
+		image.setFitWidth(51);
 		image.setPreserveRatio(true);
 		
 		return image;
