@@ -3,6 +3,8 @@ package core;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+import model.Player;
+import model.RummikubModel;
 
 public class PlayerOrderTest extends TestCase{
 
