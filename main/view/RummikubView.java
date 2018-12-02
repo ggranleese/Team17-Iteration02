@@ -297,14 +297,14 @@ public class RummikubView{
 			currentPlayer = sortedPlayers.get(0);
 			GameView(stage);
 		});
-		
+		//test
 		start.setBackground(new Background(createBackground()));
 		Scene drawTurnBoard = new Scene(start,1000,1000);
 		stage.setScene(drawTurnBoard);
 		stage.setResizable(true);
 		stage.setMaximized(true);
 		stage.show();
-			
+			 
 	}
 	
 	
