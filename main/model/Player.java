@@ -1,4 +1,4 @@
-package core;
+package model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,12 +24,12 @@ public class Player implements Observer{
 		this.status = false;
 		this.tableSnapshot = new Table();
 		}
-	
+	 
 	//METHODS
-	public void drawHand() {
+	public void drawHand(Pile p) {
 		
 		for(int i = 0; i<14; i++) {
-			drawTile(this.tableSnapshot.getPile());
+			drawTile(p);
 		}
 		sortHand();
 		

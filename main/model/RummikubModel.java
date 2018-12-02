@@ -1,4 +1,4 @@
-package core;
+package model;
 
 import java.util.ArrayList;
 
@@ -8,11 +8,15 @@ public class RummikubModel {
 	private ArrayList<Player> players;
 	private Table table;
 	private Pile pile;
+	private ArrayList<Meld> melds;
 	private boolean timer;
 	
 	public RummikubModel() {
 		table = new Table();
-		pile = new Pile(); 
+		pile = new Pile();
+		pile.populate();
+		pile.shuffle();
+		melds = new ArrayList<Meld>();
 		timer = false;
 	}
 	
@@ -58,6 +62,19 @@ public class RummikubModel {
 		for(Player p : players) {
 			p.drawInitialTile(tmpPile);
 		}
+	}
+
+
+	public ArrayList<Meld> getMelds() {
+		return this.melds;
+	}
+
+
+	public void dealPlayerHands() {
+		for(Player p : players) {
+			p.drawHand(pile);
+		}
+		
 	}
 	
 }

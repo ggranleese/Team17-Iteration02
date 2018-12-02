@@ -1,14 +1,20 @@
-package core;
+package view;
 
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+
 import java.util.Collections;
 import java.util.Comparator;
+
+import core.RummikubController;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -19,22 +25,31 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import model.AI;
+import model.Player;
+import model.RummikubModel;
+import model.Tile;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.BorderPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.control.RadioButton;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.ColumnConstraints;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
 
 	private RummikubController controller;
 	private RummikubModel model;
+	private Player currentPlayer;
 	
 	public RummikubView() {
 		model = new RummikubModel();
@@ -50,8 +65,7 @@ public class RummikubView{
 		
 		optionsButton.setLayoutX(400);
 		optionsButton.setLayoutY(500);
-		mainPane.setBackground(new Background(createBackground()));
-	
+		 
 		startButton.setOnAction(e-> drawStartView(stage));
 
 		if(model.getPlayers() == null) {
@@ -61,9 +75,10 @@ public class RummikubView{
 			optionsButton.setOnAction(e -> handleOptionsButtonAction(stage));
 		}
 		mainPane.getChildren().addAll(startButton, optionsButton);
-		Scene scene = new Scene(mainPane, 1000, 1000);
+		Scene scene = new Scene(mainPane,1800,900);
 		
 		
+		mainPane.setBackground(new Background(createStartBackground(stage)));
 		stage.setScene(scene);
 		stage.setTitle("Rummikub");
 		stage.show();
@@ -222,43 +237,67 @@ public class RummikubView{
 	private void drawStartView(Stage stage) {
 		
 		Pane start = new Pane();
-		HBox box = new HBox(10);
-		Button nextButton = new Button("Next");
+		//HBox box = new HBox(10);
+		RummikubButton nextButton = new RummikubButton("Next");
 		Label label;
+		
+		nextButton.setLayoutX(400);
+		nextButton.setLayoutY(500);
 		
 		if(model.getPlayers() == null) {
 			controller.setDefaultGame();
 		}
 		
-		start.setStyle("-fx-background-color: green");
-		box.getChildren().add(nextButton);
-		start.getChildren().add(box);
-		nextButton.setOnAction(e-> GameView(stage));
+		start.getChildren().add(nextButton);
 		
 		ArrayList<Player> players = model.getPlayers();
+		ArrayList<Player> sortedPlayers = new ArrayList<>();
+		
 		
 		controller.findTurnOrder();
+		controller.namePlayers();
 		
 		HBox cardBox = new HBox();
 		cardBox.setSpacing(50);
 		for(Player p : players) {
 			String filename =  "file:main/Tiles/"+ p.turnOrderCard.toString().toLowerCase() +".jpg";
 			ImageView image = new ImageView(new Image(filename));
-			image.setFitHeight(100);
+			image.setFitHeight(150);
 			image.setFitWidth(100);
 			image.setPreserveRatio(true);
 			cardBox.getChildren().add(image);
 		}
 		
-		Player firstPlayer =  Collections.max(players, Comparator.comparing(p->p.turnOrderCard.getValue()));
-		label = new Label("Player:" + firstPlayer.playerNum + "goes first!");
+		cardBox.setLayoutX(225);
+		cardBox.setLayoutY(300);
+		
+		Collections.sort(players, new Comparator<Player>() {
+			public int compare(Player s2, Player s1) {
+				return Integer.compare(s1.turnOrderCard.getValue(), s2.turnOrderCard.getValue());
+			}
+		});
+	
+		sortedPlayers.addAll(players);
+		
+		label = new Label("Player: " + sortedPlayers.get(0).playerNum + " goes first!");
+		
+		label.setLayoutX(400);
+		label.setLayoutY(250);
+		try {
+			label.setFont(Font.loadFont(new FileInputStream("main/resources/kenvector_future.ttf"),23));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		start.getChildren().add(cardBox);
 		start.getChildren().add(label);
 		
+		nextButton.setOnAction(e-> {
+			currentPlayer = sortedPlayers.get(0);
+			GameView(stage);
+		});
 		
-		//ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/b10.jpg")));
-		//start.getChildren().add(image);
-		
+		start.setBackground(new Background(createBackground()));
 		Scene drawTurnBoard = new Scene(start,1000,1000);
 		stage.setScene(drawTurnBoard);
 		stage.show();
@@ -269,75 +308,60 @@ public class RummikubView{
 
 	private void GameView(Stage stage) {
 
-		GridPane screen = new GridPane();
-		screen.setStyle("-fx-background-color: black");
-		//screen.setHgap(100);
-		//screen.setVgap(100);
-		screen.setPadding(new Insets(100,100,100,100));
+		BorderPane screen = new BorderPane();
+		RummikubTimer timer = new RummikubTimer(); 
+		RummikubButton endTurn = new RummikubButton("End Turn");
+		Pane stand = new Pane();
+		//these are the image height/width
+		stand.setMaxHeight(178);
+		stand.setMaxWidth(689);
+		stand.setStyle("-fx-background-color: transparent; -fx-background-image: url('/resources/playerStand.png');");
+//		for(Meld m : model.getMelds()) {
+//			
+//		}
 		
-		GridPane board = new GridPane();
-		board.setStyle("-fx-background-color: green");
-		board.setPrefWidth(900);
-		board.setPrefHeight(500);
+		HBox playerHand = new HBox();
+		for(Tile t : currentPlayer.getHand()) {
+			playerHand.getChildren().add(displayTile(t.toString()));
+		}
 		
-		Button endTurn = new Button("End Turn");
-		board.setAlignment(Pos.BOTTOM_RIGHT);
+		stand.getChildren().add(playerHand);
+		stand.setPadding(new Insets(0,0,100,100));
+		playerHand.setSpacing(10);
+		playerHand.setPadding(new Insets(50,50,50,50));
 		
-		screen.getChildren().add(board);
-		screen.getChildren().add(endTurn);
+		screen.setBottom(stand);
+		screen.setRight(endTurn);
+		screen.setTop(timer);
+		screen.setBackground(new Background(createBackground()));
 		
-		
-		Scene display = new Scene(screen,1000,750);
+		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
 		stage.show();
 
-
-//		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
-//			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
-//				
-//				displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
-//				
-//			}
-//			
-//		}
-
-		
-//		for(int i = 0; i<this.model.getTable().getMelds().size(); i++) {
-//			for(int j=0; j<this.model.getTable().getMelds().get(i).getTiles().size(); j++) {
-//				
-//				displayTile(this.model.getTable().getMelds().get(i).getTiles().get(j).toString());
-//				
-//			}
-//			
-//		}
 //		
 	}
 
+	private BackgroundImage createBackground() {
+		Image backgroundImage = new Image("file:main/resources/tableTexture.jpg",1800,900,true, true);
+		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null );
+		return background;
+	}
+
 	private ImageView displayTile(String tile) {
-		
-		ImageView image = new ImageView(new Image("/Tiles/" + tile.toLowerCase() + ".jpg"));
+		//jokers are a thing
+		String filename =  "file:main/Tiles/"+ tile +".jpg";
+		ImageView image = new ImageView(new Image(filename));
 		image.setFitHeight(50);
 		image.setFitWidth(50);
 		image.setPreserveRatio(true);
 		
 		return image;
 	}	
-
-//	private ImageView displayTile(String tile) {
-//		
-//		//ImageView image = new ImageView(new Image("/Tiles/" + tile.toLowerCase() + ".jpg"));
-//		ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/Tiles/" + tile.toLowerCase() + ".jpg")));
-//		image.setFitHeight(50);
-//		image.setFitWidth(50);
-//		image.setPreserveRatio(true);
-//		
-//		return image;
-//	}
-
 	
-	private BackgroundImage createBackground() {
-		Image backgroundImage = new Image("file:main/resources/what.png",957,768,false,true);
-		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null );
+	private BackgroundImage createStartBackground(Stage stage) {
+		Image backgroundImage = new Image("file:main/resources/startPage.jpg",1800,900,true, true);
+		BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null );
 		return background;
 	}
 

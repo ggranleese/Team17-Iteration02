@@ -2,6 +2,7 @@ package core;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import view.RummikubView;
 
 
 public class RummikubApp extends Application{
