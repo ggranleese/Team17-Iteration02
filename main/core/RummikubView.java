@@ -246,6 +246,7 @@ public class RummikubView{
 			ImageView image = new ImageView(new Image(filename));
 			image.setFitHeight(100);
 			image.setFitWidth(100);
+			image.setPreserveRatio(true);
 			cardBox.getChildren().add(image);
 		}
 		
