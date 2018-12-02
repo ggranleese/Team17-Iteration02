@@ -29,7 +29,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import jfxtras.labs.util.event.MouseControlUtil;
 import model.AI;
 import model.Player;
 import model.RummikubModel;
