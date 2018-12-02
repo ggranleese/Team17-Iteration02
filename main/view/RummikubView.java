@@ -330,16 +330,21 @@ public class RummikubView{
 		
 		HBox playerHand = new HBox();
 		for(Tile t : currentPlayer.getHand()) {
-			playerHand.getChildren().add(displayTile(t.toString()));
-			System.out.println(t.toString());
+			ImageView tile = displayTile(t.toString());
+			playerHand.getChildren().add(tile);
 		}
+		
+	
+		
+//		MouseControlUtil.makeDraggable(playerHand);
+//		
 		
 		stand.getChildren().add(playerHand);
 		stand.setPadding(new Insets(0,0,100,100));
 		playerHand.setSpacing(10);
 		playerHand.setPadding(new Insets(50,50,50,50));
 
-		MouseControlUtil.makeDraggable(stand);
+		//MouseControlUtil.makeDraggable(stand);
 		
 		screen.setLeft(tileInput);
 		screen.setBottom(stand);
