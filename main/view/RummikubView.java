@@ -315,36 +315,16 @@ public class RummikubView{
 		FlowPane screen = new FlowPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
-		GridPane stand = new GridPane();
-		//these are the image height/width
-		stand.setMaxHeight(178);
-		stand.setMaxWidth(700);
-
-		stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
-//		for(Meld m : model.getMelds()) {
-//			
-//		}
 		
 		TextField tileInput = new TextField();
-		double i = 65;
-		Pane g = new Pane();
-//		for(Tile t : currentPlayer.getHand()) {
-//			ImageView tileImage = displayTile(t.toString());
-//			HBox tile = new HBox();
-//			tile.getChildren().add(tileImage);
-//			tile.setLayoutX(i);
-//			tile.setLayoutY(tile.getLayoutY()+60);
-//			i += 40;
-//			g.getChildren().add(tile);
-//			MouseControlUtil.makeDraggable(tile);
-//		}
 		
 		GridPane Stand = new GridPane();
 		//these are the image height/width
 		Stand.setMaxHeight(178);
 		Stand.setMaxWidth(700);
 
-		Stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
+		Stand.setStyle("-fx-background-color: blue; -fx-background-image: url('/resources/playerStand.png');");
+		
 		ArrayList<ImageView> tiles = new ArrayList<ImageView>();
 		int num = 0;
 		for(Tile t : currentPlayer.getHand()){
@@ -439,11 +419,6 @@ public class RummikubView{
         
  		
 		}
-		
-		stand.setPadding(new Insets(0,0,100,100));
-
-		g.setPadding(new Insets(10,10,10,10));
-		stand.getChildren().add(g);
 		
 		screen.setPadding(new Insets(10,10,10,10));
 		screen.getChildren().add(tileInput);
