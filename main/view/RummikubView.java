@@ -333,9 +333,11 @@ public class RummikubView{
 		}
 		
 		stand.setPadding(new Insets(0,0,100,100));
+
 		g.setPadding(new Insets(10,10,10,10));
 		//stand.getChildren().add(g);
 		stand.getChildren().add(g);
+		
 		screen.setLeft(tileInput);
 
 		screen.setBottom(stand);
