@@ -413,7 +413,8 @@ public class RummikubView{
 			board.setOnDragEntered(new EventHandler<DragEvent>() {
 		        public void handle(DragEvent event) {
 		            if(event.getGestureSource() != board && event.getDragboard().hasImage()){
-		                System.out.println("Drag entered");
+		            	//tileImage.setVisible(false);
+		            	System.out.println("Drag entered");
 		            }
 		            event.consume();
 		        }
@@ -422,7 +423,7 @@ public class RummikubView{
 			        public void handle(DragEvent event) {
 			            //mouse moved away, remove graphical cues
 			        	System.out.println("Drag exited");
-			        	tileImage.setVisible(true);
+			        	//tileImage.setVisible(true);
 			            screen.setOpacity(1);
 
 			            event.consume();
@@ -432,18 +433,24 @@ public class RummikubView{
 			 board.setOnDragDropped(new EventHandler<DragEvent>() {
 			        public void handle(DragEvent event) {
 			        	
-			            Node source = (Node)event.getSource();
-			            System.out.println(source);
+			            Node source = event.getPickResult().getIntersectedNode();
+			           
 			            Integer colIndex = GridPane.getColumnIndex(source);
 			            Integer rowIndex = GridPane.getRowIndex(source);
 			            System.out.println("Mouse entered cell: " + colIndex + "," + rowIndex);
 		            
 			            Dragboard db = event.getDragboard();
 			            boolean success = false;
-			            int x, y;
-			            if(db.hasImage()){
-			        		//need to find out which cell they dropped it onto and add here
-			            	board.add(new ImageView(db.getImage()),0,0);
+			            if(source != board && db.hasImage()){
+
+			                Integer cIndex = GridPane.getColumnIndex(source);
+			                Integer rIndex = GridPane.getRowIndex(source);
+			                int x = cIndex == null ? 0 : cIndex;
+			                int y = rIndex == null ? 0 : rIndex;
+			         
+			                ImageView image = new ImageView(db.getImage());
+
+			                board.add(image, x, y, 1, 1);
 			                success = true;
 			            }
 			            //let the source know whether the image was successfully transferred and used
