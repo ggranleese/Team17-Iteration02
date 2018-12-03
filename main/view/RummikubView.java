@@ -443,12 +443,17 @@ public class RummikubView{
 		        	System.out.println("from hand: " + tileBeingMoved.toString());
 		        	//remove this tile from player hand
 		        	
-		            Dragboard db = tileImage.startDragAndDrop(TransferMode.ANY);
+		        	ImageView highlightedTile = highlightTile(tileBeingMoved.toString());
+		        	
+		        	
+		        	Stand.add( highlightedTile, board.getColumnIndex(tileImage), board.getRowIndex(tileImage));
+		        	
+		            Dragboard db = highlightedTile.startDragAndDrop(TransferMode.ANY);
 
 		            ClipboardContent cbContent = new ClipboardContent();
-		            cbContent.putImage(tileImage.getImage());
+		            cbContent.putImage(highlightedTile.getImage());
 		           
-		            db.setDragView(tileImage.getImage());
+		            db.setDragView(highlightedTile.getImage());
 		            db.setContent(cbContent);
 		            tileImage.setVisible(false);
 		            event.consume();
@@ -478,7 +483,6 @@ public class RummikubView{
 		        public void handle(DragEvent event) {
 		            if(event.getGestureSource() != board && event.getDragboard().hasImage()){
 		            	//tileImage.setVisible(false);
-		            	System.out.println("Drag entered");
 		            }
 		            event.consume();
 		        }
@@ -486,7 +490,6 @@ public class RummikubView{
 			 board.setOnDragExited(new EventHandler<DragEvent>() {
 			        public void handle(DragEvent event) {
 			            //mouse moved away, remove graphical cues
-			        	System.out.println("Drag exited");
 			        	//tileImage.setVisible(true);
 			            screen.setOpacity(1);
 
@@ -501,7 +504,7 @@ public class RummikubView{
 			            
 			            Integer colIndex = GridPane.getColumnIndex(source);
 			            Integer rowIndex = GridPane.getRowIndex(source);
-			            System.out.println("Mouse entered cell: " + colIndex + "," + rowIndex);
+			            System.out.println( tileBeingMoved.toString() + " dropped in cell: " + colIndex + "," + rowIndex);
 		            
 			            Dragboard db = event.getDragboard();
 			            boolean success = false;
@@ -587,7 +590,7 @@ public class RummikubView{
 		
 		}
 
-	
+
 	private void WinView(Stage stage, Player winner) {
 		
 		BorderPane screen = new BorderPane();
@@ -630,6 +633,16 @@ public class RummikubView{
 		
 		return image;
 	}	
+	
+	private ImageView highlightTile(String string) {
+		String filename =  "file:main/highlightedTiles/"+ string.toLowerCase() +".jpg";
+		ImageView image = new ImageView(new Image(filename));
+		image.setFitHeight(51);
+		image.setFitWidth(51);
+		image.setPreserveRatio(true);
+		
+		return image;
+	}
 	
 	private BackgroundImage createStartBackground(Stage stage) {
 		Image backgroundImage = new Image("file:main/resources/startPage.jpg",1800,900,true, true);
