@@ -1,8 +1,15 @@
 package core;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import model.AI;
+import model.Pile;
 import model.Player;
 import model.RummikubModel;
 import model.StrategyOne;
@@ -10,6 +17,13 @@ import model.StrategyThree;
 import model.StrategyTwo;
 import model.Table;
 import model.Tile;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 
 public class RummikubController {
 	
@@ -166,6 +180,99 @@ public class RummikubController {
 			
 		return null;
 	}
+	
+	public void drawTile(Player player) {
+		player.hand.add(model.getPile().getTile(0));
+		System.out.println("\nDRAWING TILE... " + model.getPile().getTile(0) + "\n\n");
+		System.out.println(player.hand.toString());
+	}
+
+	@SuppressWarnings("unchecked")
+	public void createJSONFile() throws IOException, JSONException {
+		
+		JSONObject object = new JSONObject();
+		
+		Player player1 = new Player();
+		Player player2 = new Player();
+		Player player3 = new Player();
+		Player player4 = new Player();
+		
+		player1.hand.add(new Tile(1,1,false));
+		player1.hand.add(new Tile(1,2,false));
+		player1.hand.add(new Tile(1,3,false));
+		
+		player2.hand.add(new Tile(2,2,false));
+		player2.hand.add(new Tile(3,2,false));
+		player2.hand.add(new Tile(4,2,false));
+		
+		player3.hand.add(new Tile(4,13,false));
+		player3.hand.add(new Tile(4,12,false));
+		player3.hand.add(new Tile(4,11,false));
+		
+		player4.hand.add(new Tile(3,9,false));
+		player4.hand.add(new Tile(2,9,false));
+		player4.hand.add(new Tile(0,0,true));
+
+		player1.turnOrderCard = new Tile(1,13,false);
+		player2.turnOrderCard = new Tile(1,12, false);
+		player3.turnOrderCard = new Tile(1,11, false);
+		player4.turnOrderCard = new Tile(1,10, false);
+		
+		JSONArray players = new JSONArray();
+		((List<Player>) players).add(player1);
+		((List<Player>) players).add(player2);
+		((List<Player>) players).add(player3);
+		((List<Player>) players).add(player4);
+		
+		object.put("players", players);
+		
+		try(FileWriter file = new FileWriter("JSONFile.json")){
+			
+			file.write(object.toString());
+			file.flush();
+			
+		}catch(IOException e) {e.printStackTrace();}
+		
+		readJSONFile("JSONFile.json");
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	private void readJSONFile(String file) throws IOException, JSONException {
+		
+		JSONParser parser = new JSONParser();
+		ArrayList<Player> players = new ArrayList<>();
+		
+		try {
+			
+			JSONObject obj = (JSONObject) parser.parse(new FileReader(file));
+			JSONArray playersJSON = (JSONArray) obj.get("players");
+			Iterator<Player> iterator = ((List<Player>) playersJSON).iterator();
+			
+			
+			while(iterator.hasNext()) {
+				players.add(iterator.next());
+			}
+			
+			if(players.size() >0) {
+				model.setPlayers(players);
+				System.out.println("FILE PLAYERS: " + model.getPlayers().get(0).getHand().toString());
+			}
+			
+		}catch(FileNotFoundException e) {e.printStackTrace();}
+		catch(ParseException e) {e.printStackTrace();}
+		
+	}
 
 	
 }
+
+
+
+
+
+
+
+
+
+

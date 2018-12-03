@@ -62,6 +62,10 @@ public class RummikubModel {
 		return this.timer;
 	}
 	
+	public Pile getPile() {
+		return this.pile;
+	}
+	
 	public void setTimer(boolean b) {
 		this.timer = b;
 		

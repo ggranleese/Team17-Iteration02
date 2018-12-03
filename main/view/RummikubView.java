@@ -1,8 +1,8 @@
 package view;
 
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,6 +56,10 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
+<<<<<<< HEAD
+import org.json.JSONException;
+=======
+>>>>>>> 6c7516cc12f9a978f6bc778ac0022a54abad19d5
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -75,11 +79,17 @@ public class RummikubView{
 		AnchorPane mainPane = new AnchorPane();
 		RummikubButton startButton = new RummikubButton("Play");
 		RummikubButton optionsButton = new RummikubButton("Options");
+		RummikubButton rigGameFromFile = new RummikubButton("Load File");
+		
+		
 		startButton.setLayoutX(400);
 		startButton.setLayoutY(400);
 		
 		optionsButton.setLayoutX(400);
 		optionsButton.setLayoutY(500);
+		
+		rigGameFromFile.setLayoutX(400);
+		rigGameFromFile.setLayoutY(600);
 		 
 		startButton.setOnAction(e-> drawStartView(stage));
 		
@@ -89,7 +99,21 @@ public class RummikubView{
 		else {
 			optionsButton.setOnAction(e -> handleOptionsButtonAction(stage));
 		}
-		mainPane.getChildren().addAll(startButton, optionsButton);
+		
+		rigGameFromFile.setOnAction(e -> {
+			try {
+				controller.createJSONFile();
+			} catch (IOException | JSONException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+		});
+		try {
+			mainPane.getChildren().addAll(startButton, optionsButton, rigGameFromFile);
+		} catch (Exception e1) {
+			
+			e1.printStackTrace();
+		}
 		Scene scene = new Scene(mainPane,1800,900);
 		
 		
@@ -100,6 +124,7 @@ public class RummikubView{
 		stage.show();
 	}
 	
+
 
 	private void handleOptionsButtonAction(Stage stage) {
 		
@@ -379,7 +404,10 @@ public class RummikubView{
 
 	    GridPane stand = new GridPane();
 		GridPane board = new GridPane();
-		board.setStyle("-fx-background-color: blue");		
+	
+		Image gameBoard = new Image("file:main/resources/gameBoard.jpg",850,850,true,true);
+		BackgroundImage boardBackground = new BackgroundImage(gameBoard, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null);
+		board.setBackground(new Background(boardBackground));;		
 		 Timer yes = new Timer();
 		    yes.scheduleAtFixedRate(new TimerTask() {
 		        @Override
@@ -707,6 +735,7 @@ public class RummikubView{
 	public void nextPlayerTurn() {
 		int i = model.getPlayers().indexOf(currentPlayer);
 		try {
+			this.controller.drawTile(currentPlayer);
 			currentPlayer = model.getPlayers().get(i+1);
 		}catch (IndexOutOfBoundsException e) {
 			currentPlayer = model.getPlayers().get(0);
