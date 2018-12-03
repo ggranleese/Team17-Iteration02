@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Timer;
 
 import javafx.geometry.Pos;
 import core.RummikubController;
@@ -43,8 +44,8 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.input.DragEvent;
 import javafx.scene.Node;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.ColumnConstraints;
+import javafx.application.Platform;
+import java.util.TimerTask;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -52,6 +53,8 @@ public class RummikubView{
 	private RummikubController controller;
 	public RummikubModel model;
 	public Player currentPlayer;
+	public boolean cheatsSelected;
+	public Tile tileBeingMoved;
 	
 	public RummikubView() {
 		model = new RummikubModel();
@@ -106,9 +109,15 @@ public class RummikubView{
 			timer.setSelected(true);
 		}
 		
+		RadioButton cheats = new RadioButton("Cheats");
+		if(this.cheatsSelected) {
+			cheats.setSelected(true);
+		}
+		
 		box1.getChildren().add(numPlayer);
 		box1.getChildren().add(button1);
 		box1.getChildren().add(timer);
+		box1.getChildren().add(cheats);
 		
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
@@ -128,7 +137,18 @@ public class RummikubView{
 		        playerType.getItems().addAll("Human", "AI");
 		        playerType.setLayoutX(150);
 
+		        TextField handRig = new TextField("Hand (Optional)");
+		        handRig.setStyle("-fx-text-inner-color: grey;");
+		        handRig.setOnMouseClicked(e -> {
+		        	handRig.clear();
+		        	handRig.setStyle("-fx-text-inner-color: black;");
+		        });
 		        
+		        handRig.setOnMouseExited(e -> {
+		        	System.out.println(handRig.getText());
+		        	controller.updatePlayerHand(players, position, handRig.getText());
+		        });
+
 		        playerType.setOnAction(e-> {
 		        	if(playerType.getValue() == "AI") {
 		 
@@ -138,6 +158,7 @@ public class RummikubView{
 		        
 		        box2.getChildren().add(label);
 		        box2.getChildren().add(playerType);
+		        box2.getChildren().add(handRig);
 
 			}
 			if(player.isBot()) {
@@ -167,6 +188,18 @@ public class RummikubView{
 		        playerType.getItems().addAll("Human", "AI");
 		        playerType.setLayoutX(150);
 		        
+		        TextField handRig = new TextField("Hand (Optional)");
+		        handRig.setStyle("-fx-text-inner-color: grey;");
+		        handRig.setOnMouseClicked(e -> {
+		        	handRig.clear();
+		        	handRig.setStyle("-fx-text-inner-color: black;");
+		        });
+		        
+		        handRig.setOnMouseExited(e -> {
+		        	System.out.println(handRig.getText());
+		        	controller.updatePlayerHand(players, position, handRig.getText());
+		        });
+		        
 		        playerType.setOnAction(e-> {
 		        	if(playerType.getValue() == "Human") {
 		        		controller.updatePlayerTypeHuman(players, position);
@@ -180,6 +213,7 @@ public class RummikubView{
 		        box2.getChildren().add(label);
 		        box2.getChildren().add(playerType);
 		        box2.getChildren().add(stratChoice);
+		        box2.getChildren().add(handRig);
 			}
 			
 		}
@@ -201,6 +235,13 @@ public class RummikubView{
 		confirmButton.setOnAction(e -> buildAndShowGui(stage));
 		
 		timer.setOnAction(e -> controller.updateTimer());
+		cheats.setOnAction(e -> {
+			if(this.cheatsSelected) {
+				cheatsSelected = false;
+			}
+			else
+				cheatsSelected = true;
+		});
 
 	}
 	
@@ -264,7 +305,7 @@ public class RummikubView{
 		HBox cardBox = new HBox();
 		cardBox.setSpacing(50);
 		for(Player p : players) {
-			String filename =  "file:main/Tiles/"+ p.turnOrderCard.toString().toLowerCase() +".jpg";
+			String filename =  "file:main/Large Tiles/"+ p.turnOrderCard.toString().toLowerCase() +".jpg";
 			ImageView image = new ImageView(new Image(filename));
 			image.setFitHeight(150);
 			image.setFitWidth(100);
@@ -312,14 +353,30 @@ public class RummikubView{
 	
 	
 
-	private void GameView(Stage stage) {
-
+	private Scene GameView(Stage stage) {
+		
 		BorderPane screen = new BorderPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
 
 		GridPane stand = new GridPane();
 		GridPane board = new GridPane();
+		board.setStyle("-fx-background-color: blue");		
+		 Timer yes = new Timer();
+		    yes.scheduleAtFixedRate(new TimerTask() {
+		        @Override
+		        public void run() {
+		            Platform.runLater(() -> {
+		            	if(currentPlayer.hand.size() == 0) {
+		    				WinView(stage, currentPlayer);
+		    			}else {
+		    				nextPlayerTurn();
+		    				stage.setScene(GameView(stage));
+		    				yes.cancel();
+		    			}
+		            });
+		        }
+		    }, 120000, 120000);
 		
 		//these are the image height/width
 		stand.setMaxHeight(178);
@@ -346,6 +403,7 @@ public class RummikubView{
 		TextField tileInput = new TextField();
 		
 		GridPane Stand = new GridPane();
+		
 		//these are the image height/width
 		Stand.setMaxHeight(178);
 		Stand.setMaxWidth(700);
@@ -379,6 +437,12 @@ public class RummikubView{
 		for (ImageView tileImage: tiles) {
 			tileImage.setOnDragDetected(new EventHandler<MouseEvent>() {
 		        public void handle(MouseEvent event) {
+		 
+		        	int tileNumber = board.getColumnIndex(tileImage) - 1;
+		        	tileBeingMoved = currentPlayer.getHand().get(tileNumber);
+		        	System.out.println("from hand: " + tileBeingMoved.toString());
+		        	//remove this tile from player hand
+		        	
 		            Dragboard db = tileImage.startDragAndDrop(TransferMode.ANY);
 
 		            ClipboardContent cbContent = new ClipboardContent();
@@ -434,7 +498,7 @@ public class RummikubView{
 			        public void handle(DragEvent event) {
 			        	
 			            Node source = event.getPickResult().getIntersectedNode();
-			           
+			            
 			            Integer colIndex = GridPane.getColumnIndex(source);
 			            Integer rowIndex = GridPane.getRowIndex(source);
 			            System.out.println("Mouse entered cell: " + colIndex + "," + rowIndex);
@@ -448,8 +512,25 @@ public class RummikubView{
 			                int x = cIndex == null ? 0 : cIndex;
 			                int y = rIndex == null ? 0 : rIndex;
 			         
+			                
 			                ImageView image = new ImageView(db.getImage());
+			                
+			                image.setOnDragDetected(new EventHandler<MouseEvent>() {
+			    		        public void handle(MouseEvent event) {
+			    		        	System.out.println("from board: " + board.getRowIndex(image)+ board.getColumnIndex(image));
+			    		        	
+			    		            Dragboard db = image.startDragAndDrop(TransferMode.ANY);
 
+			    		            ClipboardContent cbContent = new ClipboardContent();
+			    		            cbContent.putImage(image.getImage());
+			    		           
+			    		            db.setDragView(image.getImage());
+			    		            db.setContent(cbContent);
+			    		            image.setVisible(false);
+			    		            event.consume();
+			    		        }
+			    		    });
+			                
 			                board.add(image, x, y, 1, 1);
 			                success = true;
 			            }
@@ -494,7 +575,7 @@ public class RummikubView{
 			}else {
 				nextPlayerTurn();
 				GameView(stage);
-				e.consume();
+				yes.cancel();
 			}
 		});
 		
@@ -502,6 +583,7 @@ public class RummikubView{
 		stage.setScene(display);
 		stage.setMaximized(true);
 		stage.show();
+		return display;
 		
 		}
 
