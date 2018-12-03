@@ -9,6 +9,7 @@ import model.StrategyOne;
 import model.StrategyThree;
 import model.StrategyTwo;
 import model.Table;
+import model.Tile;
 
 public class RummikubController {
 	
@@ -75,7 +76,6 @@ public class RummikubController {
 		else {
 			model.setTimer(true);
 		}
-		System.out.println(model.getTimer());
 	}
 
 	public void namePlayers() {
@@ -105,6 +105,19 @@ public class RummikubController {
 	
 	public void dealHands() {
 		model.dealPlayerHands();
+	}
+
+	public void updatePlayerHand(ArrayList<Player> players, int x, String text) {
+		String[] splitted = text.split(" ");
+		for (String s : splitted) {
+			players.get(x).addTile(parseToTile(s));
+		}
+		
+	}
+
+	private Tile parseToTile(String s) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

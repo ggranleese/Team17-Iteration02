@@ -6,7 +6,11 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
 import java.util.Observable;
+
+import java.util.Timer;
+
 
 import javafx.geometry.Pos;
 import core.RummikubController;
@@ -44,9 +48,14 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.input.DragEvent;
 import javafx.scene.Node;
+
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.collections.*;
+
+import javafx.application.Platform;
+import java.util.TimerTask;
+
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -54,6 +63,8 @@ public class RummikubView{
 	private RummikubController controller;
 	public RummikubModel model;
 	public Player currentPlayer;
+	public boolean cheatsSelected;
+	public Tile tileBeingMoved;
 	
 	public RummikubView() {
 		model = new RummikubModel();
@@ -84,7 +95,6 @@ public class RummikubView{
 		
 		mainPane.setBackground(new Background(createStartBackground(stage)));
 		stage.setScene(scene);
-		stage.setMaximized(true);
 		stage.setResizable(true);
 		stage.setTitle("Rummikub");
 		stage.show();
@@ -108,9 +118,15 @@ public class RummikubView{
 			timer.setSelected(true);
 		}
 		
+		RadioButton cheats = new RadioButton("Cheats");
+		if(this.cheatsSelected) {
+			cheats.setSelected(true);
+		}
+		
 		box1.getChildren().add(numPlayer);
 		box1.getChildren().add(button1);
 		box1.getChildren().add(timer);
+		box1.getChildren().add(cheats);
 		
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
@@ -130,7 +146,18 @@ public class RummikubView{
 		        playerType.getItems().addAll("Human", "AI");
 		        playerType.setLayoutX(150);
 
+		        TextField handRig = new TextField("Hand (Optional)");
+		        handRig.setStyle("-fx-text-inner-color: grey;");
+		        handRig.setOnMouseClicked(e -> {
+		        	handRig.clear();
+		        	handRig.setStyle("-fx-text-inner-color: black;");
+		        });
 		        
+		        handRig.setOnMouseExited(e -> {
+		        	System.out.println(handRig.getText());
+		        	controller.updatePlayerHand(players, position, handRig.getText());
+		        });
+
 		        playerType.setOnAction(e-> {
 		        	if(playerType.getValue() == "AI") {
 		 
@@ -140,6 +167,7 @@ public class RummikubView{
 		        
 		        box2.getChildren().add(label);
 		        box2.getChildren().add(playerType);
+		        box2.getChildren().add(handRig);
 
 			}
 			if(player.isBot()) {
@@ -169,6 +197,18 @@ public class RummikubView{
 		        playerType.getItems().addAll("Human", "AI");
 		        playerType.setLayoutX(150);
 		        
+		        TextField handRig = new TextField("Hand (Optional)");
+		        handRig.setStyle("-fx-text-inner-color: grey;");
+		        handRig.setOnMouseClicked(e -> {
+		        	handRig.clear();
+		        	handRig.setStyle("-fx-text-inner-color: black;");
+		        });
+		        
+		        handRig.setOnMouseExited(e -> {
+		        	System.out.println(handRig.getText());
+		        	controller.updatePlayerHand(players, position, handRig.getText());
+		        });
+		        
 		        playerType.setOnAction(e-> {
 		        	if(playerType.getValue() == "Human") {
 		        		controller.updatePlayerTypeHuman(players, position);
@@ -182,6 +222,7 @@ public class RummikubView{
 		        box2.getChildren().add(label);
 		        box2.getChildren().add(playerType);
 		        box2.getChildren().add(stratChoice);
+		        box2.getChildren().add(handRig);
 			}
 			
 		}
@@ -203,6 +244,13 @@ public class RummikubView{
 		confirmButton.setOnAction(e -> buildAndShowGui(stage));
 		
 		timer.setOnAction(e -> controller.updateTimer());
+		cheats.setOnAction(e -> {
+			if(this.cheatsSelected) {
+				cheatsSelected = false;
+			}
+			else
+				cheatsSelected = true;
+		});
 
 	}
 	
@@ -266,7 +314,7 @@ public class RummikubView{
 		HBox cardBox = new HBox();
 		cardBox.setSpacing(50);
 		for(Player p : players) {
-			String filename =  "file:main/Tiles/"+ p.turnOrderCard.toString().toLowerCase() +".jpg";
+			String filename =  "file:main/Large Tiles/"+ p.turnOrderCard.toString().toLowerCase() +".jpg";
 			ImageView image = new ImageView(new Image(filename));
 			image.setFitHeight(150);
 			image.setFitWidth(100);
@@ -307,21 +355,36 @@ public class RummikubView{
 		Scene drawTurnBoard = new Scene(start,1000,1000);
 		stage.setScene(drawTurnBoard);
 		stage.setResizable(true);
-		stage.setMaximized(true);
 		stage.show();
 			 
 	}
 	
 	
 
-	private void GameView(Stage stage) {
-
+	private Scene GameView(Stage stage) {
+		
 		BorderPane screen = new BorderPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
 
-		GridPane stand = new GridPane();
+	    GridPane stand = new GridPane();
 		GridPane board = new GridPane();
+		board.setStyle("-fx-background-color: blue");		
+		 Timer yes = new Timer();
+		    yes.scheduleAtFixedRate(new TimerTask() {
+		        @Override
+		        public void run() {
+		            Platform.runLater(() -> {
+		            	if(currentPlayer.hand.size() == 0) {
+		    				WinView(stage, currentPlayer);
+		    			}else {
+		    				nextPlayerTurn();
+		    				stage.setScene(GameView(stage));
+		    				yes.cancel();
+		    			}
+		            });
+		        }
+		    }, 120000, 120000);
 		
 		//these are the image height/width
 		stand.setMaxHeight(178);
@@ -368,6 +431,7 @@ public class RummikubView{
 		TextField tileInput = new TextField();
 		
 		GridPane Stand = new GridPane();
+		
 		//these are the image height/width
 		Stand.setMaxHeight(178);
 		Stand.setMaxWidth(700);
@@ -401,12 +465,23 @@ public class RummikubView{
 		for (ImageView tileImage: tiles) {
 			tileImage.setOnDragDetected(new EventHandler<MouseEvent>() {
 		        public void handle(MouseEvent event) {
-		            Dragboard db = tileImage.startDragAndDrop(TransferMode.ANY);
+		 
+		        	int tileNumber = board.getColumnIndex(tileImage) - 1;
+		        	tileBeingMoved = currentPlayer.getHand().get(tileNumber);
+		        	System.out.println("from hand: " + tileBeingMoved.toString());
+		        	//remove this tile from player hand
+		        	
+		        	ImageView highlightedTile = highlightTile(tileBeingMoved.toString());
+		        	
+		        	
+		        	Stand.add( highlightedTile, board.getColumnIndex(tileImage), board.getRowIndex(tileImage));
+		        	
+		            Dragboard db = highlightedTile.startDragAndDrop(TransferMode.ANY);
 
 		            ClipboardContent cbContent = new ClipboardContent();
-		            cbContent.putImage(tileImage.getImage());
+		            cbContent.putImage(highlightedTile.getImage());
 		           
-		            db.setDragView(tileImage.getImage());
+		            db.setDragView(highlightedTile.getImage());
 		            db.setContent(cbContent);
 		            tileImage.setVisible(false);
 		            event.consume();
@@ -436,7 +511,6 @@ public class RummikubView{
 		        public void handle(DragEvent event) {
 		            if(event.getGestureSource() != board && event.getDragboard().hasImage()){
 		            	//tileImage.setVisible(false);
-		            	System.out.println("Drag entered");
 		            }
 		            event.consume();
 		        }
@@ -444,7 +518,6 @@ public class RummikubView{
 			 board.setOnDragExited(new EventHandler<DragEvent>() {
 			        public void handle(DragEvent event) {
 			            //mouse moved away, remove graphical cues
-			        	System.out.println("Drag exited");
 			        	//tileImage.setVisible(true);
 			            screen.setOpacity(1);
 
@@ -456,10 +529,10 @@ public class RummikubView{
 			        public void handle(DragEvent event) {
 			        	
 			            Node source = event.getPickResult().getIntersectedNode();
-			           
+			            
 			            Integer colIndex = GridPane.getColumnIndex(source);
 			            Integer rowIndex = GridPane.getRowIndex(source);
-			            System.out.println("Mouse entered cell: " + colIndex + "," + rowIndex);
+			            System.out.println( tileBeingMoved.toString() + " dropped in cell: " + colIndex + "," + rowIndex);
 		            
 			            Dragboard db = event.getDragboard();
 			            boolean success = false;
@@ -470,8 +543,25 @@ public class RummikubView{
 			                int x = cIndex == null ? 0 : cIndex;
 			                int y = rIndex == null ? 0 : rIndex;
 			         
+			                
 			                ImageView image = new ImageView(db.getImage());
+			                
+			                image.setOnDragDetected(new EventHandler<MouseEvent>() {
+			    		        public void handle(MouseEvent event) {
+			    		        	System.out.println("from board: " + board.getRowIndex(image)+ board.getColumnIndex(image));
+			    		        	
+			    		            Dragboard db = image.startDragAndDrop(TransferMode.ANY);
 
+			    		            ClipboardContent cbContent = new ClipboardContent();
+			    		            cbContent.putImage(image.getImage());
+			    		           
+			    		            db.setDragView(image.getImage());
+			    		            db.setContent(cbContent);
+			    		            image.setVisible(false);
+			    		            event.consume();
+			    		        }
+			    		    });
+			                
 			                board.add(image, x, y, 1, 1);
 			                success = true;
 			            }
@@ -516,14 +606,14 @@ public class RummikubView{
 			}else {
 				nextPlayerTurn();
 				GameView(stage);
-				e.consume();
+				yes.cancel();
 			}
 		});
 		
 		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
-		stage.setMaximized(true);
 		stage.show();
+		return display;
 		
 		}
 	
@@ -542,7 +632,7 @@ public class RummikubView{
 		return result;
 	}
 
-	
+
 	private void WinView(Stage stage, Player winner) {
 		
 		BorderPane screen = new BorderPane();
@@ -564,7 +654,6 @@ public class RummikubView{
 		//screen.getChildren().add(label);
 		
 		stage.setScene(display);
-		stage.setMaximized(true);
 		stage.show();
 		
 	}
@@ -585,6 +674,16 @@ public class RummikubView{
 		
 		return image;
 	}	
+	
+	private ImageView highlightTile(String string) {
+		String filename =  "file:main/highlightedTiles/"+ string.toLowerCase() +".jpg";
+		ImageView image = new ImageView(new Image(filename));
+		image.setFitHeight(51);
+		image.setFitWidth(51);
+		image.setPreserveRatio(true);
+		
+		return image;
+	}
 	
 	private BackgroundImage createStartBackground(Stage stage) {
 		Image backgroundImage = new Image("file:main/resources/startPage.jpg",1800,900,true, true);
