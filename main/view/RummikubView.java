@@ -366,6 +366,16 @@ public class RummikubView{
 		BorderPane screen = new BorderPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
+		HBox top = new HBox();
+		
+		String playerName = Integer.toString(currentPlayer.playerNum); 
+		Label nameLabel = new Label("Player " + playerName + "'s turn");
+		try {
+			nameLabel.setFont(Font.loadFont(new FileInputStream("main/resources/kenvector_future.ttf"),23));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 	    GridPane stand = new GridPane();
 		GridPane board = new GridPane();
@@ -588,11 +598,14 @@ public class RummikubView{
 		
 		screen.setPadding(new Insets(10,10,10,10));
 		
-		screen.setTop(timer);
+		//screen.setTop(timer);
 		//screen.add(tileInput,1,1);
 		
 		screen.setCenter(board);
 		screen.setRight(endTurn);
+		//screen.setTop(nameLabel);
+		top.getChildren().addAll(timer, nameLabel);
+		screen.setTop(top);
 		
 		screen.setBottom(Stand);
 		GridPane.setColumnSpan(Stand, GridPane.REMAINING);
