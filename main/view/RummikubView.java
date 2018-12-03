@@ -56,10 +56,9 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
+
 import org.json.JSONException;
-=======
->>>>>>> 6c7516cc12f9a978f6bc778ac0022a54abad19d5
+
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -69,10 +68,12 @@ public class RummikubView{
 	public Player currentPlayer;
 	public boolean cheatsSelected;
 	public Tile tileBeingMoved;
+	public Tile[][] boardTracker;
 	
 	public RummikubView() {
 		model = new RummikubModel();
 		controller = new RummikubController(model);
+		boardTracker = new Tile[14][14];
 	}
 	
 	public void buildAndShowGui(final Stage stage) {
@@ -442,15 +443,11 @@ public class RummikubView{
 				String tile = model.getMelds().get(x).getTiles().get(y).toString();
 				String filename =  "file:main/Tiles/"+ tile +".jpg";
 				ImageView image = new ImageView(new Image(filename));
+				makeDraggable(image, board);
 				test.getChildren().add(image);
 			}
 		}
 		
-		
-
-		
-		
-
 		stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
 //		for(Meld m : model.getMelds()) {
 //			
@@ -561,7 +558,8 @@ public class RummikubView{
 			            Integer colIndex = GridPane.getColumnIndex(source);
 			            Integer rowIndex = GridPane.getRowIndex(source);
 			            System.out.println( tileBeingMoved.toString() + " dropped in cell: " + colIndex + "," + rowIndex);
-		            
+			            boardTracker[board.getRowIndex(source)][board.getColumnIndex(source)] = tileBeingMoved;
+			            
 			            Dragboard db = event.getDragboard();
 			            boolean success = false;
 			            if(source != board && db.hasImage()){
@@ -576,7 +574,10 @@ public class RummikubView{
 			                
 			                image.setOnDragDetected(new EventHandler<MouseEvent>() {
 			    		        public void handle(MouseEvent event) {
-			    		        	System.out.println("from board: " + board.getRowIndex(image)+ board.getColumnIndex(image));
+			    		        	System.out.println("from board: " + board.getColumnIndex(image)+ "," +board.getRowIndex(image));
+			    		        	tileBeingMoved = boardTracker[board.getRowIndex(image)][board.getColumnIndex(image)];
+			    		        	boardTracker[board.getRowIndex(image)][board.getColumnIndex(image)] = null;
+			    		        	System.out.println("Just removed " + board.getColumnIndex(image) + "," + board.getRowIndex(image) + " from Tracker");
 			    		        	
 			    		            Dragboard db = image.startDragAndDrop(TransferMode.ANY);
 
@@ -722,11 +723,126 @@ public class RummikubView{
 	public void nextPlayerTurn() {
 		int i = model.getPlayers().indexOf(currentPlayer);
 		try {
-			this.controller.drawTile(currentPlayer);
+			//this.controller.drawTile(currentPlayer);
 			currentPlayer = model.getPlayers().get(i+1);
 		}catch (IndexOutOfBoundsException e) {
 			currentPlayer = model.getPlayers().get(0);
 		}
+	}
+	
+	public void makeDraggable(ImageView tileImage, GridPane board) {
+		tileImage.setOnDragDetected(new EventHandler<MouseEvent>() {
+	        public void handle(MouseEvent event) {
+	        	
+	            Node source = event.getPickResult().getIntersectedNode();
+	            
+	            Integer colIndex = GridPane.getColumnIndex(source);
+	            Integer rowIndex = GridPane.getRowIndex(source);
+	            System.out.println( tileBeingMoved.toString() + " is in cell: " + colIndex + "," + rowIndex);
+            
+	            //Dragboard db = event.getDragboard();
+	            boolean success = false;
+//	            if(source != board && db.hasImage()){
+//
+//	                Integer cIndex = GridPane.getColumnIndex(source);
+//	                Integer rIndex = GridPane.getRowIndex(source);
+//	                int x = cIndex == null ? 0 : cIndex;
+//	                int y = rIndex == null ? 0 : rIndex;
+//	         
+//	                
+//	                ImageView image = new ImageView(db.getImage());
+//	                
+//	                image.setOnDragDetected(new EventHandler<MouseEvent>() {
+//	    		        public void handle(MouseEvent event) {
+//	    		        	System.out.println("from board: " + board.getRowIndex(image)+ board.getColumnIndex(image));
+//	    		        	
+//	    		            Dragboard db = image.startDragAndDrop(TransferMode.ANY);
+//
+//	    		            ClipboardContent cbContent = new ClipboardContent();
+//	    		            cbContent.putImage(image.getImage());
+//	    		           
+//	    		            db.setDragView(image.getImage());
+//	    		            db.setContent(cbContent);
+//	    		            image.setVisible(false);
+//	    		            event.consume();
+//	    		        }
+//	    		    });
+//	                
+//	                board.add(image, x, y, 1, 1);
+//	                success = true;
+//	            }
+
+	            event.consume();
+	        }
+	    });
+		
+		board.setOnDragOver(new EventHandler<DragEvent>() {
+ 			public void handle(DragEvent event) {
+            if(event.getGestureSource() != board && event.getDragboard().hasImage()){
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        }
+ 		});
+		 
+		 board.setOnDragDropped(new EventHandler<DragEvent>() {
+		        public void handle(DragEvent event) {
+		        	
+		            Node source = event.getPickResult().getIntersectedNode();
+		            
+		            Integer colIndex = GridPane.getColumnIndex(source);
+		            Integer rowIndex = GridPane.getRowIndex(source);
+		            System.out.println( tileBeingMoved.toString() + " dropped in cell: " + colIndex + "," + rowIndex);
+	            
+		            Dragboard db = event.getDragboard();
+		            boolean success = false;
+		            if(source != board && db.hasImage()){
+
+		                Integer cIndex = GridPane.getColumnIndex(source);
+		                Integer rIndex = GridPane.getRowIndex(source);
+		                int x = cIndex == null ? 0 : cIndex;
+		                int y = rIndex == null ? 0 : rIndex;
+		         
+		                
+		                ImageView image = new ImageView(db.getImage());
+		                
+		                image.setOnDragDetected(new EventHandler<MouseEvent>() {
+		    		        public void handle(MouseEvent event) {
+		    		        	System.out.println("from board: " + board.getRowIndex(image)+ board.getColumnIndex(image));
+		    		        	
+		    		            Dragboard db = image.startDragAndDrop(TransferMode.ANY);
+
+		    		            ClipboardContent cbContent = new ClipboardContent();
+		    		            cbContent.putImage(image.getImage());
+		    		           
+		    		            db.setDragView(image.getImage());
+		    		            db.setContent(cbContent);
+		    		            image.setVisible(false);
+		    		            event.consume();
+		    		        }
+		    		    });
+		                
+		                board.add(image, x, y, 1, 1);
+		                success = true;
+		            }
+		            //let the source know whether the image was successfully transferred and used
+		            event.setDropCompleted(success);
+
+		            event.consume();
+		        }
+		    });
+		 
+		 tileImage.setOnDragDone(new EventHandler<DragEvent>() {
+		        public void handle(DragEvent event) {
+		            //the drag ended
+		            //if the data was successfully moved, clear it
+		            if(event.getTransferMode() == TransferMode.MOVE){
+		                tileImage.setVisible(false);
+		            }
+		            event.consume();
+		        }
+		    });
+		
 	}
 
 
