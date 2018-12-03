@@ -111,12 +111,59 @@ public class RummikubController {
 		String[] splitted = text.split(" ");
 		for (String s : splitted) {
 			players.get(x).addTile(parseToTile(s));
+			
+			
 		}
 		
 	}
 
 	private Tile parseToTile(String s) {
-		// TODO Auto-generated method stub
+		
+		s = s.toLowerCase();
+		String tail = s.substring(1,s.length());
+		int result = Integer.parseInt(tail);
+		
+		if(s.charAt(0) == 'o') {
+			for(int i = 0; i<15; i++) {
+				if(result == i) {
+					Tile tile = new Tile(4, result, false);
+					return tile;
+				}
+			}
+		}
+		
+		if(s.charAt(0) == 'b') {
+			for(int i = 0; i<15; i++) {
+				if(result == i) {
+					Tile tile = new Tile(2, result, false);
+					return tile;
+				}
+			}
+		}
+		
+		if(s.charAt(0) == 'r') {
+			for(int i = 0; i<15; i++) {
+				if(result == i) {
+					Tile tile = new Tile(1, result, false);
+					return tile;
+				}
+			}
+		}
+		
+		if(s.charAt(0) == 'g') {
+			for(int i = 0; i<15; i++) {
+				if(result == i) {
+					Tile tile = new Tile(3, result, false);
+					return tile;
+				}
+			}
+		}
+		
+		if(s.charAt(0) == '0') {
+			Tile tile = new Tile(0,0,true);
+			return tile;
+		}
+			
 		return null;
 	}
 
