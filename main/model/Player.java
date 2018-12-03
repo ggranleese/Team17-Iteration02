@@ -31,8 +31,8 @@ public class Player implements Observer{
 		for(int i = 0; i<14; i++) {
 			drawTile(p);
 		}
-		System.out.println(hand.size());
 		sortHand();
+		
 	}
 	
 	//this draws a tile used ONLY for determining who goes first
@@ -157,7 +157,7 @@ public class Player implements Observer{
 	}
 
 	public void drawTile(Pile p) {
-		System.out.println(hand.size() +" "+ p.getTile(0).toString());
+		System.out.println(hand.size()+1 +" "+ p.getTile(0).toString());
 		this.hand.add(p.getTile(0));
 		p.removeTile();
 		sortHand();
