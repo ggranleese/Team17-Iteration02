@@ -82,7 +82,6 @@ public class RummikubView{
 		
 		mainPane.setBackground(new Background(createStartBackground(stage)));
 		stage.setScene(scene);
-		stage.setMaximized(true);
 		stage.setResizable(true);
 		stage.setTitle("Rummikub");
 		stage.show();
@@ -305,7 +304,6 @@ public class RummikubView{
 		Scene drawTurnBoard = new Scene(start,1000,1000);
 		stage.setScene(drawTurnBoard);
 		stage.setResizable(true);
-		stage.setMaximized(true);
 		stage.show();
 			 
 	}
@@ -318,7 +316,7 @@ public class RummikubView{
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
 
-		GridPane stand = new GridPane();
+	    GridPane stand = new GridPane();
 		GridPane board = new GridPane();
 		
 		//these are the image height/width
@@ -500,7 +498,6 @@ public class RummikubView{
 		
 		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
-		stage.setMaximized(true);
 		stage.show();
 		
 		}
@@ -527,7 +524,6 @@ public class RummikubView{
 		//screen.getChildren().add(label);
 		
 		stage.setScene(display);
-		stage.setMaximized(true);
 		stage.show();
 		
 	}

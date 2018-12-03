@@ -16,5 +16,4 @@ public class RummikubApp extends Application{
 		launch(args);
 	}
 	 
-	
 }
