@@ -17,6 +17,24 @@ public class RummikubModel {
 		pile.populate();
 		pile.shuffle();
 		melds = new ArrayList<Meld>();
+		ArrayList<Tile> meld = new ArrayList<Tile>();
+		Tile tile = new Tile(1, 10, false);
+		Tile tile2 = new Tile(1, 10, false);
+		Tile tile3 = new Tile(1, 10, false);
+		meld.add(tile);
+		meld.add(tile2);
+		meld.add(tile3);
+		Set set = new Set(meld);
+		ArrayList<Tile> meld2 = new ArrayList<Tile>();
+		Tile tile4 = new Tile(1, 10, false);
+		Tile tile5 = new Tile(1, 10, false);
+		Tile tile6 = new Tile(1, 10, false);
+		meld2.add(tile4);
+		meld2.add(tile5);
+		meld2.add(tile6);
+		Set set2 = new Set(meld2);
+		melds.add(set);
+		melds.add(set2);
 		timer = false;
 	}
 	

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Observable;
 
 import javafx.geometry.Pos;
 import core.RummikubController;
@@ -45,6 +46,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.Node;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.collections.*;
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -337,6 +339,26 @@ public class RummikubView{
 				board.add(hbox,i,j);
 			}
 		}
+		
+	
+		
+		HBox test = new HBox();
+		
+		for(int x = 0; x < model.getMelds().size(); x++) {
+			
+			for(int y =0; y < model.getMelds().get(x).getTiles().size(); y++) {
+				test = (HBox) getNode(x,y,board);
+				String tile = model.getMelds().get(x).getTiles().get(y).toString();
+				String filename =  "file:main/Tiles/"+ tile +".jpg";
+				ImageView image = new ImageView(new Image(filename));
+				test.getChildren().add(image);
+			}
+		}
+		
+		
+
+		
+		
 
 		stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
 //		for(Meld m : model.getMelds()) {
@@ -504,6 +526,21 @@ public class RummikubView{
 		stage.show();
 		
 		}
+	
+	public Node getNode (final int row, final int column, GridPane gridPane){
+		Node result = null;
+		ObservableList<Node> childrens = gridPane.getChildren();
+		
+		for(Node node:childrens) {
+			if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+				result = node;
+				break;
+						
+			}
+		}
+		
+		return result;
+	}
 
 	
 	private void WinView(Stage stage, Player winner) {
