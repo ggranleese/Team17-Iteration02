@@ -9,9 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import model.AI;
+import model.Meld;
 import model.Pile;
 import model.Player;
 import model.RummikubModel;
+import model.RummikubModelMemento;
+import model.Run;
 import model.StrategyOne;
 import model.StrategyThree;
 import model.StrategyTwo;
@@ -23,14 +26,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException; 
+import javafx.scene.control.Alert.*;
+import javafx.scene.control.Alert;
 
 
 public class RummikubController {
 	
-	private final RummikubModel model;
+	public RummikubModel model;
 	
 	public RummikubController(RummikubModel m) {
-		model = m;
+		this.model = m;
 	} 
 	
 	public void updateGameInfo(ArrayList<Player> players, Table table) {
@@ -40,8 +45,7 @@ public class RummikubController {
 
 	public void updatePlayers(int i) {
 		ArrayList<Player> players = new ArrayList<Player>();
-		players.add(new Player());
-		for(int x = 1; x < i; x++) {
+		for(int x = 0; x < i; x++) {
 			players.add(new Player());
 		}
 		model.setPlayers(players);
@@ -113,22 +117,51 @@ public class RummikubController {
 	//finds turn order and also deals hands
 	public void findTurnOrder() {
 		model.findTurnOrder();
-		dealHands();
-		
-	}
-	
-	public void dealHands() {
-		model.dealPlayerHands();
+		for (Player p : model.getPlayers()) {
+			if(p.getHand().size() == 0 ) {
+				p.drawHand(model.getPile());
+			}
+		}
 	}
 
-	public void updatePlayerHand(ArrayList<Player> players, int x, String text) {
+	@SuppressWarnings("restriction")
+	public void updatePlayerHand(int x, String text) {
+		ArrayList<Tile> hold = new ArrayList<Tile>();
 		String[] splitted = text.split(" ");
 		for (String s : splitted) {
-			players.get(x).addTile(parseToTile(s));
-			
-			
+				if(model.getPile().getPile().contains(parseToTile(s))){
+					hold.add(parseToTile(s));
+					model.getPile().removeTile(parseToTile(s));
+				
+			}
+				else {
+					Alert errorAlert = new Alert(AlertType.ERROR);
+					errorAlert.setHeaderText("WARNING: Input not valid");
+					errorAlert.setContentText("Too many repeated tiles! ");
+					errorAlert.showAndWait();
+				}
 		}
+		model.getPlayers().get(x).setHand(hold);
+	}
+	
+	public void addSingleTile(int x, String s) {
 		
+		try {
+			if(model.getPile().getPile().contains(parseToTile(s))){
+			model.getPlayers().get(x).getHand().add(parseToTile(s));
+			model.getPile().removeTile(parseToTile(s));
+			System.out.println("added " + parseToTile(s).toString() + " to " + model.getPlayers().get(x).playerNum);
+			}
+			else {
+				Alert errorAlert = new Alert(AlertType.ERROR);
+				errorAlert.setHeaderText("WARNING: Input not valid");
+				errorAlert.setContentText("Too many repeated tiles! ");
+				errorAlert.showAndWait();
+			}
+		}catch(IndexOutOfBoundsException e){
+			model.getPlayers().get(3).getHand().add(parseToTile(s));
+		}
+		//System.out.println("added " + parseToTile(s).toString() + " to " + model.getPlayers().get(x).playerNum);
 	}
 
 	private Tile parseToTile(String s) {
@@ -260,8 +293,32 @@ public class RummikubController {
 		}catch(FileNotFoundException e) {e.printStackTrace();}
 		catch(ParseException e) {e.printStackTrace();}
 		
+	} 
+
+	public void clearMelds() {
+		model.clearMelds();
+		
 	}
 
+	public void addMeld(ArrayList<Tile> meld) {
+		model.getMelds().add(new Run(meld));
+		
+	}
+	 public void setState(RummikubModel model){
+	      this.model = model;
+	   }
+
+	   public RummikubModel getState(){
+	      return model;
+	   }
+
+	   public RummikubModelMemento saveStateToMemento(){
+	      return new RummikubModelMemento(model);
+	   }
+
+	   public void restoreToState(RummikubModelMemento memento){
+	      this.model = memento.getState();
+	   }
 	
 }
 

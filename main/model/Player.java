@@ -55,6 +55,10 @@ public class Player implements Observer{
 		
 	}
 	
+	public void removeTile(Tile t) {
+			this.hand.remove(t);
+	}
+	
 	public void sortHand() {
 		ArrayList<Tile> blue = new ArrayList<Tile>();
 		ArrayList<Tile> red = new ArrayList<Tile>();
@@ -234,7 +238,9 @@ public class Player implements Observer{
 	public void setGameOver(boolean b) {
 		this.gameOver = b;
 	}
-
+	public void setHand(ArrayList<Tile> newHand) {
+		this.hand = newHand;
+	}
 	public boolean isBot() {
 		return false;
 	}
