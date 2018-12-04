@@ -436,7 +436,6 @@ public class RummikubView{
 		}
 		
 	
-		
 		for(int x = 0; x < model.getMelds().size(); x++) {
 			for(int y =0; y < model.getMelds().get(x).getTiles().size(); y++) {
 				
@@ -445,6 +444,7 @@ public class RummikubView{
 				String filename =  "file:main/Tiles/"+ tile +".jpg";
 				ImageView image = new ImageView(new Image(filename));
 				test.getChildren().add(image);
+				boardTracker[x][y] = model.getMelds().get(x).getTiles().get(y);
 				
 				image.setOnDragDetected(new EventHandler<MouseEvent>() {
 			        public void handle(MouseEvent event) {
@@ -460,62 +460,17 @@ public class RummikubView{
 			            Node source = (Node)event.getTarget();
 			            Integer colIndex = GridPane.getColumnIndex(test);
 			            Integer rowIndex = GridPane.getRowIndex(test);
-			            //System.out.println("cell: " + colIndex + "," + rowIndex);
-			 
+			           
+			        	tileBeingMoved = boardTracker[rowIndex][colIndex];
+			        	System.out.println(boardTracker[rowIndex][colIndex]);
+			        	boardTracker[rowIndex][colIndex] = null;
+			            System.out.println(tileBeingMoved + " being moved from cell: " + colIndex + "," + rowIndex);
+
 			            event.consume();
 			        }
 			    });
 				
-				board.setOnDragDropped(new EventHandler<DragEvent>() {
-				        public void handle(DragEvent event) {
-				        	System.out.println("gi");
-				            Node source = event.getPickResult().getIntersectedNode();
-				            
-				            Integer colIndex = GridPane.getColumnIndex(source);
-				            Integer rowIndex = GridPane.getRowIndex(source);
-				            //System.out.println( tileBeingMoved.toString() + " dropped in cell: " + colIndex + "," + rowIndex);
-				            //boardTracker[board.getRowIndex(source)][board.getColumnIndex(source)] = tileBeingMoved;
-				            
-				            Dragboard db = event.getDragboard();
-				            boolean success = false;
-				            if(source != board && db.hasImage()){
 
-				                Integer cIndex = GridPane.getColumnIndex(source);
-				                Integer rIndex = GridPane.getRowIndex(source);
-				                int x = cIndex == null ? 0 : cIndex;
-				                int y = rIndex == null ? 0 : rIndex;
-				         
-				                
-				                ImageView image = new ImageView(db.getImage());
-				                
-				                image.setOnDragDetected(new EventHandler<MouseEvent>() {
-				    		        public void handle(MouseEvent event) {
-				    		        	System.out.println("from board: " + board.getColumnIndex(image)+ "," +board.getRowIndex(image));
-				    		        	tileBeingMoved = boardTracker[board.getRowIndex(image)][board.getColumnIndex(image)];
-				    		        	boardTracker[board.getRowIndex(image)][board.getColumnIndex(image)] = null;
-				    		        	System.out.println("Just removed " + board.getColumnIndex(image) + "," + board.getRowIndex(image) + " from Tracker");
-				    		        	
-				    		            Dragboard db = image.startDragAndDrop(TransferMode.ANY);
-
-				    		            ClipboardContent cbContent = new ClipboardContent();
-				    		            cbContent.putImage(image.getImage());
-				    		           
-				    		            db.setDragView(image.getImage());
-				    		            db.setContent(cbContent);
-				    		            image.setVisible(false);
-				    		            event.consume();
-				    		        }
-				    		    });
-				                
-				                board.add(image, x, y, 1, 1);
-				                success = true;
-				            }
-				            //let the source know whether the image was successfully transferred and used
-				            event.setDropCompleted(success);
-
-				            event.consume();
-				        }
-				    });
 			}
 		}
 		
@@ -637,7 +592,7 @@ public class RummikubView{
 			    		        public void handle(MouseEvent event) {
 			    		        	System.out.println("from board: " + board.getColumnIndex(image)+ "," +board.getRowIndex(image));
 			    		        	tileBeingMoved = boardTracker[board.getRowIndex(image)][board.getColumnIndex(image)];
-			    		        	boardTracker[board.getRowIndex(image)][board.getColumnIndex(image)] = null;
+			    		        	boardTracker[rIndex][cIndex] = null;
 			    		        	System.out.println("Just removed " + board.getColumnIndex(image) + "," + board.getRowIndex(image) + " from Tracker");
 			    		        	
 			    		            Dragboard db = image.startDragAndDrop(TransferMode.ANY);
@@ -694,6 +649,15 @@ public class RummikubView{
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
+					System.out.println("row 1");
+					for(int j = 0 ; j < 11; j++) {
+						System.out.print(boardTracker[0][j] + " ");
+				}
+					System.out.println("\nrow 2");
+					for(int j = 0 ; j < 11; j++) {
+						System.out.print(boardTracker[1][j] + " ");
+				}
+				
 				nextPlayerTurn();
 				GameView(stage);
 				yes.cancel();
