@@ -56,8 +56,15 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
-import javafx.scene.input.KeyCode;
+
 import org.json.JSONException;
+
+
+
+import javafx.scene.input.KeyCode;
+
+import org.json.JSONException;
+
 
 
 @SuppressWarnings("restriction")
@@ -397,6 +404,16 @@ public class RummikubView{
 		BorderPane screen = new BorderPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
+		HBox top = new HBox();
+		
+		String playerName = Integer.toString(currentPlayer.playerNum); 
+		Label nameLabel = new Label("Player " + playerName + "'s turn");
+		try {
+			nameLabel.setFont(Font.loadFont(new FileInputStream("main/resources/kenvector_future.ttf"),23));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 	    GridPane stand = new GridPane();
 		GridPane board = new GridPane();
@@ -635,11 +652,23 @@ public class RummikubView{
 		
 		screen.setPadding(new Insets(10,10,10,10));
 		
-		screen.setTop(timer);
+		//screen.setTop(timer);
 		//screen.add(tileInput,1,1);
+		
+		TextField handRig = new TextField();
+        handRig.setStyle("-fx-text-inner-color: grey;");
+        handRig.setOnMouseClicked(e -> {
+        handRig.clear();
+        handRig.setStyle("-fx-text-inner-color: black;");
+        });
+        
+        
 		
 		screen.setCenter(board);
 		screen.setRight(endTurn);
+		//screen.setTop(nameLabel);
+		top.getChildren().addAll(timer, nameLabel,handRig);
+		screen.setTop(top);
 		
 		screen.setBottom(Stand);
 		GridPane.setColumnSpan(Stand, GridPane.REMAINING);
@@ -655,6 +684,26 @@ public class RummikubView{
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
+
+//					System.out.println("row 1");
+//					for(int j = 0 ; j < 11; j++) {
+//						System.out.print(boardTracker[0][j] + " ");
+//				}
+//					System.out.println("\nrow 2");
+//					for(int j = 0 ; j < 11; j++) {
+//						System.out.print(boardTracker[1][j] + " ");
+//				}
+						
+			//for some reason this isnt working...addSingleTile is never being called		
+			if(handRig.getText().isEmpty() == false) {
+				System.out.println(handRig.getText());
+				controller.addSingleTile(currentPlayer.playerNum-1, handRig.getText());
+					
+			}else {
+				System.out.println("no rig, tile drawn. ");
+				currentPlayer.drawTile(model.getPile());
+			}
+
 					controller.clearMelds();
 					for(int i = 0 ; i < 14; i++) {
 						System.out.println("Melds on row " + i);
@@ -672,11 +721,14 @@ public class RummikubView{
 				}
 				
 				//find point difference from memento
+
 				nextPlayerTurn();
 				GameView(stage);
 				yes.cancel();
 			}
 		});
+		
+		
 		
 		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
