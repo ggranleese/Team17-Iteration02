@@ -38,6 +38,7 @@ import javafx.stage.Stage;
 import model.AI;
 import model.Player;
 import model.RummikubModel;
+import model.RummikubModelMemento;
 import model.Tile;
 import javafx.scene.Group;
 import javafx.scene.layout.FlowPane;
@@ -64,15 +65,13 @@ import org.json.JSONException;
 public class RummikubView{
 
 	private RummikubController controller;
-	public RummikubModel model;
 	public Player currentPlayer;
 	public boolean cheatsSelected;
 	public Tile tileBeingMoved;
 	public Tile[][] boardTracker;
 	
 	public RummikubView() {
-		model = new RummikubModel();
-		controller = new RummikubController(model);
+		controller = new RummikubController(new RummikubModel());
 		boardTracker = new Tile[14][14];
 	}
 	
@@ -329,7 +328,7 @@ public class RummikubView{
 		nextButton.setLayoutX(400);
 		nextButton.setLayoutY(500);
 		
-		if(model.getPlayers() == null) {
+		if(controller.model.getPlayers() == null) {
 			controller.setDefaultGame();
 		}
 		
@@ -393,7 +392,8 @@ public class RummikubView{
 	
 
 	private Scene GameView(Stage stage) {
-		
+		RummikubModelMemento memento = controller.saveStateToMemento();
+
 		BorderPane screen = new BorderPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
@@ -648,16 +648,14 @@ public class RummikubView{
 		screen.setBackground(new Background(createBackground()));
 		
 		endTurn.setOnAction(e  -> {
-			for (Tile t : removeThese) {
-				currentPlayer.getHand().remove(t);
-			}
+			boolean removeHand = true;
 			
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
 					controller.clearMelds();
 					for(int i = 0 ; i < 14; i++) {
-						System.out.println("Melds on row " + i);
+						//System.out.println("Melds on row " + i);
 						ArrayList<Tile> meld = new ArrayList<Tile>();
 						for(int j = 0 ; j < 11; j++) {
 							if(boardTracker[i][j] != null) {
@@ -665,10 +663,25 @@ public class RummikubView{
 								boardTracker[i][j] = null;
 							}
 						}
-						System.out.println(meld);
+						//System.out.println(meld);
 						if(meld.size() != 0) {
-							controller.addMeld(meld);
+							//b10 b10 g10 g10 o10 o10 r12
+							boolean invalid = controller.addMeld(meld);
+							if(invalid == false) {
+								controller.restoreToState(memento);
+								removeHand = false;
+							}
 						}
+				}
+				
+				if(removeHand == true) {
+					for (Tile t : removeThese) {
+						//controller.model.getPlayers().get(0).getHand().remove(t);
+						currentPlayer.getHand().remove(t);
+					}
+				}
+				if(currentPlayer.hand.size() == 0) {
+					WinView(stage, currentPlayer);
 				}
 				
 				//find point difference from memento
@@ -760,7 +773,7 @@ public class RummikubView{
 	}
 	
 	public void nextPlayerTurn() {
-		int i = model.getPlayers().indexOf(currentPlayer);
+		int i = controller.model.getPlayers().indexOf(currentPlayer);
 		try {
 			//this.controller.drawTile(currentPlayer);
 			currentPlayer = controller.model.getPlayers().get(i+1);

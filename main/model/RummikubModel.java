@@ -40,6 +40,8 @@ public class RummikubModel {
 	
 	public RummikubModel(RummikubModel model) {
 		this.melds = new ArrayList<Meld>(model.melds);
+		this.pile = new Pile(model.pile);
+		this.players = new ArrayList<Player>(model.getPlayers());
 	}
 	
 	//GETTERS and SETTERS

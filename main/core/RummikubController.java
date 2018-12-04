@@ -15,6 +15,7 @@ import model.Player;
 import model.RummikubModel;
 import model.RummikubModelMemento;
 import model.Run;
+import model.Set;
 import model.StrategyOne;
 import model.StrategyThree;
 import model.StrategyTwo;
@@ -279,8 +280,22 @@ public class RummikubController {
 		
 	}
 
-	public void addMeld(ArrayList<Tile> meld) {
-		model.getMelds().add(new Run(meld));
+	public boolean addMeld(ArrayList<Tile> meld) {
+		Run run = new Run(meld);
+		Set set = new Set(meld);
+		
+		if(run.isValid()) {
+			model.getMelds().add(new Run(meld));
+			return true;
+		}
+		else if(set.isValid()) {
+			model.getMelds().add(new Run(meld));
+			return true;
+		}
+		else {
+			return false;
+		}
+	
 		
 	}
 	 public void setState(RummikubModel model){

@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import junit.framework.TestCase;
 import model.Meld;
+import model.Pile;
+import model.Player;
 import model.RummikubModel;
 import model.RummikubModelMemento;
 import model.Run;
@@ -41,9 +43,8 @@ public class MementoTest extends TestCase{
 		controller.restoreToState(memento);
 		
 		System.out.println("Restored Controller model has: "+controller.model.getMelds().size());
-		System.out.println(game.getMelds().size());
 		
-		assertTrue(game.getMelds().size() == 0);
+		assertTrue(controller.model.getMelds().size() == 1);
 	}
 
 }
