@@ -157,7 +157,6 @@ public class Player implements Observer{
 	}
 
 	public void drawTile(Pile p) {
-		System.out.println(hand.size()+1 +" "+ p.getTile(0).toString());
 		this.hand.add(p.getTile(0));
 		p.removeTile();
 		sortHand();

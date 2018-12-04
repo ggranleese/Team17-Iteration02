@@ -56,10 +56,19 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
+<<<<<<< HEAD
 
 import org.json.JSONException;
 
 
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> 188a395ac590685e15618a729c480a49bf8c8900
+import org.json.JSONException;
+
+>>>>>>> 3e867e9b052d5d91f6930989654c9c31c15d7fba
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -69,10 +78,12 @@ public class RummikubView{
 	public Player currentPlayer;
 	public boolean cheatsSelected;
 	public Tile tileBeingMoved;
+	public Tile[][] boardTracker;
 	
 	public RummikubView() {
 		model = new RummikubModel();
 		controller = new RummikubController(model);
+		boardTracker = new Tile[14][14];
 	}
 	
 	public void buildAndShowGui(final Stage stage) {
@@ -442,25 +453,44 @@ public class RummikubView{
 		}
 		
 	
-		
-		HBox test = new HBox();
-		
 		for(int x = 0; x < model.getMelds().size(); x++) {
-			
 			for(int y =0; y < model.getMelds().get(x).getTiles().size(); y++) {
-				test = (HBox) getNode(x,y,board);
+				
+				HBox test = (HBox) getNode(x,y,board);
 				String tile = model.getMelds().get(x).getTiles().get(y).toString();
 				String filename =  "file:main/Tiles/"+ tile +".jpg";
 				ImageView image = new ImageView(new Image(filename));
 				test.getChildren().add(image);
+				boardTracker[x][y] = model.getMelds().get(x).getTiles().get(y);
+				
+				image.setOnDragDetected(new EventHandler<MouseEvent>() {
+			        public void handle(MouseEvent event) {
+			        	Dragboard db = image.startDragAndDrop(TransferMode.ANY);
+
+			        	ClipboardContent cbContent = new ClipboardContent();
+				        cbContent.putImage(image.getImage());
+				           
+				        db.setDragView(image.getImage());
+				        db.setContent(cbContent);
+				        image.setVisible(false);
+			        	
+			            Node source = (Node)event.getTarget();
+			            Integer colIndex = GridPane.getColumnIndex(test);
+			            Integer rowIndex = GridPane.getRowIndex(test);
+			           
+			        	tileBeingMoved = boardTracker[rowIndex][colIndex];
+			        	System.out.println(boardTracker[rowIndex][colIndex]);
+			        	boardTracker[rowIndex][colIndex] = null;
+			            System.out.println(tileBeingMoved + " being moved from cell: " + colIndex + "," + rowIndex);
+
+			            event.consume();
+			        }
+			    });
+				
+
 			}
 		}
 		
-		
-
-		
-		
-
 		stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
 //		for(Meld m : model.getMelds()) {
 //			
@@ -525,17 +555,7 @@ public class RummikubView{
 		            event.consume();
 		        }
 		    });
-			
-//			 Stand.setOnDragDropped(new EventHandler<DragEvent>() {
-//			        public void handle(DragEvent event) {
-//			        	
-//			            Dragboard db = event.getDragboard();
-//			            ImageView workpls = new ImageView(db.getImage());
-//			            workpls.setVisible(true);
-//			            event.consume();
-//			        }
-//			    });
-//			
+				
 			board.setOnDragOver(new EventHandler<DragEvent>() {
 	 			public void handle(DragEvent event) {
 	            if(event.getGestureSource() != board && event.getDragboard().hasImage()){
@@ -571,7 +591,8 @@ public class RummikubView{
 			            Integer colIndex = GridPane.getColumnIndex(source);
 			            Integer rowIndex = GridPane.getRowIndex(source);
 			            System.out.println( tileBeingMoved.toString() + " dropped in cell: " + colIndex + "," + rowIndex);
-		            
+			            boardTracker[board.getRowIndex(source)][board.getColumnIndex(source)] = tileBeingMoved;
+			            
 			            Dragboard db = event.getDragboard();
 			            boolean success = false;
 			            if(source != board && db.hasImage()){
@@ -586,7 +607,10 @@ public class RummikubView{
 			                
 			                image.setOnDragDetected(new EventHandler<MouseEvent>() {
 			    		        public void handle(MouseEvent event) {
-			    		        	System.out.println("from board: " + board.getRowIndex(image)+ board.getColumnIndex(image));
+			    		        	System.out.println("from board: " + board.getColumnIndex(image)+ "," +board.getRowIndex(image));
+			    		        	tileBeingMoved = boardTracker[board.getRowIndex(image)][board.getColumnIndex(image)];
+			    		        	boardTracker[rIndex][cIndex] = null;
+			    		        	System.out.println("Just removed " + board.getColumnIndex(image) + "," + board.getRowIndex(image) + " from Tracker");
 			    		        	
 			    		            Dragboard db = image.startDragAndDrop(TransferMode.ANY);
 
@@ -645,6 +669,15 @@ public class RummikubView{
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
+					System.out.println("row 1");
+					for(int j = 0 ; j < 11; j++) {
+						System.out.print(boardTracker[0][j] + " ");
+				}
+					System.out.println("\nrow 2");
+					for(int j = 0 ; j < 11; j++) {
+						System.out.print(boardTracker[1][j] + " ");
+				}
+				
 				nextPlayerTurn();
 				GameView(stage);
 				yes.cancel();
@@ -658,6 +691,11 @@ public class RummikubView{
 		
 		}
 	
+	private void makeDraggable(ImageView image) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public Node getNode (final int row, final int column, GridPane gridPane){
 		Node result = null;
 		ObservableList<Node> childrens = gridPane.getChildren();
@@ -735,7 +773,7 @@ public class RummikubView{
 	public void nextPlayerTurn() {
 		int i = model.getPlayers().indexOf(currentPlayer);
 		try {
-			this.controller.drawTile(currentPlayer);
+			//this.controller.drawTile(currentPlayer);
 			currentPlayer = model.getPlayers().get(i+1);
 		}catch (IndexOutOfBoundsException e) {
 			currentPlayer = model.getPlayers().get(0);
