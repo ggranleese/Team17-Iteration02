@@ -55,6 +55,10 @@ public class Player implements Observer{
 		
 	}
 	
+	public void removeTile(Tile t) {
+			this.hand.remove(t);
+	}
+	
 	public void sortHand() {
 		ArrayList<Tile> blue = new ArrayList<Tile>();
 		ArrayList<Tile> red = new ArrayList<Tile>();
