@@ -644,10 +644,21 @@ public class RummikubView{
 		//screen.setTop(timer);
 		//screen.add(tileInput,1,1);
 		
+		TextField handRig = new TextField("Add Tile to Hand");
+        handRig.setStyle("-fx-text-inner-color: grey;");
+        handRig.setOnMouseClicked(e -> {
+        	handRig.clear();
+        	handRig.setStyle("-fx-text-inner-color: black;");
+        });
+        
+        handRig.textProperty().addListener((obs, oldText, newText) -> {
+        	controller.updatePlayerHand(model.getPlayers(), currentPlayer.playerNum-1, newText);
+        });
+		
 		screen.setCenter(board);
 		screen.setRight(endTurn);
 		//screen.setTop(nameLabel);
-		top.getChildren().addAll(timer, nameLabel);
+		top.getChildren().addAll(timer, nameLabel,handRig);
 		screen.setTop(top);
 		
 		screen.setBottom(Stand);
@@ -675,6 +686,8 @@ public class RummikubView{
 				yes.cancel();
 			}
 		});
+		
+		
 		
 		Scene display = new Scene(screen,1000,900);
 		stage.setScene(display);
