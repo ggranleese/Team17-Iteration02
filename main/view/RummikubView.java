@@ -537,9 +537,9 @@ public class RummikubView{
 		        	tileBeingMoved = currentPlayer.getHand().get(tileNumber);
 		        	System.out.println("from hand: " + tileBeingMoved.toString());
 		        	//remove this tile from player hand
+		        	currentPlayer.getHand().remove(board.getColumnIndex(tileImage) - 1);
 		        	
 		        	ImageView highlightedTile = highlightTile(tileBeingMoved.toString());
-		        	
 		        	
 		        	Stand.add( highlightedTile, board.getColumnIndex(tileImage), board.getRowIndex(tileImage));
 		        	
@@ -677,6 +677,7 @@ public class RummikubView{
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
+
 //					System.out.println("row 1");
 //					for(int j = 0 ; j < 11; j++) {
 //						System.out.print(boardTracker[0][j] + " ");
@@ -695,6 +696,24 @@ public class RummikubView{
 				System.out.println("no rig, tile drawn. ");
 				currentPlayer.drawTile(model.getPile());
 			}
+
+					controller.clearMelds();
+					for(int i = 0 ; i < 14; i++) {
+						System.out.println("Melds on row " + i);
+						ArrayList<Tile> meld = new ArrayList<Tile>();
+						for(int j = 0 ; j < 11; j++) {
+							if(boardTracker[i][j] != null) {
+								meld.add(boardTracker[i][j]);
+							}
+						}
+						System.out.println(meld);
+						if(meld.size() != 0) {
+							controller.addMeld(meld);
+						}
+				}
+				
+				//find point difference from memento
+
 				nextPlayerTurn();
 				GameView(stage);
 				yes.cancel();
@@ -710,11 +729,6 @@ public class RummikubView{
 		
 		}
 	
-	private void makeDraggable(ImageView image) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public Node getNode (final int row, final int column, GridPane gridPane){
 		Node result = null;
 		ObservableList<Node> childrens = gridPane.getChildren();
