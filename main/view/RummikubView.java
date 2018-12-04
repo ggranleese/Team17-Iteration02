@@ -56,10 +56,10 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
+
 import org.json.JSONException;
-=======
->>>>>>> 6c7516cc12f9a978f6bc778ac0022a54abad19d5
+
+
 
 @SuppressWarnings("restriction")
 public class RummikubView{
