@@ -13,6 +13,7 @@ import model.Meld;
 import model.Pile;
 import model.Player;
 import model.RummikubModel;
+import model.RummikubModelMemento;
 import model.Run;
 import model.StrategyOne;
 import model.StrategyThree;
@@ -31,10 +32,10 @@ import javafx.scene.control.Alert;
 
 public class RummikubController {
 	
-	private final RummikubModel model;
+	public RummikubModel model;
 	
 	public RummikubController(RummikubModel m) {
-		model = m;
+		this.model = m;
 	} 
 	
 	public void updateGameInfo(ArrayList<Player> players, Table table) {
@@ -282,7 +283,21 @@ public class RummikubController {
 		model.getMelds().add(new Run(meld));
 		
 	}
+	 public void setState(RummikubModel model){
+	      this.model = model;
+	   }
 
+	   public RummikubModel getState(){
+	      return model;
+	   }
+
+	   public RummikubModelMemento saveStateToMemento(){
+	      return new RummikubModelMemento(model);
+	   }
+
+	   public void restoreToState(RummikubModelMemento memento){
+	      this.model = memento.getState();
+	   }
 	
 }
 
