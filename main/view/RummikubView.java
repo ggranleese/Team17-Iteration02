@@ -161,14 +161,14 @@ public class RummikubView{
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
 		
-		for (int x = 2; x < model.getPlayers().size(); x++) {
+		for (int x = 0; x < model.getPlayers().size(); x++) {
 			Label label;
 			ArrayList<Player> players = model.getPlayers();
 			Player player = players.get(x);
 			int position = x;
 			
 			if (!player.isBot()) {
-				label = new Label("Player " + (x));
+				label = new Label("Player " + (x+1));
 								
 		        ComboBox<String> playerType = new ComboBox<String>();
 		        playerType.getSelectionModel().selectFirst();
@@ -183,9 +183,8 @@ public class RummikubView{
 		        	handRig.setStyle("-fx-text-inner-color: black;");
 		        });
 		        
-		        handRig.setOnMouseExited(e -> {
-		        	System.out.println(handRig.getText());
-		        	controller.updatePlayerHand(players, position, handRig.getText());
+		        handRig.textProperty().addListener((obs, oldText, newText) -> {
+		        	controller.updatePlayerHand(players, position, newText);
 		        });
 
 		        playerType.setOnAction(e-> {
@@ -201,7 +200,7 @@ public class RummikubView{
 
 			}
 			if(player.isBot()) {
-				label = new Label("Player " + (x) + " (BOT)");
+				label = new Label("Player " + (x+1) + " (BOT)");
 				
 				ComboBox<String> stratChoice = new ComboBox<String>();
 		        stratChoice.getSelectionModel().selectFirst();
@@ -234,11 +233,10 @@ public class RummikubView{
 		        	handRig.setStyle("-fx-text-inner-color: black;");
 		        });
 		        
-		        handRig.setOnMouseExited(e -> {
-		        	System.out.println(handRig.getText());
-		        	controller.updatePlayerHand(players, position, handRig.getText());
+		        handRig.textProperty().addListener((obs, oldText, newText) -> {
+		        	controller.updatePlayerHand(players, position, newText);
 		        });
-		        
+		   
 		        playerType.setOnAction(e-> {
 		        	if(playerType.getValue() == "Human") {
 		        		controller.updatePlayerTypeHuman(players, position);
@@ -271,9 +269,11 @@ public class RummikubView{
 		button1.setOnAction(e-> {
 			controller.updatePlayers((int) (numPlayer.getValue()));
 			handleOptionsButtonAction(stage);});
-		confirmButton.setOnAction(e -> buildAndShowGui(stage));
+		
+		confirmButton.setOnAction(e -> {buildAndShowGui(stage);});
 		
 		timer.setOnAction(e -> controller.updateTimer());
+		
 		cheats.setOnAction(e -> {
 			if(this.cheatsSelected) {
 				cheatsSelected = false;
@@ -338,8 +338,9 @@ public class RummikubView{
 		ArrayList<Player> sortedPlayers = new ArrayList<>();
 		
 		
-		controller.findTurnOrder();
 		controller.namePlayers();
+		controller.findTurnOrder();
+	
 		
 		HBox cardBox = new HBox();
 		cardBox.setSpacing(50);
@@ -355,13 +356,12 @@ public class RummikubView{
 		cardBox.setLayoutX(225);
 		cardBox.setLayoutY(300);
 		
-		Collections.sort(players, new Comparator<Player>() {
+		sortedPlayers.addAll(players);
+		Collections.sort(sortedPlayers, new Comparator<Player>() {
 			public int compare(Player s2, Player s1) {
 				return Integer.compare(s1.turnOrderCard.getValue(), s2.turnOrderCard.getValue());
 			}
 		});
-	
-		sortedPlayers.addAll(players);
 		
 		label = new Label("Player " + sortedPlayers.get(0).playerNum + " goes first!");
 		
@@ -432,10 +432,7 @@ public class RummikubView{
 		//these are the image height/width
 		stand.setMaxHeight(178);
 		stand.setMaxWidth(700);
-		
-		
-		//board.setMinHeight(500);
-		//board.setMinWidth(500);
+	
 		board.setAlignment(Pos.CENTER);
 		
 		for(int i = 0; i<14; i ++) {

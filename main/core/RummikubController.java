@@ -23,6 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException; 
+import javafx.scene.control.Alert.*;
+import javafx.scene.control.Alert;
 
 
 public class RummikubController {
@@ -40,8 +42,7 @@ public class RummikubController {
 
 	public void updatePlayers(int i) {
 		ArrayList<Player> players = new ArrayList<Player>();
-		players.add(new Player());
-		for(int x = 1; x < i; x++) {
+		for(int x = 0; x < i; x++) {
 			players.add(new Player());
 		}
 		model.setPlayers(players);
@@ -113,22 +114,31 @@ public class RummikubController {
 	//finds turn order and also deals hands
 	public void findTurnOrder() {
 		model.findTurnOrder();
-		dealHands();
-		
-	}
-	
-	public void dealHands() {
-		model.dealPlayerHands();
+		for (Player p : model.getPlayers()) {
+			if(p.getHand().size() == 0 ) {
+				System.out.println("Player "+ p.playerNum + " dealt a hand.");
+				p.drawHand(model.getPile());
+			}
+		}
 	}
 
 	public void updatePlayerHand(ArrayList<Player> players, int x, String text) {
+		ArrayList<Tile> hold = new ArrayList<Tile>();
+		System.out.println(text);
 		String[] splitted = text.split(" ");
 		for (String s : splitted) {
-			players.get(x).addTile(parseToTile(s));
-			
-			
+			System.out.println(s +": "+ s.length());
+			if(s.length() > 1) {
+				System.out.println("trying..");
+				hold.add(parseToTile(s));
+				if(model.getPile().getPile().contains(parseToTile(s))){
+					hold.add(parseToTile(s));
+					System.out.println("success!");
+					model.getPile().removeTile(parseToTile(s));
+				}
+			}
 		}
-		
+		players.get(x).setHand(hold);
 	}
 
 	private Tile parseToTile(String s) {
