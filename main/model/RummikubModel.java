@@ -98,5 +98,11 @@ public class RummikubModel {
 		}
 		
 	}
+
+
+	public void clearMelds() {
+		this.melds.clear();
+		
+	}
 	
 }

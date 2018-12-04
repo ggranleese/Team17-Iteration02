@@ -9,9 +9,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import model.AI;
+import model.Meld;
 import model.Pile;
 import model.Player;
 import model.RummikubModel;
+import model.Run;
 import model.StrategyOne;
 import model.StrategyThree;
 import model.StrategyTwo;
@@ -116,7 +118,6 @@ public class RummikubController {
 		model.findTurnOrder();
 		for (Player p : model.getPlayers()) {
 			if(p.getHand().size() == 0 ) {
-				System.out.println("Player "+ p.playerNum + " dealt a hand.");
 				p.drawHand(model.getPile());
 			}
 		}
@@ -127,13 +128,17 @@ public class RummikubController {
 		String[] splitted = text.split(" ");
 		for (String s : splitted) {
 				if(model.getPile().getPile().contains(parseToTile(s))){
-					System.out.println("success!");
 					hold.add(parseToTile(s));
 					model.getPile().removeTile(parseToTile(s));
 				
 			}
+				else {
+					Alert errorAlert = new Alert(AlertType.ERROR);
+					errorAlert.setHeaderText("WARNING: Input not valid");
+					errorAlert.setContentText("Too many repeated tiles! ");
+					errorAlert.showAndWait();
+				}
 		}
-		System.out.println(hold.size());
 		model.getPlayers().get(x).setHand(hold);
 	}
 
@@ -265,6 +270,16 @@ public class RummikubController {
 			
 		}catch(FileNotFoundException e) {e.printStackTrace();}
 		catch(ParseException e) {e.printStackTrace();}
+		
+	} 
+
+	public void clearMelds() {
+		model.clearMelds();
+		
+	}
+
+	public void addMeld(ArrayList<Tile> meld) {
+		model.getMelds().add(new Run(meld));
 		
 	}
 
