@@ -56,14 +56,13 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
+
 import org.json.JSONException;
 
 
 
-=======
 import javafx.scene.input.KeyCode;
->>>>>>> dc64192a48df0514368921b4afb71dd90054ba39
+
 import org.json.JSONException;
 
 
@@ -661,7 +660,7 @@ public class RummikubView{
         });
         
         handRig.textProperty().addListener((obs, oldText, newText) -> {
-        	controller.updatePlayerHand(model.getPlayers(), currentPlayer.playerNum-1, newText);
+        	controller.updatePlayerHand(currentPlayer.playerNum-1, newText);
         });
 		
 		screen.setCenter(board);

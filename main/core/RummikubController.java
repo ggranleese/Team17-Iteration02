@@ -122,6 +122,7 @@ public class RummikubController {
 		}
 	}
 
+	@SuppressWarnings("restriction")
 	public void updatePlayerHand(int x, String text) {
 		ArrayList<Tile> hold = new ArrayList<Tile>();
 		String[] splitted = text.split(" ");
@@ -132,6 +133,12 @@ public class RummikubController {
 					model.getPile().removeTile(parseToTile(s));
 				
 			}
+				else {
+					Alert errorAlert = new Alert(AlertType.ERROR);
+					errorAlert.setHeaderText("WARNING: Input not valid");
+					errorAlert.setContentText("Too many repeated tiles! ");
+					errorAlert.showAndWait();
+				}
 		}
 		System.out.println(hold.size());
 		model.getPlayers().get(x).setHand(hold);
