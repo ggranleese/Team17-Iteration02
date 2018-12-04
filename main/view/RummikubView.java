@@ -56,19 +56,13 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
+import org.json.JSONException;
+
+
 
 import org.json.JSONException;
 
 
-=======
-<<<<<<< HEAD
-=======
-
->>>>>>> 188a395ac590685e15618a729c480a49bf8c8900
-import org.json.JSONException;
-
->>>>>>> 3e867e9b052d5d91f6930989654c9c31c15d7fba
 
 @SuppressWarnings("restriction")
 public class RummikubView{
@@ -677,6 +671,7 @@ public class RummikubView{
 					for(int j = 0 ; j < 11; j++) {
 						System.out.print(boardTracker[1][j] + " ");
 				}
+			
 				
 				nextPlayerTurn();
 				GameView(stage);
