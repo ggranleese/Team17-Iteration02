@@ -122,23 +122,19 @@ public class RummikubController {
 		}
 	}
 
-	public void updatePlayerHand(ArrayList<Player> players, int x, String text) {
+	public void updatePlayerHand(int x, String text) {
 		ArrayList<Tile> hold = new ArrayList<Tile>();
-		System.out.println(text);
 		String[] splitted = text.split(" ");
 		for (String s : splitted) {
-			System.out.println(s +": "+ s.length());
-			if(s.length() > 1) {
-				System.out.println("trying..");
-				hold.add(parseToTile(s));
 				if(model.getPile().getPile().contains(parseToTile(s))){
-					hold.add(parseToTile(s));
 					System.out.println("success!");
+					hold.add(parseToTile(s));
 					model.getPile().removeTile(parseToTile(s));
-				}
+				
 			}
 		}
-		players.get(x).setHand(hold);
+		System.out.println(hold.size());
+		model.getPlayers().get(x).setHand(hold);
 	}
 
 	private Tile parseToTile(String s) {
