@@ -35,6 +35,7 @@ public class RummikubModel {
 		Set set2 = new Set(meld2);
 		melds.add(set);
 		melds.add(set2);
+		System.out.println(pile.getPile().size());
 		timer = false;
 	}
 	

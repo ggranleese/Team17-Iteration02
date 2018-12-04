@@ -23,7 +23,7 @@ public class GUIHandRigTest extends TestCase{
 		players.add(player);
 		
 		String text = "b10 o4 r7 00";
-		controller.updatePlayerHand(players, 0, text);
+		controller.updatePlayerHand(0, text);
 		
 		for(Tile tile : players.get(0).getHand()) {
 			System.out.println(tile.toString());
