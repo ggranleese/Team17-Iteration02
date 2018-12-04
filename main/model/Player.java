@@ -31,6 +31,7 @@ public class Player implements Observer{
 		for(int i = 0; i<14; i++) {
 			drawTile(p);
 		}
+		System.out.println(this.getHand().size() + "\n");
 		sortHand();
 		
 	}
