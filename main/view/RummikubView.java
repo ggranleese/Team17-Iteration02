@@ -56,10 +56,6 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 188a395ac590685e15618a729c480a49bf8c8900
 import org.json.JSONException;
 
 
