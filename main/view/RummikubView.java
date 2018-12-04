@@ -56,10 +56,7 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 188a395ac590685e15618a729c480a49bf8c8900
+import javafx.scene.input.KeyCode;
 import org.json.JSONException;
 
 
@@ -182,8 +179,10 @@ public class RummikubView{
 		        	handRig.setStyle("-fx-text-inner-color: black;");
 		        });
 		        
-		        handRig.textProperty().addListener((obs, oldText, newText) -> {
-		        	controller.updatePlayerHand(players, position, newText);
+		        handRig.setOnKeyPressed(e -> {
+		        	if (e.getCode() == KeyCode.ENTER) {
+		                controller.updatePlayerHand(position , handRig.getText());
+		            }
 		        });
 
 		        playerType.setOnAction(e-> {
@@ -232,9 +231,12 @@ public class RummikubView{
 		        	handRig.setStyle("-fx-text-inner-color: black;");
 		        });
 		        
-		        handRig.textProperty().addListener((obs, oldText, newText) -> {
-		        	controller.updatePlayerHand(players, position, newText);
+		        handRig.setOnKeyPressed(e -> {
+		        	if (e.getCode() == KeyCode.ENTER) {
+		                controller.updatePlayerHand(position , handRig.getText());
+		            }
 		        });
+
 		   
 		        playerType.setOnAction(e-> {
 		        	if(playerType.getValue() == "Human") {
