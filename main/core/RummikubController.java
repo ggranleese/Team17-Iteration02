@@ -230,10 +230,7 @@ public class RummikubController {
 		player4.turnOrderCard = new Tile(1,10, false);
 		
 		JSONArray players = new JSONArray();
-		((List<Player>) players).add(player1);
-		((List<Player>) players).add(player2);
-		((List<Player>) players).add(player3);
-		((List<Player>) players).add(player4);
+		
 		
 		object.put("players", players);
 		
@@ -256,8 +253,9 @@ public class RummikubController {
 		
 		try {
 			
-			JSONObject obj = (JSONObject) parser.parse(new FileReader(file));
-			JSONArray playersJSON = (JSONArray) obj.get("players");
+			Object obj = parser.parse(new FileReader(file));
+			JSONObject jsonObj = (JSONObject) obj;
+			JSONArray playersJSON = (JSONArray) jsonObj.get("players");
 			Iterator<Player> iterator = ((List<Player>) playersJSON).iterator();
 			
 			
