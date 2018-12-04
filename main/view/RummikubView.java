@@ -336,6 +336,7 @@ public class RummikubView{
 		
 		controller.namePlayers();
 		controller.findTurnOrder();
+	
 		
 		HBox cardBox = new HBox();
 		cardBox.setSpacing(50);
@@ -351,13 +352,12 @@ public class RummikubView{
 		cardBox.setLayoutX(225);
 		cardBox.setLayoutY(300);
 		
-		Collections.sort(players, new Comparator<Player>() {
+		sortedPlayers.addAll(players);
+		Collections.sort(sortedPlayers, new Comparator<Player>() {
 			public int compare(Player s2, Player s1) {
 				return Integer.compare(s1.turnOrderCard.getValue(), s2.turnOrderCard.getValue());
 			}
 		});
-	
-		sortedPlayers.addAll(players);
 		
 		label = new Label("Player " + sortedPlayers.get(0).playerNum + " goes first!");
 		
@@ -418,10 +418,7 @@ public class RummikubView{
 		//these are the image height/width
 		stand.setMaxHeight(178);
 		stand.setMaxWidth(700);
-		
-		
-		//board.setMinHeight(500);
-		//board.setMinWidth(500);
+	
 		board.setAlignment(Pos.CENTER);
 		
 		for(int i = 0; i<14; i ++) {

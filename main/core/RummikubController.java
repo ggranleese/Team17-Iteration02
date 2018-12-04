@@ -23,6 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException; 
+import javafx.scene.control.Alert.*;
+import javafx.scene.control.Alert;
 
 
 public class RummikubController {
@@ -122,14 +124,21 @@ public class RummikubController {
 
 	public void updatePlayerHand(ArrayList<Player> players, int x, String text) {
 		ArrayList<Tile> hold = new ArrayList<Tile>();
+		System.out.println(text);
 		String[] splitted = text.split(" ");
 		for (String s : splitted) {
+			System.out.println(s +": "+ s.length());
 			if(s.length() > 1) {
-			hold.add(parseToTile(s));
+				System.out.println("trying..");
+				hold.add(parseToTile(s));
+				if(model.getPile().getPile().contains(parseToTile(s))){
+					hold.add(parseToTile(s));
+					System.out.println("success!");
+					model.getPile().removeTile(parseToTile(s));
+				}
 			}
 		}
 		players.get(x).setHand(hold);
-		
 	}
 
 	private Tile parseToTile(String s) {

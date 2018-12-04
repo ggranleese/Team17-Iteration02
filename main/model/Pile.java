@@ -37,6 +37,10 @@ public ArrayList<Tile> pile;
 		this.pile.remove(0);
 	}
 	
+	public void removeTile(Tile t) {
+		this.pile.remove(t);
+	}
+	
 	public void addTile(Tile t) {
 		this.pile.add(0,t);
 	}
