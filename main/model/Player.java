@@ -234,7 +234,9 @@ public class Player implements Observer{
 	public void setGameOver(boolean b) {
 		this.gameOver = b;
 	}
-
+	public void setHand(ArrayList<Tile> newHand) {
+		this.hand = newHand;
+	}
 	public boolean isBot() {
 		return false;
 	}

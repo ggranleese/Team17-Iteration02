@@ -40,8 +40,7 @@ public class RummikubController {
 
 	public void updatePlayers(int i) {
 		ArrayList<Player> players = new ArrayList<Player>();
-		players.add(new Player());
-		for(int x = 1; x < i; x++) {
+		for(int x = 0; x < i; x++) {
 			players.add(new Player());
 		}
 		model.setPlayers(players);
@@ -113,21 +112,23 @@ public class RummikubController {
 	//finds turn order and also deals hands
 	public void findTurnOrder() {
 		model.findTurnOrder();
-		dealHands();
-		
-	}
-	
-	public void dealHands() {
-		model.dealPlayerHands();
+		for (Player p : model.getPlayers()) {
+			if(p.getHand().size() == 0 ) {
+				System.out.println("Player "+ p.playerNum + " dealt a hand.");
+				p.drawHand(model.getPile());
+			}
+		}
 	}
 
 	public void updatePlayerHand(ArrayList<Player> players, int x, String text) {
+		ArrayList<Tile> hold = new ArrayList<Tile>();
 		String[] splitted = text.split(" ");
 		for (String s : splitted) {
-			players.get(x).addTile(parseToTile(s));
-			
-			
+			if(s.length() > 1) {
+			hold.add(parseToTile(s));
+			}
 		}
+		players.get(x).setHand(hold);
 		
 	}
 
