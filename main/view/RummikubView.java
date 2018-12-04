@@ -511,16 +511,19 @@ public class RummikubView{
             Stand.add(tiles.get(num), num+1, 1);
             num++;
 			}
-
+		ArrayList<Tile> removeThese = new ArrayList<Tile>();
 		for (ImageView tileImage: tiles) {
 			tileImage.setOnDragDetected(new EventHandler<MouseEvent>() {
 		        public void handle(MouseEvent event) {
 		 
 		        	int tileNumber = board.getColumnIndex(tileImage) - 1;
+		        	//this causes bug
 		        	tileBeingMoved = currentPlayer.getHand().get(tileNumber);
 		        	System.out.println("from hand: " + tileBeingMoved.toString());
 		        	//remove this tile from player hand
-		        	currentPlayer.getHand().remove(board.getColumnIndex(tileImage) - 1);
+		        	//currentPlayer.getHand().remove(board.getColumnIndex(tileImage) - 1);
+		        	//adds all handled tiles to a list to remove later
+		        	removeThese.add(currentPlayer.getHand().get(board.getColumnIndex(tileImage) - 1));
 		        	
 		        	ImageView highlightedTile = highlightTile(tileBeingMoved.toString());
 		        	
@@ -645,6 +648,10 @@ public class RummikubView{
 		screen.setBackground(new Background(createBackground()));
 		
 		endTurn.setOnAction(e  -> {
+			for (Tile t : removeThese) {
+				currentPlayer.getHand().remove(t);
+			}
+			
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
