@@ -652,16 +652,14 @@ public class RummikubView{
 		//screen.setTop(timer);
 		//screen.add(tileInput,1,1);
 		
-		TextField handRig = new TextField("Add Tile to Hand");
+		TextField handRig = new TextField();
         handRig.setStyle("-fx-text-inner-color: grey;");
         handRig.setOnMouseClicked(e -> {
-        	handRig.clear();
-        	handRig.setStyle("-fx-text-inner-color: black;");
+        handRig.clear();
+        handRig.setStyle("-fx-text-inner-color: black;");
         });
         
-        handRig.textProperty().addListener((obs, oldText, newText) -> {
-        	controller.updatePlayerHand(currentPlayer.playerNum-1, newText);
-        });
+        
 		
 		screen.setCenter(board);
 		screen.setRight(endTurn);
@@ -679,16 +677,24 @@ public class RummikubView{
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
-					System.out.println("row 1");
-					for(int j = 0 ; j < 11; j++) {
-						System.out.print(boardTracker[0][j] + " ");
-				}
-					System.out.println("\nrow 2");
-					for(int j = 0 ; j < 11; j++) {
-						System.out.print(boardTracker[1][j] + " ");
-				}
-			
-				
+//					System.out.println("row 1");
+//					for(int j = 0 ; j < 11; j++) {
+//						System.out.print(boardTracker[0][j] + " ");
+//				}
+//					System.out.println("\nrow 2");
+//					for(int j = 0 ; j < 11; j++) {
+//						System.out.print(boardTracker[1][j] + " ");
+//				}
+						
+			//for some reason this isnt working...addSingleTile is never being called		
+			if(handRig.getText().isEmpty() == false) {
+				System.out.println(handRig.getText());
+				controller.addSingleTile(currentPlayer.playerNum-1, handRig.getText());
+					
+			}else {
+				System.out.println("no rig, tile drawn. ");
+				currentPlayer.drawTile(model.getPile());
+			}
 				nextPlayerTurn();
 				GameView(stage);
 				yes.cancel();

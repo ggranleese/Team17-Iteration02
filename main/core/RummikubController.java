@@ -143,6 +143,26 @@ public class RummikubController {
 		System.out.println(hold.size());
 		model.getPlayers().get(x).setHand(hold);
 	}
+	
+	public void addSingleTile(int x, String s) {
+		
+		try {
+			if(model.getPile().getPile().contains(parseToTile(s))){
+			model.getPlayers().get(x).getHand().add(parseToTile(s));
+			model.getPile().removeTile(parseToTile(s));
+			System.out.println("added " + parseToTile(s).toString() + " to " + model.getPlayers().get(x).playerNum);
+			}
+			else {
+				Alert errorAlert = new Alert(AlertType.ERROR);
+				errorAlert.setHeaderText("WARNING: Input not valid");
+				errorAlert.setContentText("Too many repeated tiles! ");
+				errorAlert.showAndWait();
+			}
+		}catch(IndexOutOfBoundsException e){
+			model.getPlayers().get(3).getHand().add(parseToTile(s));
+		}
+		//System.out.println("added " + parseToTile(s).toString() + " to " + model.getPlayers().get(x).playerNum);
+	}
 
 	private Tile parseToTile(String s) {
 		
