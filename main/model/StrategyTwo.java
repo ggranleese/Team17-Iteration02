@@ -13,7 +13,9 @@ public class StrategyTwo implements IStrategy {
 		if(model.status) {
 			System.out.println("Another player has played 30 points. Attempting to play...");
 			plays = checkHandPlays(hand);
-			tablePlays = playWithTable(hand, model);                                                                                                                                     
+			System.out.println("why");
+			tablePlays = playWithTable(hand, model);
+			System.out.println("why2");
 			//checks all melds in plays and counts values of all tiles
 			int counter = 0;
 			for (Meld m : plays) {

@@ -281,7 +281,7 @@ public class RummikubView{
 					playerGoingFirst = controller.model.getPlayers().get(position);
 				});
 		        
-				HBox playerBox = new HBox();
+				HBox playerBox = new HBox(10);
 				playerBox.setPadding(new Insets(10));
 		        playerBox.getChildren().addAll(label,goesFirst);
 		        
@@ -441,19 +441,28 @@ public class RummikubView{
 	
 
 	private Scene GameView(Stage stage) {
+		for(Player p : controller.model.getPlayers()) {
+			if (p.getStatus() == true) {
+				controller.model.status = true;
+			}
+		}
 		if(currentPlayer.isBot()) {
 			boardTracker = new Tile[14][14];
 			BorderPane screen = new BorderPane();
 			screen.setBackground(new Background(createBackground()));
 			
 			ArrayList<Meld> melds = ((AI) currentPlayer).doTurn(controller.model);
+			int pointCounter =0;
 			for(Meld m : melds) {
 				ArrayList<Tile> meldTiles = new ArrayList<Tile>();
 				for(Tile t : m.getTiles()) {
 					meldTiles.add(t);
+					pointCounter += t.getValue();
 					System.out.println(t.toString());
 				}
 				controller.addMeld(meldTiles);
+				System.out.println(pointCounter);
+				currentPlayer.updatePoints(pointCounter);
 			}
 			
 			 Timer yes = new Timer();

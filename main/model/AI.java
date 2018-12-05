@@ -6,6 +6,7 @@ public class AI extends Player{
 	//MEMBERS
 private IStrategy strategy;
 public int stratNum;
+public int pointCounter;
 
 	//CONSTRUCTORS
 	public AI(int strat) {
@@ -18,6 +19,7 @@ public int stratNum;
 		}else{
 			this.strategy = new StrategyThree();
 		}
+		pointCounter = 0;
 	}
 	
 	//METHODS
@@ -37,7 +39,6 @@ public int stratNum;
 			
 		for(Meld m : whatToPlay) {
 			System.out.println("p" + stratNum + " played tiles.");
-			playMeld(m);
 			//this removes every tile used in the meld from your hand
 			for(Tile t: m.getTiles()) {
 				super.removeTile(t.getColour(), t.getValue());
