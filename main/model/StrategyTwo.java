@@ -7,11 +7,13 @@ public class StrategyTwo implements IStrategy {
 
 	public ArrayList<Meld> play(ArrayList<Tile> hand, Table table) {
 		ArrayList<Meld> plays = new ArrayList<Meld>();
+		ArrayList<Meld> tablePlays = new ArrayList<Meld>();
 		
 		//if someone else has played their 30
 		if(table.status) {
 			System.out.println("Another player has played 30 points. Attempting to play...");
 			plays = checkHandPlays(hand);
+			tablePlays = playWithTable(hand, table);
 			//checks all melds in plays and counts values of all tiles
 			int counter = 0;
 			for (Meld m : plays) {
@@ -43,7 +45,38 @@ public class StrategyTwo implements IStrategy {
 			}
 			//else return plays
 			else {
-				return plays;
+				int tableCounter =0;
+				for (Meld m : tablePlays) {
+					for (Tile t : m.getTiles()) {
+						tableCounter += t.getValue();
+					}
+				}
+				
+				if(tableCounter < 30) {
+					
+					//check if plays would allow player to win
+					ArrayList<Tile> tmp = new ArrayList<Tile>();
+					for (Meld m : tablePlays) {
+						for(Tile t: m.getTiles()) {
+							tmp.add(t);
+						}
+					}
+				
+					if(tmp.containsAll(hand)) {
+						System.out.println("Bot 2 wins the game!");
+						return tablePlays;
+					}
+					//else return empty
+					else {
+					System.out.println("Unable to play. Value of plays less than 30.");
+					tablePlays.clear();
+					return tablePlays;
+					}
+					
+				}else {
+					return plays;
+				}
+				
 			}
 		
 		}
@@ -55,7 +88,22 @@ public class StrategyTwo implements IStrategy {
 		}
 	}
 	
-	
+	public ArrayList<Meld> playWithTable(ArrayList<Tile> hand, Table table) {
+		ArrayList<Meld> plays = null;
+		for(Meld m: table.getMelds()){
+			
+			if(m.getTiles().size() > 3){
+				ArrayList<Tile> tempHand = new ArrayList<>();
+				tempHand.addAll(hand);
+				tempHand.addAll(m.getTiles());
+				plays = checkHandPlays(hand);
+				
+			}
+		}
+		
+		return plays;
+	}
+		
 	public ArrayList<Run> checkRun(ArrayList<Tile> hand){
 		
 		
