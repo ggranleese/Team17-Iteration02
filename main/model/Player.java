@@ -259,4 +259,11 @@ public class Player implements Observer{
 		return false;
 	}
 
+	public void updatePoints(int points) {
+		pointCounter += points;
+		if(pointCounter >= 30) {
+			this.status = true;
+		}
+	}
+
 }
