@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -38,6 +39,7 @@ import javafx.stage.Stage;
 import model.AI;
 import model.Player;
 import model.RummikubModel;
+import model.RummikubModelMemento;
 import model.Tile;
 import javafx.scene.Group;
 import javafx.scene.layout.FlowPane;
@@ -70,15 +72,13 @@ import org.json.JSONException;
 public class RummikubView{
 
 	private RummikubController controller;
-	public RummikubModel model;
 	public Player currentPlayer;
 	public boolean cheatsSelected;
 	public Tile tileBeingMoved;
 	public Tile[][] boardTracker;
 	
 	public RummikubView() {
-		model = new RummikubModel();
-		controller = new RummikubController(model);
+		controller = new RummikubController(new RummikubModel());
 		boardTracker = new Tile[14][14];
 	}
 	
@@ -335,7 +335,7 @@ public class RummikubView{
 		nextButton.setLayoutX(400);
 		nextButton.setLayoutY(500);
 		
-		if(model.getPlayers() == null) {
+		if(controller.model.getPlayers() == null) {
 			controller.setDefaultGame();
 		}
 		
@@ -395,11 +395,13 @@ public class RummikubView{
 		stage.show();
 			 
 	}
-	
+	 
 	
 
 	private Scene GameView(Stage stage) {
-		
+		RummikubModelMemento memento = controller.saveStateToMemento();
+		boardTracker = new Tile[14][14];
+
 		BorderPane screen = new BorderPane();
 		RummikubTimer timer = new RummikubTimer(); 
 		RummikubButton endTurn = new RummikubButton("End Turn");
@@ -463,6 +465,7 @@ public class RummikubView{
 				
 				image.setOnDragDetected(new EventHandler<MouseEvent>() {
 			        public void handle(MouseEvent event) {
+			        	
 			        	Dragboard db = image.startDragAndDrop(TransferMode.ANY);
 
 			        	ClipboardContent cbContent = new ClipboardContent();
@@ -531,7 +534,6 @@ public class RummikubView{
 		for (ImageView tileImage: tiles) {
 			tileImage.setOnDragDetected(new EventHandler<MouseEvent>() {
 		        public void handle(MouseEvent event) {
-		 
 		        	int tileNumber = board.getColumnIndex(tileImage) - 1;
 		        	//this causes bug
 		        	tileBeingMoved = currentPlayer.getHand().get(tileNumber);
@@ -676,54 +678,73 @@ public class RummikubView{
 		screen.setBackground(new Background(createBackground()));
 		
 		endTurn.setOnAction(e  -> {
-			for (Tile t : removeThese) {
-				currentPlayer.getHand().remove(t);
-			}
+			boolean removeHand = true;
 			
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
-
-//					System.out.println("row 1");
-//					for(int j = 0 ; j < 11; j++) {
-//						System.out.print(boardTracker[0][j] + " ");
-//				}
-//					System.out.println("\nrow 2");
-//					for(int j = 0 ; j < 11; j++) {
-//						System.out.print(boardTracker[1][j] + " ");
-//				}
 						
-			//for some reason this isnt working...addSingleTile is never being called		
+			//for some reason this isnt working...addSingleTile is never being called
+
+			controller.clearMelds();
+			//System.out.println("memento: " + memento.getState().getMelds());
+			for(int i = 0 ; i < 14; i++) {
+				//System.out.println("Melds on row " + i);
+				ArrayList<Tile> meld = new ArrayList<Tile>();
+				for(int j = 0 ; j < 11; j++) {
+					if(boardTracker[i][j] != null) {
+						meld.add(boardTracker[i][j]);
+						boardTracker[i][j] = null;
+					}
+				}
+				//System.out.println(meld);
+				if(meld.size() != 0) {
+					//b10 g10 o10 r10
+					//System.out.println("trying...");
+					boolean invalid = controller.addMeld(meld);
+					if(invalid == false) {
+						//System.out.println("hi mentos");
+						controller.restoreToState(memento);
+						System.out.println(currentPlayer.playerNum +" sucks, drawing 3");
+						currentPlayer.drawTile(controller.model.getPile());
+						currentPlayer.drawTile(controller.model.getPile());
+						currentPlayer.drawTile(controller.model.getPile());
+						removeHand = false;
+						break;
+					}
+				}
+			}
+		
+			//System.out.println("controller after melds played: "+controller.model.getMelds().toString());
+			if(removeHand == true) {
+				for (Tile t : removeThese) {
+					//controller.model.getPlayers().get(0).getHand().remove(t);
+					currentPlayer.getHand().remove(t);
+				}
+			}
+			if(currentPlayer.hand.size() == 0) {
+				WinView(stage, currentPlayer);
+			}
+			
+			//find point difference from memento
 			if(handRig.getText().isEmpty() == false) {
 				System.out.println(handRig.getText());
 				controller.addSingleTile(currentPlayer.playerNum-1, handRig.getText());
 					
 			}else {
-				System.out.println("no rig, tile drawn. ");
-				currentPlayer.drawTile(model.getPile());
-			}
-
-					controller.clearMelds();
-					for(int i = 0 ; i < 14; i++) {
-						System.out.println("Melds on row " + i);
-						ArrayList<Tile> meld = new ArrayList<Tile>();
-						for(int j = 0 ; j < 11; j++) {
-							if(boardTracker[i][j] != null) {
-								meld.add(boardTracker[i][j]);
-								boardTracker[i][j] = null;
-							}
-						}
-						System.out.println(meld);
-						if(meld.size() != 0) {
-							controller.addMeld(meld);
-						}
+				//if there wasn't an invalid play
+				if(removeHand == true) {
+					//if no melds were played FIX THIS
+					if(controller.model.getMelds().containsAll(memento.getState().getMelds()) && memento.getState().getMelds().containsAll(controller.model.getMelds())) {
+						System.out.println(currentPlayer.playerNum +" didn't play drawing 1");
+						currentPlayer.drawTile(controller.model.getPile());
+					}
 				}
-				
-				//find point difference from memento
-
-				nextPlayerTurn();
-				GameView(stage);
-				yes.cancel();
+			}
+			
+			nextPlayerTurn();
+			GameView(stage);
+			yes.cancel();
 			}
 		});
 		
@@ -811,7 +832,7 @@ public class RummikubView{
 	}
 	
 	public void nextPlayerTurn() {
-		int i = model.getPlayers().indexOf(currentPlayer);
+		int i = controller.model.getPlayers().indexOf(currentPlayer);
 		try {
 			//this.controller.drawTile(currentPlayer);
 			currentPlayer = controller.model.getPlayers().get(i+1);
