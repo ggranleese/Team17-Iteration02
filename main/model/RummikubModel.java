@@ -10,6 +10,7 @@ public class RummikubModel {
 	private Pile pile;
 	private ArrayList<Meld> melds;
 	private boolean timer;
+	public boolean status;
 	
 	public RummikubModel() {
 		table = new Table();

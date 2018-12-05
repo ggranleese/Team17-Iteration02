@@ -856,12 +856,14 @@ public class RummikubView{
 						System.out.println(memento.getState().getPlayers().get(currentPlayer.playerNum-1).getHand().size());
 						System.out.println(currentPlayer.playerNum +" didn't play drawing 1");
 						currentPlayer.drawTile(controller.model.getPile());
+					}else {
+						int points = 0;
+						for (Tile t: removeThese) {
+							points += t.getValue();
+						} 
+						currentPlayer.updatePoints(points);
 					}
 					
-//					if(controller.model.getMelds().containsAll(memento.getState().getMelds()) && memento.getState().getMelds().containsAll(controller.model.getMelds())) {
-//						System.out.println(currentPlayer.playerNum +" didn't play drawing 1");
-//						currentPlayer.drawTile(controller.model.getPile());
-//					}
 				}
 			}
 			
