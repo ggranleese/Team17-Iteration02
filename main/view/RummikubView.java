@@ -75,7 +75,7 @@ public class RummikubView{
 	private RummikubController controller;
 	public Player currentPlayer;
 	public boolean cheatsSelected;
-	public Player goesFirst;
+	public Player playerGoingFirst;
 	public Tile tileBeingMoved;
 	public Tile[][] boardTracker;
 	
@@ -189,9 +189,14 @@ public class RummikubView{
 		        });
 		        
 		        RadioButton goesFirst = new RadioButton("First");
-				if(this.goesFirst != null) {
+				if(this.playerGoingFirst != null) {
 					goesFirst.setSelected(true);
 				}
+		        
+				goesFirst.setOnAction(e -> {
+					System.out.println(controller.model.getPlayers().get(position));
+					playerGoingFirst = controller.model.getPlayers().get(position);
+				});
 		        
 				
 		        handRig.setOnKeyPressed(e -> {
@@ -268,9 +273,13 @@ public class RummikubView{
 		        
 
 		        RadioButton goesFirst = new RadioButton("First");
-				if(this.goesFirst != null) {
+				if(this.playerGoingFirst != null) {
 					goesFirst.setSelected(true);
 				}
+				
+				goesFirst.setOnAction(e -> {
+					playerGoingFirst = controller.model.getPlayers().get(position);
+				});
 		        
 				HBox playerBox = new HBox();
 				playerBox.setPadding(new Insets(10));
@@ -392,7 +401,12 @@ public class RummikubView{
 			}
 		});
 		
-		label = new Label("Player " + sortedPlayers.get(0).playerNum + " goes first!");
+		if(playerGoingFirst != null){
+			label = new Label("Player " + playerGoingFirst.playerNum + " goes first!");
+		}
+		else {
+			label = new Label("Player " + sortedPlayers.get(0).playerNum + " goes first!");
+		}
 		
 		label.setLayoutX(400);
 		label.setLayoutY(250);
@@ -406,7 +420,13 @@ public class RummikubView{
 		start.getChildren().add(label);
 		
 		nextButton.setOnAction(e-> {
-			currentPlayer = sortedPlayers.get(0);
+			if(playerGoingFirst != null){
+				currentPlayer = playerGoingFirst;
+			}
+			else {
+				currentPlayer = sortedPlayers.get(0);
+			}
+			
 			GameView(stage);
 		});
 		//test
@@ -454,8 +474,8 @@ public class RummikubView{
 			    			}
 			            });
 			        }
-			    //}, 5000, 5000);
-			    }, 1,1);
+			    }, 2000, 2000);
+			   
 			Label lb = new Label("Player " + currentPlayer.playerNum + "'s Turn...");
 			try {
 				lb.setFont(Font.loadFont(new FileInputStream("main/resources/kenvector_future.ttf"),23));
