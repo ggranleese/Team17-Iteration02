@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -57,10 +58,6 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 45ddb2f338e8b383b15ac40dd006a5156dd79879
 import org.json.JSONException;
 
 
@@ -398,11 +395,12 @@ public class RummikubView{
 		stage.show();
 			 
 	}
-	
+	 
 	
 
 	private Scene GameView(Stage stage) {
 		RummikubModelMemento memento = controller.saveStateToMemento();
+		boardTracker = new Tile[14][14];
 
 		BorderPane screen = new BorderPane();
 		RummikubTimer timer = new RummikubTimer(); 
@@ -467,6 +465,7 @@ public class RummikubView{
 				
 				image.setOnDragDetected(new EventHandler<MouseEvent>() {
 			        public void handle(MouseEvent event) {
+			        	
 			        	Dragboard db = image.startDragAndDrop(TransferMode.ANY);
 
 			        	ClipboardContent cbContent = new ClipboardContent();
@@ -535,7 +534,6 @@ public class RummikubView{
 		for (ImageView tileImage: tiles) {
 			tileImage.setOnDragDetected(new EventHandler<MouseEvent>() {
 		        public void handle(MouseEvent event) {
-		 
 		        	int tileNumber = board.getColumnIndex(tileImage) - 1;
 		        	//this causes bug
 		        	tileBeingMoved = currentPlayer.getHand().get(tileNumber);
@@ -685,62 +683,68 @@ public class RummikubView{
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
-
-//					System.out.println("row 1");
-//					for(int j = 0 ; j < 11; j++) {
-//						System.out.print(boardTracker[0][j] + " ");
-//				}
-//					System.out.println("\nrow 2");
-//					for(int j = 0 ; j < 11; j++) {
-//						System.out.print(boardTracker[1][j] + " ");
-//				}
 						
-			//for some reason this isnt working...addSingleTile is never being called		
+			//for some reason this isnt working...addSingleTile is never being called
+
+			controller.clearMelds();
+			//System.out.println("memento: " + memento.getState().getMelds());
+			for(int i = 0 ; i < 14; i++) {
+				//System.out.println("Melds on row " + i);
+				ArrayList<Tile> meld = new ArrayList<Tile>();
+				for(int j = 0 ; j < 11; j++) {
+					if(boardTracker[i][j] != null) {
+						meld.add(boardTracker[i][j]);
+						boardTracker[i][j] = null;
+					}
+				}
+				//System.out.println(meld);
+				if(meld.size() != 0) {
+					//b10 g10 o10 r10
+					//System.out.println("trying...");
+					boolean invalid = controller.addMeld(meld);
+					if(invalid == false) {
+						//System.out.println("hi mentos");
+						controller.restoreToState(memento);
+						System.out.println(currentPlayer.playerNum +" sucks, drawing 3");
+						currentPlayer.drawTile(controller.model.getPile());
+						currentPlayer.drawTile(controller.model.getPile());
+						currentPlayer.drawTile(controller.model.getPile());
+						removeHand = false;
+						break;
+					}
+				}
+			}
+		
+			//System.out.println("controller after melds played: "+controller.model.getMelds().toString());
+			if(removeHand == true) {
+				for (Tile t : removeThese) {
+					//controller.model.getPlayers().get(0).getHand().remove(t);
+					currentPlayer.getHand().remove(t);
+				}
+			}
+			if(currentPlayer.hand.size() == 0) {
+				WinView(stage, currentPlayer);
+			}
+			
+			//find point difference from memento
 			if(handRig.getText().isEmpty() == false) {
 				System.out.println(handRig.getText());
 				controller.addSingleTile(currentPlayer.playerNum-1, handRig.getText());
 					
 			}else {
-				System.out.println("no rig, tile drawn. ");
-				currentPlayer.drawTile(model.getPile());
-			}
-
-					controller.clearMelds();
-					for(int i = 0 ; i < 14; i++) {
-						//System.out.println("Melds on row " + i);
-						ArrayList<Tile> meld = new ArrayList<Tile>();
-						for(int j = 0 ; j < 11; j++) {
-							if(boardTracker[i][j] != null) {
-								meld.add(boardTracker[i][j]);
-								boardTracker[i][j] = null;
-							}
-						}
-						//System.out.println(meld);
-						if(meld.size() != 0) {
-							//b10 b10 g10 g10 o10 o10 r12
-							boolean invalid = controller.addMeld(meld);
-							if(invalid == false) {
-								controller.restoreToState(memento);
-								removeHand = false;
-							}
-						}
-				}
-				
+				//if there wasn't an invalid play
 				if(removeHand == true) {
-					for (Tile t : removeThese) {
-						//controller.model.getPlayers().get(0).getHand().remove(t);
-						currentPlayer.getHand().remove(t);
+					//if no melds were played FIX THIS
+					if(controller.model.getMelds().containsAll(memento.getState().getMelds()) && memento.getState().getMelds().containsAll(controller.model.getMelds())) {
+						System.out.println(currentPlayer.playerNum +" didn't play drawing 1");
+						currentPlayer.drawTile(controller.model.getPile());
 					}
 				}
-				if(currentPlayer.hand.size() == 0) {
-					WinView(stage, currentPlayer);
-				}
-				
-				//find point difference from memento
-
-				nextPlayerTurn();
-				GameView(stage);
-				yes.cancel();
+			}
+			
+			nextPlayerTurn();
+			GameView(stage);
+			yes.cancel();
 			}
 		});
 		
