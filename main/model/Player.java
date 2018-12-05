@@ -31,7 +31,11 @@ public class Player implements Observer{
 		for(int i = 0; i<14; i++) {
 			drawTile(p);
 		}
+
+		System.out.println("Player " + this.playerNum + " is " + this.hand.size());
+
 		System.out.println(this.getHand().size() + "\n");
+
 		sortHand();
 		
 	}
@@ -61,10 +65,12 @@ public class Player implements Observer{
 	}
 	
 	public void sortHand() {
+		
 		ArrayList<Tile> blue = new ArrayList<Tile>();
 		ArrayList<Tile> red = new ArrayList<Tile>();
 		ArrayList<Tile> green = new ArrayList<Tile>();
 		ArrayList<Tile> orange = new ArrayList<Tile>();
+		ArrayList<Tile> joker = new ArrayList<Tile>();
 		ArrayList<Tile> finished = new ArrayList<Tile>();
 		
 		for(int i = 0; i < this.hand.size(); i++) {
@@ -85,12 +91,17 @@ public class Player implements Observer{
 				orange.add(this.hand.get(i));
 			}
 			
+			if(this.hand.get(i).getValue() == 0) {
+				joker.add(this.hand.get(i));
+			}
+			
 		}
 		
 		insertionSort(blue);
 		insertionSort(red);
 		insertionSort(green);
 		insertionSort(orange);
+		insertionSort(joker);
 		
 		Collections.sort(blue, new Comparator<Tile>() {
 			public int compare(Tile s2, Tile s1) {
@@ -112,11 +123,17 @@ public class Player implements Observer{
 				return Integer.compare(s2.getValue(), s1.getValue());
 			}
 		});
+		Collections.sort(joker, new Comparator<Tile>() {
+			public int compare(Tile s2, Tile s1) {
+				return Integer.compare(s2.getValue(), s1.getValue());
+			}
+		});
 		
 		finished.addAll(blue);
 		finished.addAll(red);
 		finished.addAll(green);
 		finished.addAll(orange);
+		finished.addAll(joker);
 		
 		this.hand = finished;
 		

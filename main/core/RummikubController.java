@@ -144,6 +144,7 @@ public class RummikubController {
 		model.getPlayers().get(x).setHand(hold);
 	}
 	
+	@SuppressWarnings("restriction")
 	public void addSingleTile(int x, String s) {
 		
 		try {
