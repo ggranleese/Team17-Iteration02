@@ -7,6 +7,7 @@ public class AI extends Player{
 private IStrategy strategy;
 public int stratNum;
 public int pointCounter;
+public boolean playWithBoard;
 
 	//CONSTRUCTORS
 	public AI(int strat) {
@@ -20,6 +21,7 @@ public int pointCounter;
 			this.strategy = new StrategyThree();
 		}
 		pointCounter = 0;
+		playWithBoard = false;
 	}
 	
 	//METHODS
@@ -33,9 +35,14 @@ public int pointCounter;
 	}
 	
 	public ArrayList<Meld> doTurn(RummikubModel model) {
+		
+		if(pointCounter >=30) {
+			playWithBoard = true;
+		}
+		
 		System.out.println("BOT " + this.stratNum+ " TURN");
 		ArrayList<Meld> whatToPlay;
-		whatToPlay = strategy.play(this.hand, model);
+		whatToPlay = strategy.play(this.hand, model, playWithBoard);
 			
 		for(Meld m : whatToPlay) {
 			System.out.println("p" + stratNum + " played tiles.");
@@ -44,6 +51,7 @@ public int pointCounter;
 				super.removeTile(t.getColour(), t.getValue());
 			}	
 		}
+		
 		return whatToPlay;
 		
 	}

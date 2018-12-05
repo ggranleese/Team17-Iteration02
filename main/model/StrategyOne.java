@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 public class StrategyOne implements IStrategy {
 
-	public ArrayList<Meld> play(ArrayList<Tile> hand, RummikubModel table) {
+	public ArrayList<Meld> play(ArrayList<Tile> hand, RummikubModel table, boolean playWithBoard) {
 		ArrayList<Meld> plays = new ArrayList<Meld>();
 		
 		//checks all possible plays and returns all possible plays

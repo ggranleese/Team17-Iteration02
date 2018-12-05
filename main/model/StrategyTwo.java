@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 public class StrategyTwo implements IStrategy {
 
-	public ArrayList<Meld> play(ArrayList<Tile> hand, RummikubModel model) {
+	public ArrayList<Meld> play(ArrayList<Tile> hand, RummikubModel model, boolean playWithBoard) {
 		ArrayList<Meld> plays = new ArrayList<Meld>();
 		ArrayList<Meld> tablePlays = new ArrayList<Meld>();
 		
@@ -13,9 +13,8 @@ public class StrategyTwo implements IStrategy {
 		if(model.status) {
 			System.out.println("Another player has played 30 points. Attempting to play...");
 			plays = checkHandPlays(hand);
-			System.out.println("why");
 			tablePlays = playWithTable(hand, model);
-			System.out.println("why2");
+			
 			//checks all melds in plays and counts values of all tiles
 			int counter = 0;
 			for (Meld m : plays) {
@@ -23,6 +22,7 @@ public class StrategyTwo implements IStrategy {
 					counter += t.getValue();
 				}
 			}
+
 			//if value of plays is under 30
 			if (counter < 30) {
 				 
@@ -40,6 +40,7 @@ public class StrategyTwo implements IStrategy {
 				}
 				//else return empty
 				else {
+	
 				System.out.println("Unable to play. Value of plays less than 30.");
 				plays.clear();
 				return plays;
@@ -47,44 +48,27 @@ public class StrategyTwo implements IStrategy {
 			}
 			//else return plays
 			else {
-				if(tablePlays != null) {
-					int tableCounter =0;
-					for (Meld m : tablePlays) {
-						for (Tile t : m.getTiles()) {
-							tableCounter += t.getValue();
-						}
+				ArrayList<Tile> tmp = new ArrayList<Tile>();
+				for (Meld m : plays) {
+					for(Tile t: m.getTiles()) {
+						tmp.add(t);
 					}
-					
-					if(tableCounter < 30) {
-						
-						//check if plays would allow player to win
-						ArrayList<Tile> tmp = new ArrayList<Tile>();
-						for (Meld m : tablePlays) {
-							for(Tile t: m.getTiles()) {
-								tmp.add(t);
-							}
-						}
-					
-						if(tmp.containsAll(hand)) {
-							System.out.println("Bot 2 wins the game!");
-							return tablePlays;
-						}
-						//else return empty
-						else {
-						System.out.println("Unable to play. Value of plays less than 30.");
-						tablePlays.clear();
-						return tablePlays;
-						}
-						
-					}else {
-						return plays;
-					}
-				}else {
+				}
+			
+				if(tmp.containsAll(hand)) {
+					System.out.println("Bot 2 wins the game!");
 					return plays;
 				}
+				//else return empty
+				else {
+					
+					System.out.println("Bot 2 plays regularly...");
+					System.out.println("\nTESTING....." + tablePlays.toString() + "TESTING.....\n");
+					return tablePlays;
 				
-				
+				}
 			}
+	
 		
 		}
 		// if no one else has played their 30 return empty (draw a tile)
@@ -96,7 +80,7 @@ public class StrategyTwo implements IStrategy {
 	}
 	
 	public ArrayList<Meld> playWithTable(ArrayList<Tile> hand, RummikubModel table) {
-		ArrayList<Meld> plays = null;
+		ArrayList<Meld> plays = new ArrayList<Meld>();
 		for(Meld m: table.getMelds()){
 			
 			if(m.getTiles().size() > 3){
@@ -227,9 +211,4 @@ public class StrategyTwo implements IStrategy {
 		
 	}
 
-	@Override
-	public ArrayList<Meld> play(ArrayList<Tile> hand, RummikubModel model) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

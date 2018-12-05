@@ -295,9 +295,11 @@ public class RummikubView{
 		Button confirmButton = new Button("Back");
 		box2.getChildren().add(confirmButton);
 		
+		
 		root.getChildren().addAll(box1);
 		root.getChildren().addAll(box2);
 		
+		root.setBackground(new Background(createBackground()));
 		
         Scene scene = new Scene(root, 1000, 1000);
 		stage.setScene(scene);
