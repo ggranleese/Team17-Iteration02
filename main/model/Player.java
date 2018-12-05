@@ -23,6 +23,8 @@ public class Player implements Observer{
 		this.hand = new ArrayList<Tile>();
 		this.status = false;
 		this.tableSnapshot = new Table();
+		pointCounter = 0;
+		status = false;
 		}
 	 
 	//METHODS
@@ -150,25 +152,6 @@ public class Player implements Observer{
 		}
 		return input;
 	}
-
-	public void playMeld(Meld m) {
-		//ef
-		this.tableSnapshot.getMelds().add(m);
-	
-		if(this.status == false) {
-			int meldPoints = 0;
-			
-			for(int i = 0; i < m.getTiles().size(); i++) {
-				meldPoints += m.getTiles().get(i).getValue();
-			}
-			
-			this.pointCounter += meldPoints;
-			
-			if(pointCounter >= 30) {
-				this.status = true;
-			}
-		}
-	}
 	
 	public void addTile(Tile t) {
 		this.hand.add(t);
@@ -261,7 +244,9 @@ public class Player implements Observer{
 
 	public void updatePoints(int points) {
 		pointCounter += points;
+		System.out.println(pointCounter);
 		if(pointCounter >= 30) {
+			System.out.println("true");
 			this.status = true;
 		}
 	}
