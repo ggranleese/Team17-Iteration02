@@ -107,9 +107,9 @@ public class RummikubController {
 	public void setDefaultGame() {
 		ArrayList<Player> p = new ArrayList<Player>();
 		p.add(new Player());
-		p.add(new AI(1));
-		p.add(new AI(2));
-		p.add(new AI(3));
+		p.add(new Player());
+		p.add(new Player());
+		p.add(new Player());
 		
 		model.setPlayers(p);
 		

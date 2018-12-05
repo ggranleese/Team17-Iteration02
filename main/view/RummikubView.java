@@ -75,7 +75,7 @@ public class RummikubView{
 	private RummikubController controller;
 	public Player currentPlayer;
 	public boolean cheatsSelected;
-	public Player goesFirst;
+	public Player playerGoingFirst;
 	public Tile tileBeingMoved;
 	public Tile[][] boardTracker;
 	
@@ -189,9 +189,14 @@ public class RummikubView{
 		        });
 		        
 		        RadioButton goesFirst = new RadioButton("First");
-				if(this.goesFirst != null) {
+				if(this.playerGoingFirst != null) {
 					goesFirst.setSelected(true);
 				}
+		        
+				goesFirst.setOnAction(e -> {
+					System.out.println(controller.model.getPlayers().get(position));
+					playerGoingFirst = controller.model.getPlayers().get(position);
+				});
 		        
 				
 		        handRig.setOnKeyPressed(e -> {
@@ -268,9 +273,13 @@ public class RummikubView{
 		        
 
 		        RadioButton goesFirst = new RadioButton("First");
-				if(this.goesFirst != null) {
+				if(this.playerGoingFirst != null) {
 					goesFirst.setSelected(true);
 				}
+				
+				goesFirst.setOnAction(e -> {
+					playerGoingFirst = controller.model.getPlayers().get(position);
+				});
 		        
 				HBox playerBox = new HBox();
 				playerBox.setPadding(new Insets(10));
@@ -392,7 +401,12 @@ public class RummikubView{
 			}
 		});
 		
-		label = new Label("Player " + sortedPlayers.get(0).playerNum + " goes first!");
+		if(playerGoingFirst != null){
+			label = new Label("Player " + playerGoingFirst.playerNum + " goes first!");
+		}
+		else {
+			label = new Label("Player " + sortedPlayers.get(0).playerNum + " goes first!");
+		}
 		
 		label.setLayoutX(400);
 		label.setLayoutY(250);
@@ -406,7 +420,13 @@ public class RummikubView{
 		start.getChildren().add(label);
 		
 		nextButton.setOnAction(e-> {
-			currentPlayer = sortedPlayers.get(0);
+			if(playerGoingFirst != null){
+				currentPlayer = playerGoingFirst;
+			}
+			else {
+				currentPlayer = sortedPlayers.get(0);
+			}
+			
 			GameView(stage);
 		});
 		//test
@@ -422,6 +442,7 @@ public class RummikubView{
 
 	private Scene GameView(Stage stage) {
 		if(currentPlayer.isBot()) {
+			boardTracker = new Tile[14][14];
 			BorderPane screen = new BorderPane();
 			screen.setBackground(new Background(createBackground()));
 			
@@ -454,8 +475,8 @@ public class RummikubView{
 			    			}
 			            });
 			        }
-			    //}, 5000, 5000);
-			    }, 1,1);
+			    }, 2000, 2000);
+			   
 			Label lb = new Label("Player " + currentPlayer.playerNum + "'s Turn...");
 			try {
 				lb.setFont(Font.loadFont(new FileInputStream("main/resources/kenvector_future.ttf"),23));
@@ -669,6 +690,7 @@ public class RummikubView{
 			            System.out.println( tileBeingMoved.toString() + " dropped in cell: " + colIndex + "," + rowIndex);
 			            boardTracker[board.getRowIndex(source)][board.getColumnIndex(source)] = tileBeingMoved;
 			            
+			            
 			            Dragboard db = event.getDragboard();
 			            boolean success = false;
 			            if(source != board && db.hasImage()){
@@ -765,12 +787,33 @@ public class RummikubView{
 				//System.out.println("Melds on row " + i);
 				ArrayList<Tile> meld = new ArrayList<Tile>();
 				for(int j = 0 ; j < 11; j++) {
-					if(boardTracker[i][j] != null) {
+						if(boardTracker[i][j] != null) {
+							Tile tileL = boardTracker[i][j-1];
+			            	Tile tileL2= boardTracker[i][j-2];
+			            	Tile tileR = boardTracker[i][j+1];
+			            	Tile tileR2 = boardTracker[i][j+2];
+						   if(boardTracker[i][j].isJoker()) {
+				            	
+				            	//runs
+				            	if ((tileL != null )&& (tileR != null) && (tileR.getValue() - tileL.getValue() == 2)) {
+				            		System.out.println("Left Right");
+				            		boardTracker[i][j].adapt(tileL,1);
+				            		System.out.println(boardTracker[i][j]);
+				            	}
+				            	else if (tileR != null && tileR2 != null && (tileR2.getValue() - tileR.getValue() == 1)) {
+				            		System.out.println("Right 2");
+				            		boardTracker[i][j].adapt(tileR,2);
+				            	}
+				            	else if((tileL != null )&& (tileL2 != null) && (tileL.getValue() - tileL2.getValue() ==1)) {
+				            		System.out.println("Left 2");
+				            		boardTracker[i][j].adapt(tileL,1);
+				            	}
+				            }
 						meld.add(boardTracker[i][j]);
-						boardTracker[i][j] = null;
+						//boardTracker[i][j] = null;
 					}
 				}
-				//System.out.println(meld);
+				System.out.println(meld);
 				if(meld.size() != 0) {
 					//b10 g10 o10 r10
 					//System.out.println("trying...");
