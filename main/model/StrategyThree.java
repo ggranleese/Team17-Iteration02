@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 public class StrategyThree implements IStrategy {
 	
-	public ArrayList<Meld> play(ArrayList<Tile> hand, Table table){
+	public ArrayList<Meld> play(ArrayList<Tile> hand, RummikubModel model){
 		ArrayList<Meld> plays = new ArrayList<Meld>();
 		plays = checkHandPlays(hand);
 		
@@ -18,16 +18,16 @@ public class StrategyThree implements IStrategy {
 			return plays;	
 		}
 		
-		if(threeFewerExists(hand, table) && plays.size() != 0) {
+		if(threeFewerExists(hand, model) && plays.size() != 0) {
 			return plays;
 		} 
 		
-		if(threeFewerExists(hand, table) && plays.size() == 0){
+		if(threeFewerExists(hand, model) && plays.size() == 0){
 			System.out.println("p3 could play but has not tile to play");
 			return plays;
 		}
 		
-		if(!threeFewerExists(hand,table)) {
+		if(!threeFewerExists(hand,model)) {
 			System.out.println("p3 would reuse table");
 			
 		}
@@ -172,10 +172,13 @@ public class StrategyThree implements IStrategy {
 		return colour;
 	}
 
-	public boolean threeFewerExists(ArrayList<Tile> hand,Table table) {
+	public boolean threeFewerExists(ArrayList<Tile> hand, RummikubModel model) {
 		int size = hand.size();
-		for(Observer o : table.getObservers()) {
-			if(((Player)o).getHand().size() - size == 3) {
+		for(Player o : model.getPlayers()) {
+			System.out.println(size);
+			System.out.println(o.getHand().size());
+			if((o.getHand().size() - size) == 3) {
+				System.out.println("yes");
 				return true;
 			}
 		}
