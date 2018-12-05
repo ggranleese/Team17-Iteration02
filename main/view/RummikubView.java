@@ -808,10 +808,17 @@ public class RummikubView{
 				//if there wasn't an invalid play
 				if(removeHand == true) {
 					//if no melds were played FIX THIS
-					if(controller.model.getMelds().containsAll(memento.getState().getMelds()) && memento.getState().getMelds().containsAll(controller.model.getMelds())) {
+					if(removeThese.size() == 0 ) {
+						System.out.println(currentPlayer.getHand().size());
+						System.out.println(memento.getState().getPlayers().get(currentPlayer.playerNum-1).getHand().size());
 						System.out.println(currentPlayer.playerNum +" didn't play drawing 1");
 						currentPlayer.drawTile(controller.model.getPile());
 					}
+					
+//					if(controller.model.getMelds().containsAll(memento.getState().getMelds()) && memento.getState().getMelds().containsAll(controller.model.getMelds())) {
+//						System.out.println(currentPlayer.playerNum +" didn't play drawing 1");
+//						currentPlayer.drawTile(controller.model.getPile());
+//					}
 				}
 			}
 			
