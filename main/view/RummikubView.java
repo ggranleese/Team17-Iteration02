@@ -56,7 +56,6 @@ import javafx.collections.*;
 import javafx.application.Platform;
 import java.util.TimerTask;
 
-
 import org.json.JSONException;
 
 
@@ -101,7 +100,7 @@ public class RummikubView{
 		 
 		startButton.setOnAction(e-> drawStartView(stage));
 		
-		if(model.getPlayers() == null) {
+		if(controller.model.getPlayers() == null) {
 			optionsButton.setOnAction(e-> promptNumPlayers(stage));
 		}
 		else {
@@ -147,7 +146,7 @@ public class RummikubView{
 		Button button1 = new Button("Select");
 		
 		RadioButton timer = new RadioButton("Timer");
-		if(model.getTimer()) {
+		if(controller.model.getTimer()) {
 			timer.setSelected(true);
 		}
 		
@@ -164,9 +163,9 @@ public class RummikubView{
 		VBox box2 = new VBox(10);
 		box2.setLayoutY(50);
 		
-		for (int x = 0; x < model.getPlayers().size(); x++) {
+		for (int x = 0; x < controller.model.getPlayers().size(); x++) {
 			Label label;
-			ArrayList<Player> players = model.getPlayers();
+			ArrayList<Player> players = controller.model.getPlayers();
 			Player player = players.get(x);
 			int position = x;
 			
@@ -342,7 +341,7 @@ public class RummikubView{
 		
 		start.getChildren().add(nextButton);
 		
-		ArrayList<Player> players = model.getPlayers();
+		ArrayList<Player> players = controller.model.getPlayers();
 		ArrayList<Player> sortedPlayers = new ArrayList<>();
 		
 		
@@ -452,15 +451,15 @@ public class RummikubView{
 		}
 		
 	
-		for(int x = 0; x < model.getMelds().size(); x++) {
-			for(int y =0; y < model.getMelds().get(x).getTiles().size(); y++) {
+		for(int x = 0; x < controller.model.getMelds().size(); x++) {
+			for(int y =0; y < controller.model.getMelds().get(x).getTiles().size(); y++) {
 				
 				HBox test = (HBox) getNode(x,y,board);
-				String tile = model.getMelds().get(x).getTiles().get(y).toString();
+				String tile = controller.model.getMelds().get(x).getTiles().get(y).toString();
 				String filename =  "file:main/Tiles/"+ tile +".jpg";
 				ImageView image = new ImageView(new Image(filename));
 				test.getChildren().add(image);
-				boardTracker[x][y] = model.getMelds().get(x).getTiles().get(y);
+				boardTracker[x][y] = controller.model.getMelds().get(x).getTiles().get(y);
 				
 				image.setOnDragDetected(new EventHandler<MouseEvent>() {
 			        public void handle(MouseEvent event) {
@@ -491,7 +490,7 @@ public class RummikubView{
 		}
 		
 		stand.setStyle("-fx-background-color: Transparent; -fx-background-image: url('/resources/playerStand.png');");
-//		for(Meld m : model.getMelds()) {
+//		for(Meld m : controller.model.getMelds()) {
 //			
 //		}
 		
@@ -528,16 +527,19 @@ public class RummikubView{
             Stand.add(tiles.get(num), num+1, 1);
             num++;
 			}
-
+		ArrayList<Tile> removeThese = new ArrayList<Tile>();
 		for (ImageView tileImage: tiles) {
 			tileImage.setOnDragDetected(new EventHandler<MouseEvent>() {
 		        public void handle(MouseEvent event) {
 		 
 		        	int tileNumber = board.getColumnIndex(tileImage) - 1;
+		        	//this causes bug
 		        	tileBeingMoved = currentPlayer.getHand().get(tileNumber);
 		        	System.out.println("from hand: " + tileBeingMoved.toString());
 		        	//remove this tile from player hand
-		        	currentPlayer.getHand().remove(board.getColumnIndex(tileImage) - 1);
+		        	//currentPlayer.getHand().remove(board.getColumnIndex(tileImage) - 1);
+		        	//adds all handled tiles to a list to remove later
+		        	removeThese.add(currentPlayer.getHand().get(board.getColumnIndex(tileImage) - 1));
 		        	
 		        	ImageView highlightedTile = highlightTile(tileBeingMoved.toString());
 		        	
@@ -674,6 +676,10 @@ public class RummikubView{
 		screen.setBackground(new Background(createBackground()));
 		
 		endTurn.setOnAction(e  -> {
+			for (Tile t : removeThese) {
+				currentPlayer.getHand().remove(t);
+			}
+			
 			if(currentPlayer.hand.size() == 0) {
 				WinView(stage, currentPlayer);
 			}else {
@@ -704,6 +710,7 @@ public class RummikubView{
 						for(int j = 0 ; j < 11; j++) {
 							if(boardTracker[i][j] != null) {
 								meld.add(boardTracker[i][j]);
+								boardTracker[i][j] = null;
 							}
 						}
 						System.out.println(meld);
@@ -807,9 +814,9 @@ public class RummikubView{
 		int i = model.getPlayers().indexOf(currentPlayer);
 		try {
 			//this.controller.drawTile(currentPlayer);
-			currentPlayer = model.getPlayers().get(i+1);
+			currentPlayer = controller.model.getPlayers().get(i+1);
 		}catch (IndexOutOfBoundsException e) {
-			currentPlayer = model.getPlayers().get(0);
+			currentPlayer = controller.model.getPlayers().get(0);
 		}
 	}
 
