@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -174,6 +175,7 @@ public class RummikubView{
 			
 			if (!player.isBot()) {
 				label = new Label("Player " + (x+1));
+				label.setStyle("-fx-text-fill: white;");
 								
 		        ComboBox<String> playerType = new ComboBox<String>();
 		        playerType.getSelectionModel().selectFirst();
@@ -182,7 +184,7 @@ public class RummikubView{
 		        playerType.setLayoutX(150);
 
 		        TextField handRig = new TextField("Hand (Optional)");
-		        handRig.setStyle("-fx-text-inner-color: grey;");
+		        handRig.setStyle("-fx-text-inner-color: white;");
 		        handRig.setOnMouseClicked(e -> {
 		        	handRig.clear();
 		        	handRig.setStyle("-fx-text-inner-color: black;");
@@ -194,7 +196,6 @@ public class RummikubView{
 				}
 		        
 				goesFirst.setOnAction(e -> {
-					System.out.println(controller.model.getPlayers().get(position));
 					playerGoingFirst = controller.model.getPlayers().get(position);
 				});
 		        
@@ -222,6 +223,7 @@ public class RummikubView{
 			}
 			if(player.isBot()) {
 				label = new Label("Player " + (x+1) + " (BOT)");
+				label.setStyle("-fx-text-fill: white;");
 				
 				ComboBox<String> stratChoice = new ComboBox<String>();
 		        stratChoice.getSelectionModel().selectFirst();
@@ -273,6 +275,7 @@ public class RummikubView{
 		        
 
 		        RadioButton goesFirst = new RadioButton("First");
+		        goesFirst.setStyle("-fx-text-fill: white;");
 				if(this.playerGoingFirst != null) {
 					goesFirst.setSelected(true);
 				}
@@ -292,7 +295,7 @@ public class RummikubView{
 			}
 			
 		}
-		Button confirmButton = new Button("Back");
+		Button confirmButton = new Button("OK");
 		box2.getChildren().add(confirmButton);
 		
 		
@@ -338,7 +341,7 @@ public class RummikubView{
 		
 		box.getChildren().add(numPlayers);
 		box.getChildren().add(button1);
-		
+		box.setBackground(new Background(createBackground()));
         Scene scene = new Scene(box, 1000, 1000);
 		stage.setScene(scene);
 		stage.setTitle("Rummikub");
@@ -460,10 +463,8 @@ public class RummikubView{
 				for(Tile t : m.getTiles()) {
 					meldTiles.add(t);
 					pointCounter += t.getValue();
-					System.out.println(t.toString());
 				}
 				controller.addMeld(meldTiles);
-				System.out.println(pointCounter);
 				currentPlayer.updatePoints(pointCounter);
 			}
 			
@@ -477,7 +478,7 @@ public class RummikubView{
 			    			}else {
 			    				//check if they played anything
 			    				if(melds.size() == 0) {
-			    					System.out.println("Nothing played, draw tile.");
+			    					System.out.println("Nothing played, drawing tile.");
 			    					currentPlayer.drawTile(controller.model.getPile());
 			    				}
 			    				nextPlayerTurn();
@@ -486,7 +487,7 @@ public class RummikubView{
 			    			}
 			            });
 			        }
-			    }, 2000, 2000);
+			    }, 4000, 4000);
 			   
 			Label lb = new Label("Player " + currentPlayer.playerNum + "'s Turn...");
 			try {
@@ -528,6 +529,7 @@ public class RummikubView{
 		BackgroundImage boardBackground = new BackgroundImage(gameBoard, BackgroundRepeat.SPACE, BackgroundRepeat.SPACE, BackgroundPosition.CENTER, null);
 		board.setBackground(new Background(boardBackground));;		
 		 Timer yes = new Timer();
+		 if(controller.model.getTimer()) {
 		    yes.scheduleAtFixedRate(new TimerTask() {
 		        @Override
 		        public void run() {
@@ -542,6 +544,7 @@ public class RummikubView{
 		            });
 		        }
 		    }, 120000, 120000);
+		 }
 		
 		//these are the image height/width
 		stand.setMaxHeight(178);
@@ -585,7 +588,7 @@ public class RummikubView{
 			            Integer rowIndex = GridPane.getRowIndex(test);
 			           
 			        	tileBeingMoved = boardTracker[rowIndex][colIndex];
-			        	System.out.println(boardTracker[rowIndex][colIndex]);
+	
 			        	boardTracker[rowIndex][colIndex] = null;
 			            System.out.println(tileBeingMoved + " being moved from cell: " + colIndex + "," + rowIndex);
 
@@ -774,7 +777,13 @@ public class RummikubView{
 		screen.setCenter(board);
 		screen.setRight(endTurn);
 		//screen.setTop(nameLabel);
-		top.getChildren().addAll(timer, nameLabel,handRig);
+		if (controller.model.getTimer()) {
+			top.getChildren().add(timer);
+		}
+		top.getChildren().addAll(nameLabel);
+		if(this.cheatsSelected) {
+			top.getChildren().add(handRig);
+		}
 		screen.setTop(top);
 		
 		screen.setBottom(Stand);
@@ -799,40 +808,40 @@ public class RummikubView{
 				ArrayList<Tile> meld = new ArrayList<Tile>();
 				for(int j = 0 ; j < 11; j++) {
 						if(boardTracker[i][j] != null) {
-							Tile tileL = boardTracker[i][j-1];
-			            	Tile tileL2= boardTracker[i][j-2];
-			            	Tile tileR = boardTracker[i][j+1];
-			            	Tile tileR2 = boardTracker[i][j+2];
-						   if(boardTracker[i][j].isJoker()) {
-				            	
-				            	//runs
-				            	if ((tileL != null )&& (tileR != null) && (tileR.getValue() - tileL.getValue() == 2)) {
-				            		System.out.println("Left Right");
-				            		boardTracker[i][j].adapt(tileL,1);
-				            		System.out.println(boardTracker[i][j]);
-				            	}
-				            	else if (tileR != null && tileR2 != null && (tileR2.getValue() - tileR.getValue() == 1)) {
-				            		System.out.println("Right 2");
-				            		boardTracker[i][j].adapt(tileR,2);
-				            	}
-				            	else if((tileL != null )&& (tileL2 != null) && (tileL.getValue() - tileL2.getValue() ==1)) {
-				            		System.out.println("Left 2");
-				            		boardTracker[i][j].adapt(tileL,1);
-				            	}
-				            }
+//							Tile tileL = boardTracker[i][j-1];
+//			            	Tile tileL2= boardTracker[i][j-2];
+//			            	Tile tileR = boardTracker[i][j+1];
+//			            	Tile tileR2 = boardTracker[i][j+2];
+//						   if(boardTracker[i][j].isJoker()) {
+//				            	
+//				            	//runs
+//				            	if ((tileL != null )&& (tileR != null) && (tileR.getValue() - tileL.getValue() == 2)) {
+//				            		System.out.println("Left Right");
+//				            		boardTracker[i][j].adapt(tileL,1);
+//				            		System.out.println(boardTracker[i][j]);
+//				            	}
+//				            	else if (tileR != null && tileR2 != null && (tileR2.getValue() - tileR.getValue() == 1)) {
+//				            		System.out.println("Right 2");
+//				            		boardTracker[i][j].adapt(tileR,2);
+//				            	}
+//				            	else if((tileL != null )&& (tileL2 != null) && (tileL.getValue() - tileL2.getValue() ==1)) {
+//				            		System.out.println("Left 2");
+//				            		boardTracker[i][j].adapt(tileL,1);
+//				            	}
+//				            }
 						meld.add(boardTracker[i][j]);
-						//boardTracker[i][j] = null;
+						boardTracker[i][j] = null;
 					}
 				}
-				System.out.println(meld);
+				
 				if(meld.size() != 0) {
 					//b10 g10 o10 r10
 					//System.out.println("trying...");
 					boolean invalid = controller.addMeld(meld);
 					if(invalid == false) {
-						//System.out.println("hi mentos");
+
 						controller.restoreToState(memento);
-						System.out.println(currentPlayer.playerNum +" sucks, drawing 3");
+						System.out.println("Player " +currentPlayer.playerNum +" played an invalid meld, drawing 3");
 						currentPlayer.drawTile(controller.model.getPile());
 						currentPlayer.drawTile(controller.model.getPile());
 						currentPlayer.drawTile(controller.model.getPile());
@@ -863,9 +872,7 @@ public class RummikubView{
 				if(removeHand == true) {
 					//if no melds were played FIX THIS
 					if(removeThese.size() == 0 ) {
-						System.out.println(currentPlayer.getHand().size());
-						System.out.println(memento.getState().getPlayers().get(currentPlayer.playerNum-1).getHand().size());
-						System.out.println(currentPlayer.playerNum +" didn't play drawing 1");
+						System.out.println("Player " +currentPlayer.playerNum +" didn't play anything, drawing 1");
 						currentPlayer.drawTile(controller.model.getPile());
 					}else {
 						int points = 0;

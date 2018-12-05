@@ -45,7 +45,7 @@ public boolean playWithBoard;
 		whatToPlay = strategy.play(this.hand, model, playWithBoard);
 			
 		for(Meld m : whatToPlay) {
-			System.out.println("p" + stratNum + " played tiles.");
+			System.out.println(stratNum + " played " + m.toString());
 			//this removes every tile used in the meld from your hand
 			for(Tile t: m.getTiles()) {
 				super.removeTile(t.getColour(), t.getValue());

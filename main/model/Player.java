@@ -244,9 +244,9 @@ public class Player implements Observer{
 
 	public void updatePoints(int points) {
 		pointCounter += points;
-		System.out.println(pointCounter);
+		
 		if(pointCounter >= 30) {
-			System.out.println("true");
+			
 			this.status = true;
 		}
 	}
