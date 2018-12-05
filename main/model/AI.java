@@ -30,10 +30,10 @@ public int stratNum;
 		System.out.println("\n");
 	}
 	
-	public void doTurn() {
+	public ArrayList<Meld> doTurn(RummikubModel model) {
 		System.out.println("BOT " + this.stratNum+ " TURN");
 		ArrayList<Meld> whatToPlay;
-		whatToPlay = strategy.play(this.hand, this.tableSnapshot);
+		whatToPlay = strategy.play(this.hand, model);
 			
 		for(Meld m : whatToPlay) {
 			System.out.println("p" + stratNum + " played tiles.");
@@ -43,6 +43,7 @@ public int stratNum;
 				super.removeTile(t.getColour(), t.getValue());
 			}	
 		}
+		return whatToPlay;
 		
 	}
 	//GETTERS

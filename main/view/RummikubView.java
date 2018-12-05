@@ -37,6 +37,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.AI;
+import model.Meld;
 import model.Player;
 import model.RummikubModel;
 import model.RummikubModelMemento;
@@ -74,6 +75,7 @@ public class RummikubView{
 	private RummikubController controller;
 	public Player currentPlayer;
 	public boolean cheatsSelected;
+	public Player goesFirst;
 	public Tile tileBeingMoved;
 	public Tile[][] boardTracker;
 	
@@ -135,6 +137,7 @@ public class RummikubView{
 
 	private void handleOptionsButtonAction(Stage stage) {
 		
+		ArrayList<RadioButton> radioButtons;
 		Pane root = new Pane();
 		HBox box1 = new HBox(10);
 		
@@ -185,6 +188,12 @@ public class RummikubView{
 		        	handRig.setStyle("-fx-text-inner-color: black;");
 		        });
 		        
+		        RadioButton goesFirst = new RadioButton("First");
+				if(this.goesFirst != null) {
+					goesFirst.setSelected(true);
+				}
+		        
+				
 		        handRig.setOnKeyPressed(e -> {
 		        	if (e.getCode() == KeyCode.ENTER) {
 		                controller.updatePlayerHand(position , handRig.getText());
@@ -198,7 +207,10 @@ public class RummikubView{
 		        	}
 					handleOptionsButtonAction(stage);});
 		        
-		        box2.getChildren().add(label);
+		        HBox playerBox = new HBox(10);
+		        playerBox.getChildren().addAll(label,goesFirst);
+		        
+		        box2.getChildren().add(playerBox);
 		        box2.getChildren().add(playerType);
 		        box2.getChildren().add(handRig);
 
@@ -254,7 +266,17 @@ public class RummikubView{
 		        	controller.updatePlayerStrat(players, position, stratChoice.getValue());	
 				});
 		        
-		        box2.getChildren().add(label);
+
+		        RadioButton goesFirst = new RadioButton("First");
+				if(this.goesFirst != null) {
+					goesFirst.setSelected(true);
+				}
+		        
+				HBox playerBox = new HBox();
+				playerBox.setPadding(new Insets(10));
+		        playerBox.getChildren().addAll(label,goesFirst);
+		        
+		        box2.getChildren().add(playerBox);
 		        box2.getChildren().add(playerType);
 		        box2.getChildren().add(stratChoice);
 		        box2.getChildren().add(handRig);
@@ -399,6 +421,57 @@ public class RummikubView{
 	
 
 	private Scene GameView(Stage stage) {
+		if(currentPlayer.isBot()) {
+			BorderPane screen = new BorderPane();
+			screen.setBackground(new Background(createBackground()));
+			
+			ArrayList<Meld> melds = ((AI) currentPlayer).doTurn(controller.model);
+			for(Meld m : melds) {
+				ArrayList<Tile> meldTiles = new ArrayList<Tile>();
+				for(Tile t : m.getTiles()) {
+					meldTiles.add(t);
+					System.out.println(t.toString());
+				}
+				controller.addMeld(meldTiles);
+			}
+			
+			 Timer yes = new Timer();
+			    yes.scheduleAtFixedRate(new TimerTask() {
+			        @Override
+			        public void run() {
+			            Platform.runLater(() -> {
+			            	if(currentPlayer.hand.size() == 0) {
+			    				WinView(stage, currentPlayer);
+			    			}else {
+			    				//check if they played anything
+			    				if(melds.size() == 0) {
+			    					System.out.println("Nothing played, draw tile.");
+			    					currentPlayer.drawTile(controller.model.getPile());
+			    				}
+			    				nextPlayerTurn();
+			    				stage.setScene(GameView(stage));
+			    				yes.cancel();
+			    			}
+			            });
+			        }
+			    //}, 5000, 5000);
+			    }, 1,1);
+			Label lb = new Label("Player " + currentPlayer.playerNum + "'s Turn...");
+			try {
+				lb.setFont(Font.loadFont(new FileInputStream("main/resources/kenvector_future.ttf"),23));
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			screen.setCenter(lb);
+			Scene display = new Scene(screen,1000,900);
+			stage.setScene(display);
+			stage.show();
+			return display;
+		}
+		else {
+		
 		RummikubModelMemento memento = controller.saveStateToMemento();
 		boardTracker = new Tile[14][14];
 
@@ -735,10 +808,17 @@ public class RummikubView{
 				//if there wasn't an invalid play
 				if(removeHand == true) {
 					//if no melds were played FIX THIS
-					if(controller.model.getMelds().containsAll(memento.getState().getMelds()) && memento.getState().getMelds().containsAll(controller.model.getMelds())) {
+					if(removeThese.size() == 0 ) {
+						System.out.println(currentPlayer.getHand().size());
+						System.out.println(memento.getState().getPlayers().get(currentPlayer.playerNum-1).getHand().size());
 						System.out.println(currentPlayer.playerNum +" didn't play drawing 1");
 						currentPlayer.drawTile(controller.model.getPile());
 					}
+					
+//					if(controller.model.getMelds().containsAll(memento.getState().getMelds()) && memento.getState().getMelds().containsAll(controller.model.getMelds())) {
+//						System.out.println(currentPlayer.playerNum +" didn't play drawing 1");
+//						currentPlayer.drawTile(controller.model.getPile());
+//					}
 				}
 			}
 			
@@ -754,7 +834,7 @@ public class RummikubView{
 		stage.setScene(display);
 		stage.show();
 		return display;
-		
+		}
 		}
 	
 	public Node getNode (final int row, final int column, GridPane gridPane){
