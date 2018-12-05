@@ -32,10 +32,6 @@ public class Player implements Observer{
 			drawTile(p);
 		}
 
-		System.out.println("Player " + this.playerNum + " is " + this.hand.size());
-
-		System.out.println(this.getHand().size() + "\n");
-
 		sortHand();
 		
 	}
@@ -156,7 +152,7 @@ public class Player implements Observer{
 	}
 
 	public void playMeld(Meld m) {
-		
+		//ef
 		this.tableSnapshot.getMelds().add(m);
 	
 		if(this.status == false) {
