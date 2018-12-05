@@ -45,37 +45,42 @@ public class StrategyTwo implements IStrategy {
 			}
 			//else return plays
 			else {
-				int tableCounter =0;
-				for (Meld m : tablePlays) {
-					for (Tile t : m.getTiles()) {
-						tableCounter += t.getValue();
-					}
-				}
-				
-				if(tableCounter < 30) {
-					
-					//check if plays would allow player to win
-					ArrayList<Tile> tmp = new ArrayList<Tile>();
+				if(tablePlays != null) {
+					int tableCounter =0;
 					for (Meld m : tablePlays) {
-						for(Tile t: m.getTiles()) {
-							tmp.add(t);
+						for (Tile t : m.getTiles()) {
+							tableCounter += t.getValue();
 						}
 					}
-				
-					if(tmp.containsAll(hand)) {
-						System.out.println("Bot 2 wins the game!");
-						return tablePlays;
-					}
-					//else return empty
-					else {
-					System.out.println("Unable to play. Value of plays less than 30.");
-					tablePlays.clear();
-					return tablePlays;
-					}
 					
+					if(tableCounter < 30) {
+						
+						//check if plays would allow player to win
+						ArrayList<Tile> tmp = new ArrayList<Tile>();
+						for (Meld m : tablePlays) {
+							for(Tile t: m.getTiles()) {
+								tmp.add(t);
+							}
+						}
+					
+						if(tmp.containsAll(hand)) {
+							System.out.println("Bot 2 wins the game!");
+							return tablePlays;
+						}
+						//else return empty
+						else {
+						System.out.println("Unable to play. Value of plays less than 30.");
+						tablePlays.clear();
+						return tablePlays;
+						}
+						
+					}else {
+						return plays;
+					}
 				}else {
 					return plays;
 				}
+				
 				
 			}
 		
@@ -218,5 +223,11 @@ public class StrategyTwo implements IStrategy {
 
 		return possiblePlays;         
 		
+	}
+
+	@Override
+	public ArrayList<Meld> play(ArrayList<Tile> hand, RummikubModel model) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
