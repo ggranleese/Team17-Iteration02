@@ -442,6 +442,7 @@ public class RummikubView{
 
 	private Scene GameView(Stage stage) {
 		if(currentPlayer.isBot()) {
+			boardTracker = new Tile[14][14];
 			BorderPane screen = new BorderPane();
 			screen.setBackground(new Background(createBackground()));
 			
@@ -689,6 +690,7 @@ public class RummikubView{
 			            System.out.println( tileBeingMoved.toString() + " dropped in cell: " + colIndex + "," + rowIndex);
 			            boardTracker[board.getRowIndex(source)][board.getColumnIndex(source)] = tileBeingMoved;
 			            
+			            
 			            Dragboard db = event.getDragboard();
 			            boolean success = false;
 			            if(source != board && db.hasImage()){
@@ -785,12 +787,33 @@ public class RummikubView{
 				//System.out.println("Melds on row " + i);
 				ArrayList<Tile> meld = new ArrayList<Tile>();
 				for(int j = 0 ; j < 11; j++) {
-					if(boardTracker[i][j] != null) {
+						if(boardTracker[i][j] != null) {
+							Tile tileL = boardTracker[i][j-1];
+			            	Tile tileL2= boardTracker[i][j-2];
+			            	Tile tileR = boardTracker[i][j+1];
+			            	Tile tileR2 = boardTracker[i][j+2];
+						   if(boardTracker[i][j].isJoker()) {
+				            	
+				            	//runs
+				            	if ((tileL != null )&& (tileR != null) && (tileR.getValue() - tileL.getValue() == 2)) {
+				            		System.out.println("Left Right");
+				            		boardTracker[i][j].adapt(tileL,1);
+				            		System.out.println(boardTracker[i][j]);
+				            	}
+				            	else if (tileR != null && tileR2 != null && (tileR2.getValue() - tileR.getValue() == 1)) {
+				            		System.out.println("Right 2");
+				            		boardTracker[i][j].adapt(tileR,2);
+				            	}
+				            	else if((tileL != null )&& (tileL2 != null) && (tileL.getValue() - tileL2.getValue() ==1)) {
+				            		System.out.println("Left 2");
+				            		boardTracker[i][j].adapt(tileL,1);
+				            	}
+				            }
 						meld.add(boardTracker[i][j]);
-						boardTracker[i][j] = null;
+						//boardTracker[i][j] = null;
 					}
 				}
-				//System.out.println(meld);
+				System.out.println(meld);
 				if(meld.size() != 0) {
 					//b10 g10 o10 r10
 					//System.out.println("trying...");
