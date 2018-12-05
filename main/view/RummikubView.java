@@ -42,6 +42,8 @@ import model.Meld;
 import model.Player;
 import model.RummikubModel;
 import model.RummikubModelMemento;
+import model.Run;
+import model.Set;
 import model.Tile;
 import javafx.scene.Group;
 import javafx.scene.layout.FlowPane;
@@ -431,7 +433,7 @@ public class RummikubView{
 			else {
 				currentPlayer = sortedPlayers.get(0);
 			}
-			
+
 			GameView(stage);
 		});
 		//test
@@ -446,6 +448,7 @@ public class RummikubView{
 	
 
 	private Scene GameView(Stage stage) {
+			
 		for(Player p : controller.model.getPlayers()) {
 			if (p.getStatus() == true) {
 				controller.model.status = true;
@@ -537,9 +540,10 @@ public class RummikubView{
 		            	if(currentPlayer.hand.size() == 0) {
 		    				WinView(stage, currentPlayer);
 		    			}else {
-		    				nextPlayerTurn();
-		    				stage.setScene(GameView(stage));
-		    				yes.cancel();
+		    				endTurn.fire();
+//		    				nextPlayerTurn();
+//		    				stage.setScene(GameView(stage));
+//		    				yes.cancel();
 		    			}
 		            });
 		        }

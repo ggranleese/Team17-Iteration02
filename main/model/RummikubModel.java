@@ -8,7 +8,7 @@ public class RummikubModel {
 	private ArrayList<Player> players;
 	private Table table;
 	private Pile pile;
-	private ArrayList<Meld> melds;
+	public ArrayList<Meld> melds;
 	private boolean timer;
 	public boolean status;
 	
@@ -19,6 +19,49 @@ public class RummikubModel {
 		pile.shuffle();
 		melds = new ArrayList<Meld>();
 
+//		ArrayList<Tile> run1 = new ArrayList<>();
+//		run1.add(new Tile(1,3, false));
+//		run1.add(new Tile(1,4, false));
+//		run1.add(new Tile(1,5, false));
+//				
+//			
+//		ArrayList<Tile> run2 = new ArrayList<>();
+//		run2.add(new Tile(4,1, false));
+//		run2.add(new Tile(4,2, false));
+//		run2.add(new Tile(4,3, false));	
+//		run2.add(new Tile(4,4, false));	
+//		
+//		
+//		ArrayList<Tile> run3 = new ArrayList<>();
+//		run3.add(new Tile(2,3, false));
+//		run3.add(new Tile(2,4, false));
+//		run3.add(new Tile(2,5, false));
+//		run3.add(new Tile(2,6, false));
+//		
+//		ArrayList<Tile> run4 = new ArrayList<>();
+//		run4.add(new Tile(3,1, false));
+//		run4.add(new Tile(3,2, false));
+//		run4.add(new Tile(3,3, false));	
+//		run4.add(new Tile(3,4, false));	
+//		
+//		ArrayList<Tile> set1 = new ArrayList<>();
+//		set1.add(new Tile(3,6, false));
+//		set1.add(new Tile(1,6, false));
+//		set1.add(new Tile(4,6, false));
+//		
+//		ArrayList<Tile> set2 = new ArrayList<>();
+//		set2.add(new Tile(1,3, false));
+//		set2.add(new Tile(4,3, false));
+//		set2.add(new Tile(3,3, false));
+//		set2.add(new Tile(2,3, false));
+//
+//		melds.add(new Run(run1));
+//		melds.add(new Run(run2));
+//		melds.add(new Run(run3));
+//		melds.add(new Run(run4));
+//		melds.add(new Set(set1));
+//		melds.add(new Set(set2));
+		
 		timer = false;
 	}
 	
