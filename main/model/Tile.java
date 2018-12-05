@@ -63,4 +63,20 @@ public class Tile {
 		}
 		else return false;
 	}
+	public boolean isJoker() {
+		return this.joker;
+	}
+	public void adapt(Tile tile, int side) {
+		if (side == 1) {
+			System.out.println(joker);
+			System.out.println("adapting to: " + tile.getColour() + "," + (tile.getValue()+1));
+			this.colour = new Integer(tile.getColour());
+			this.value = new Integer(tile.getValue()+1);;
+			System.out.println(this.colour+","+this.value);
+		}
+		if (side == 2) {
+			this.colour = new Integer(tile.getColour());
+			this.value = new Integer(tile.getValue()-1);;
+			}
+	}
 }

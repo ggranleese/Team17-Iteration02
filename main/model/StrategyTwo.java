@@ -5,15 +5,17 @@ import java.util.HashSet;
 
 public class StrategyTwo implements IStrategy {
 
-	public ArrayList<Meld> play(ArrayList<Tile> hand, Table table) {
+	public ArrayList<Meld> play(ArrayList<Tile> hand, RummikubModel model) {
 		ArrayList<Meld> plays = new ArrayList<Meld>();
 		ArrayList<Meld> tablePlays = new ArrayList<Meld>();
 		
 		//if someone else has played their 30
-		if(table.status) {
+		if(model.status) {
 			System.out.println("Another player has played 30 points. Attempting to play...");
 			plays = checkHandPlays(hand);
-			tablePlays = playWithTable(hand, table);
+			System.out.println("why");
+			tablePlays = playWithTable(hand, model);
+			System.out.println("why2");
 			//checks all melds in plays and counts values of all tiles
 			int counter = 0;
 			for (Meld m : plays) {
@@ -23,7 +25,7 @@ public class StrategyTwo implements IStrategy {
 			}
 			//if value of plays is under 30
 			if (counter < 30) {
-				
+				 
 			//check if plays would allow player to win
 				ArrayList<Tile> tmp = new ArrayList<Tile>();
 				for (Meld m : plays) {
@@ -93,7 +95,7 @@ public class StrategyTwo implements IStrategy {
 		}
 	}
 	
-	public ArrayList<Meld> playWithTable(ArrayList<Tile> hand, Table table) {
+	public ArrayList<Meld> playWithTable(ArrayList<Tile> hand, RummikubModel table) {
 		ArrayList<Meld> plays = null;
 		for(Meld m: table.getMelds()){
 			
